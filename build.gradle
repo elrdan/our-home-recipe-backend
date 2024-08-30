@@ -1,0 +1,42 @@
+plugins {
+    id 'java'   // Java 플러그인을 적용하여 Java 애플리케이션 빌드 및 테스트 기능을 제공
+    id 'org.springframework.boot' version '3.3.2' // Spring Boot 플러그인을 적용하여 Spring Boot 애플리케이션을 설정하고 실행할 수 있도록 도와준다.
+    id 'io.spring.dependency-management' version '1.1.6' // 종속성 관리를 위해 사용되며, 종속성 버전을 중앙에서 관리할 수 있도록 해준다.
+}
+
+
+
+allprojects {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+
+    // 라이브러리들을 받아올 원격 저장소들을 설정함
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.ourhomerecipe.backend'
+    version = '0.0.1-SNAPSHOT'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testImplementation 'org.mockito:mockito-core:5.2.0' // Mocking framework
+        testImplementation 'org.assertj:assertj-core:3.23.1' // Assertions library
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+
+
+

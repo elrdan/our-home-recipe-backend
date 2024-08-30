@@ -1,0 +1,8 @@
+rootProject.name = 'our-home-recipe-backend'
+include 'core:infra'
+findProject(':core:infra')?.name = 'infra'
+include 'core:security'
+findProject(':core:security')?.name = 'security'
+include 'core:domain'
+findProject(':core:domain')?.name = 'domain'
+
