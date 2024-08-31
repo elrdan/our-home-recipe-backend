@@ -38,3 +38,6 @@ out/
 
 ### db ###
 /db/initdb.d/**
+
+### Docker ###
+docker-compose.yml
