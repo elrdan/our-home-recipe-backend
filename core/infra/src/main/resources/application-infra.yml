@@ -1,0 +1,22 @@
+spring:
+    config:
+        activate:
+            on-profile: local                           # 'local' 프로파일이 활성화될 때 이 설정을 사용하도록 지정
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/test           # 로컬 MySQL 데이터베이스에 연결하기 위한 URL
+        username: root                                  # 데이터베이스에 접근할 사용자 이름
+        password: 1234                                  # 데이터베이스에 접근할 사용자 비밀번호
+        driver-class-name: com.mysql.cj.jdbc.Driver     # MySQL JDBC 드라이버 클래스 이름
+    jpa:
+        show-sql: true                                  # JPA가 실행하는 SQL 쿼리를 콘솔에 출력하도록 설정
+        hibernate:
+            ddl-auto: none                              # Hibernate가 데이터베이스 스키마를 자동으로 생성하거나 업데이트하지 않도록 설정
+        defer-datasource-initialization: true           # Hibernate 초기화 이후에 데이터베이스 초기화 스크립트가 실행되도록 지연
+
+        properties:
+            dialect: org.hibernate.dialect.MySQLDialect # MySQL에 최적화된 Hibernate 방언 설정
+
+    sql:
+        init:
+            mode: always                                # 애플리케이션 시작 시 항상 SQL 스크립트를 실행하도록 설정
