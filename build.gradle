@@ -25,10 +25,14 @@ subprojects {
     dependencies {
         // Spring Boot 기본 스타터
         implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation "org.springframework.boot:spring-boot-starter-web"
 
-        testImplementation 'org.mockito:mockito-core:5.2.0' // Mocking framework
-        testImplementation 'org.assertj:assertj-core:3.23.1' // Assertions library
+        // Lombok
+        compileOnly "org.projectlombok:lombok"
+        implementation "org.projectlombok:lombok"
+
+        testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
+        testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library
     }
 
     test {
