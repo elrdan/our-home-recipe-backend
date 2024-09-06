@@ -1,0 +1,5 @@
+# openssl rand -hex 64 생성
+jwt:
+  access-key: 14fa77d9a490c6a2d96ab9d0bf97f3ddd6be0d6e017aaecd87bd1c9d9ae3c13059f055d9ec08152fc836250e0d5a19d2e2ccdf2a3f1a7b2343782254fef0741e
+  access-expiration-seconds: 1800 # 엑세스 토큰 만료시간(30분)
+  refresh-expiration-seconds: 86400 # 리프래쉬 토큰 만료시간(1일)
