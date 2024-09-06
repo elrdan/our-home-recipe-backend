@@ -1,0 +1,12 @@
+// BootJar 태스크 설정: 실행 가능한 JAR 생성 비활성화(애플리케이션 클래스와 모든 종속성이 포함되어 있음)
+bootJar { enabled = false }
+// Jar 태스크 설정: 일반 JAR 생성 활성화(애플리케이션을 실행하기 위해 별도의 클래스 경로 설정이 필요, 종속성 포함하지 않음)
+jar { enabled = true }
+
+dependencies {
+    // core:domain 종속성
+    implementation project(':core:domain')
+
+    // Spring Security 스타터: 인증 및 인가 기능을 제공
+    implementation "org.springframework.boot:spring-boot-starter-security"
+}
