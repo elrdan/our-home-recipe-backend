@@ -22,14 +22,14 @@ public class UserDetailsImpl implements UserDetails {
 	private String email;
 	@JsonIgnore
 	private String password;
-	private String nickName;
+	private String nickname;
 	private List<GrantedAuthority> authorities;
 
-	public UserDetailsImpl(long id, String email, String password, String nickName, List<GrantedAuthority> authorities) {
+	public UserDetailsImpl(long id, String email, String password, String nickname, List<GrantedAuthority> authorities) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
-		this.nickName = nickName;
+		this.nickname = nickname;
 		this.authorities = authorities;
 	}
 
