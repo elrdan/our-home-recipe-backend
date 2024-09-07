@@ -38,7 +38,7 @@ import org.mockito.BDDMockito;
 // RecipeController.class: 테스트 대상 컨트롤러를 지정
 @WebMvcTest(RecipeController.class)
 
-// @ExtendWith: JUnit 5의 확장 기능을 사용합니다.
+// @ExtendWith: JUnit 5의 확장 기능을 사용.
 // RestDocumentationExtension.class: Spring REST Docs 기능을 JUnit 5에서 사용하기 위한 확장
 @ExtendWith(RestDocumentationExtension.class)
 
@@ -48,7 +48,7 @@ public class RecipeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // @MockBean: Spring 컨텍스트에 모의 객체를 추가합니다.
+    // @MockBean: Spring 컨텍스트에 모의 객체를 추가.
     // 1. 컨트롤러 로직만 단독으로 테스트 가능 (서비스 로직 분리)
     // 2. 데이터베이스 조회 없이 빠른 테스트 실행
     @MockBean
@@ -93,7 +93,7 @@ public class RecipeControllerTest {
                                 .pathParameters(  // URL 경로 변수를 문서화
                                         RequestDocumentation.parameterWithName("id").description("레시피 ID")
                                 )
-                                .responseFields(  // 응답 필드를 문서화
+                    ㅌ            .responseFields(  // 응답 필드를 문서화
                                         PayloadDocumentation.fieldWithPath("recipe_id").description("레시피 ID"),
                                         PayloadDocumentation.fieldWithPath("name").description("레시피 이름"),
                                         PayloadDocumentation.fieldWithPath("description").description("레시피 소개")
