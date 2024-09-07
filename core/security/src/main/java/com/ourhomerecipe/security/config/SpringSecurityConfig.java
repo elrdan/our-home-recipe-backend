@@ -1,9 +1,13 @@
 package com.ourhomerecipe.security.config;
 
+import static com.ourhomerecipe.domain.member.enums.RoleType.*;
 import static org.springframework.http.HttpMethod.*;
+
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,9 +19,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.ourhomerecipe.security.exception.CustomAccessDeniedHandler;
+import com.ourhomerecipe.security.jwt.JwtFilter;
+import com.ourhomerecipe.security.jwt.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +36,8 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
+	private final JwtProvider jwtProvider;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	/**
 	 * Password Encoder
@@ -56,6 +68,83 @@ public class SpringSecurityConfig {
 			.securityMatchers(matcher -> matcher
 				.requestMatchers(OPTIONS, "/**")
 			);
+
+		return http.build();
+	}
+
+	/**
+	 * 모든 요청에 대해서 접근을 허용하는 SecurityChain
+	 */
+	@Bean
+	@Order(1)
+	public SecurityFilterChain permitAllFilterChain(HttpSecurity http) throws Exception {
+		httpSecuritySetting(http);
+		http
+			.securityMatchers(matcher -> matcher
+				.requestMatchers(permitAllRequestMatchers()))
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers(permitAllRequestMatchers()).permitAll()
+				.anyRequest().authenticated()
+			);
+		return http.build();
+	}
+
+	/**
+	 * 정상적인 토큰을 보유한 회원에 대한 접근 권한을 검증하는 SecurityFilterChain
+	 */
+	@Bean
+	@Order(2)
+	public SecurityFilterChain authenticatedFilterChain(HttpSecurity http) throws Exception {
+		httpSecuritySetting(http);
+		http
+			.securityMatchers(matcher -> matcher
+				.requestMatchers(userAuthRequestMatchers())
+			)
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers(userAuthRequestMatchers()).hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
+				.anyRequest().authenticated()
+			)
+			.exceptionHandling(exception -> exception
+				.accessDeniedHandler(customAccessDeniedHandler)
+			)
+			.addFilterBefore(new JwtFilter(jwtProvider), ExceptionTranslationFilter.class);
+		return http.build();
+	}
+
+	/**
+	 * 모든 요청 endpoint
+	 */
+	private RequestMatcher[] permitAllRequestMatchers() {
+		List<RequestMatcher> requestMatchers = List.of();
+
+		return requestMatchers.toArray(RequestMatcher[]::new);
+	}
+
+	/**
+	 * 일반 회원 endpoint
+	 */
+	private RequestMatcher[] userAuthRequestMatchers() {
+		List<RequestMatcher> requestMatchers = List.of();
+
+		return requestMatchers.toArray(RequestMatcher[]::new);
+	}
+
+	/**
+	 * 설정하지 않은 경로에 대해서 모든 요청을 거부하는 SecurityChain
+	 */
+	@Bean
+	@Order(3)
+	public SecurityFilterChain otherFilterChain(HttpSecurity http) throws Exception {
+		httpSecuritySetting(http);
+		http
+			.securityMatchers(matcher -> matcher
+				.requestMatchers("/**")
+			)
+			.authorizeHttpRequests(auth -> auth
+				.anyRequest().denyAll()
+			)
+			.exceptionHandling(exception -> exception
+				.accessDeniedHandler(customAccessDeniedHandler));
 
 		return http.build();
 	}
