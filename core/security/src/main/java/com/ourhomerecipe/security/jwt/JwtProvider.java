@@ -118,7 +118,7 @@ public class JwtProvider {
 			.id(claims.get("id", Long.class))
 			.email(claims.getSubject())
 			.password(null)
-			.nickName(claims.get("nickName", String.class))
+			.nickname(claims.get("nickName", String.class))
 			.authorities(authorities)
 			.build();
 
