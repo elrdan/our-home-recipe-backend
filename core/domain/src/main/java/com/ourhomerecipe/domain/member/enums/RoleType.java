@@ -1,4 +1,4 @@
-package com.ourhomerecipe.domain.enums;
+package com.ourhomerecipe.domain.member.enums;
 
 public enum RoleType {
 	ROLE_ADMIN,				// 관리자

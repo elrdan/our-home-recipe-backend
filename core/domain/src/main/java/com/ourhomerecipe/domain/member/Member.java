@@ -1,9 +1,9 @@
 package com.ourhomerecipe.domain.member;
 
 import com.ourhomerecipe.domain.MutableBaseEntity;
-import com.ourhomerecipe.domain.enums.ProviderType;
-import com.ourhomerecipe.domain.enums.RoleType;
-import com.ourhomerecipe.domain.enums.StatusType;
+import com.ourhomerecipe.domain.member.enums.ProviderType;
+import com.ourhomerecipe.domain.member.enums.RoleType;
+import com.ourhomerecipe.domain.member.enums.StatusType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

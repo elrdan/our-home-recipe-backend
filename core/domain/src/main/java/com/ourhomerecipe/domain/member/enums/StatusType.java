@@ -1,4 +1,4 @@
-package com.ourhomerecipe.domain.enums;
+package com.ourhomerecipe.domain.member.enums;
 
 public enum StatusType {
 	ACTIVE,					// 활성
