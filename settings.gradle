@@ -7,4 +7,5 @@ include 'core:domain'
 findProject(':core:domain')?.name = 'domain'
 include 'api:member'
 findProject(':api:member')?.name = 'member'
+include 'common'
 

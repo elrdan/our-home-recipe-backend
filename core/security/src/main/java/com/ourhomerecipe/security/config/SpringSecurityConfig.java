@@ -2,6 +2,7 @@ package com.ourhomerecipe.security.config;
 
 import static com.ourhomerecipe.domain.member.enums.RoleType.*;
 import static org.springframework.http.HttpMethod.*;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.*;
 
 import java.util.List;
 
@@ -115,7 +116,9 @@ public class SpringSecurityConfig {
 	 * 모든 요청 endpoint
 	 */
 	private RequestMatcher[] permitAllRequestMatchers() {
-		List<RequestMatcher> requestMatchers = List.of();
+		List<RequestMatcher> requestMatchers = List.of(
+			antMatcher(POST, "/member/register")				// 회원 등록
+		);
 
 		return requestMatchers.toArray(RequestMatcher[]::new);
 	}
@@ -124,7 +127,9 @@ public class SpringSecurityConfig {
 	 * 일반 회원 endpoint
 	 */
 	private RequestMatcher[] userAuthRequestMatchers() {
-		List<RequestMatcher> requestMatchers = List.of();
+		List<RequestMatcher> requestMatchers = List.of(
+			antMatcher(POST, "/member/delete")				// 회원 삭제
+		);
 
 		return requestMatchers.toArray(RequestMatcher[]::new);
 	}
