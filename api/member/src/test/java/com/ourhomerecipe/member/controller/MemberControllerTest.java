@@ -1,5 +1,4 @@
 package com.ourhomerecipe.member.controller;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ourhomerecipe.domain.member.Member;
 import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
@@ -82,6 +81,7 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("정상적으로 생성되었습니다."))  // 메시지 확인
                 .andExpect(jsonPath("$.data.id").value(1L));  // 생성된 회원 ID 확인
 
+
         // MemberService의 registerMember 메서드가 호출되었는지 검증
         verify(memberService).registerMember(any(MemberRegisterRequestDto.class));
     }
@@ -104,8 +104,9 @@ class MemberControllerTest {
         // Then: 요청에 대한 기대 결과를 검증
         resultActions
                 .andExpect(status().isBadRequest())  // HTTP 400 상태 확인
-                .andExpect(jsonPath("$.code").value(400))  // code 값 확인
-                .andExpect(jsonPath("$.message").value("이메일은 필수 항목입니다."));  // 오류 메시지 확인
+                .andExpect(jsonPath("$.errorCode").value(400))  // errorCode 확인
+                .andExpect(jsonPath("$.errorMessage").value("유효성 검사 오류"))  // 공통 오류 메시지 확인
+                .andExpect(jsonPath("$.validation.email").value("이메일은 필수 항목입니다."));  // 필드별 검증 메시지 확인
     }
 
     @Test
@@ -113,7 +114,7 @@ class MemberControllerTest {
         // Given: 중복된 이메일로 요청을 만들어 이메일 중복 에러를 유도합니다.
         MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
         requestDto.setName("테스트");
-        requestDto.setEmail("existing@example.com");
+        requestDto.setEmail("existing@example.com");  // 중복된 이메일
         requestDto.setPassword("password123!!");
         requestDto.setPasswordConfirm("password123!!");
         requestDto.setPhoneNumber("01012345678");
@@ -128,10 +129,13 @@ class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDto)));
 
-        // Then: 요청에 대한 기대 결과를 검증
+        // Then: 예외가 발생했음을 확인하고, 이를 적절하게 검증
         resultActions
                 .andExpect(status().isConflict())  // HTTP 409 상태 확인
-                .andExpect(jsonPath("$.code").value(EXISTS_MEMBER_EMAIL.getErrorCode()))  // 에러 코드 확인
-                .andExpect(jsonPath("$.message").value(EXISTS_MEMBER_EMAIL.getErrorMessage()));  // 에러 메시지 확인
+                .andExpect(jsonPath("$.errorCode").value(409))  // errorCode 값 확인
+                .andExpect(jsonPath("$.errorMessage").value("이미 등록된 회원 이메일입니다."));  // 메시지 확인
+
+        // 예외 발생 검증
+        verify(memberService).registerMember(any(MemberRegisterRequestDto.class));
     }
 }
