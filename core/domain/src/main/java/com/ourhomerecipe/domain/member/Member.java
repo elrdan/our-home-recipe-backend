@@ -1,9 +1,15 @@
 package com.ourhomerecipe.domain.member;
 
+import static com.ourhomerecipe.domain.member.enums.RoleType.*;
+import static com.ourhomerecipe.domain.member.enums.StatusType.*;
+
+import java.sql.Date;
+
 import com.ourhomerecipe.domain.MutableBaseEntity;
 import com.ourhomerecipe.domain.member.enums.ProviderType;
 import com.ourhomerecipe.domain.member.enums.RoleType;
 import com.ourhomerecipe.domain.member.enums.StatusType;
+import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,28 +20,56 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
-@Builder @NoArgsConstructor @AllArgsConstructor
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member extends MutableBaseEntity {
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	// 회원 식별자
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
-	private Long id;										// 회원 식별자
+	private Long id;
 
-	private String email;									// 회원 이메일
+	// 회원 이메일
+	private String email;
 
-	private String password;								// 회원 비밀번호
+	// 회원 비밀번호
+	@Setter
+	private String password;
 
-	private String nickname;								// 회원 닉네임
+	// 회원 닉네임
+	private String nickname;
 
-	private String phoneNumber;								// 회원 전화번호
+	// 회원 전화번호
+	private String phoneNumber;
 
-	private String name;									// 회원 이름
+	// 회원 이름
+	private String name;
 
-	private StatusType status;								// 회원 상태
+	// 회원 상태
+	private StatusType status;
 
-	private RoleType role;									// 회원 권한
+	// 회원 권한
+	private RoleType role;
 
-	private ProviderType provider;							// 회원 제공자
+	// 회원 제공자
+	private ProviderType provider;
+
+
+	public static Member fromMemberRegisterDto(MemberRegisterRequestDto registerRequestDto) {
+		Member member = Member.builder()
+			.email(registerRequestDto.getEmail())
+			.nickname(registerRequestDto.getNickname())
+			.phoneNumber(registerRequestDto.getPhoneNumber())
+			.name(registerRequestDto.getName())
+			.status(ACTIVE)
+			.role(ROLE_USER)
+			.build();
+
+		return member;
+	}
 }
