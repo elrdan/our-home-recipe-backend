@@ -83,5 +83,10 @@ subprojects {
     test {
         outputs.dir snippetsDir // 테스트 실행 시 문서화된 스티펫을 해당 디렉토리에 저장
         useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+            showStandardStreams = true
+        }
     }
 }
