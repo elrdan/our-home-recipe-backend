@@ -1,141 +1,132 @@
 package com.ourhomerecipe.member.controller;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ourhomerecipe.domain.member.Member;
+import com.ourhomerecipe.domain.member.repository.MemberRepository;
 import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
-import com.ourhomerecipe.member.exception.MemberException;
-import com.ourhomerecipe.member.service.MemberService;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import static com.ourhomerecipe.domain.common.error.code.MemberErrorCode.EXISTS_MEMBER_EMAIL;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
-/**
- * MemberController의 통합 테스트를 위한 테스트 클래스
- *
- * 이 클래스는 회원 가입 API에 대한 다양한 시나리오를 테스트:
- * - 정상적인 회원 가입 (성공)
- * - 유효하지 않은 입력으로 인한 회원 가입 (실패)
- * - 이미 존재하는 이메일로 인한 회원 가입 (실패)
- *
- * 각 테스트 케이스는 Given-When-Then 구조를 따르며,
- * MockMvc를 사용하여 실제 HTTP 요청을 시뮬레이션
- * MemberService는 MockBean으로 처리되어 실제 서비스 계층을 호출하지 않고 테스트.
- *
- * @see MemberController
- * @see MemberService
- * @see MockMvc
- */
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers  // Testcontainers를 사용하여 독립된 MySQL 환경에서 테스트 실행
 class MemberControllerTest {
 
-    // MockMvc를 사용하여 실제 HTTP 요청을 보내지 않고도 컨트롤러 테스트를 수행
-    @Autowired
-    private MockMvc mockMvc;
+    // MySQL Testcontainer 설정: 테스트마다 새로운 MySQL 환경을 제공
+    @Container
+    public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
+            .withDatabaseName("testdb")  // 데이터베이스 이름 설정
+            .withUsername("test")         // 사용자 이름 설정
+            .withPassword("test")         // 비밀번호 설정
+            .withInitScript("db/initdb.d/1-schema.sql"); // 초기 스키마 설정
 
-    // MemberService를 Mock으로 처리하여 실제 서비스 계층을 호출하지 않고도 테스트할 수 있게 설정
-    @MockBean
-    private MemberService memberService;
+    // MySQL Testcontainer에서 제공한 설정 정보를 동적으로 Spring에 반영
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mysql::getJdbcUrl);  // 데이터베이스 URL 등록
+        registry.add("spring.datasource.username", mysql::getUsername);  // 사용자 이름 등록
+        registry.add("spring.datasource.password", mysql::getPassword);  // 비밀번호 등록
+    }
 
-    // JSON 처리를 위한 ObjectMapper를 주입합니다. 이 객체를 사용하여 요청 본문을 JSON으로 변환
+    @LocalServerPort
+    private int port;  // 테스트 시 사용할 랜덤 포트 설정
+
     @Autowired
-    private ObjectMapper objectMapper;
+    private MemberRepository memberRepository;  // 실제 데이터베이스 상호작용을 위한 MemberRepository
+
+    // RestAssured가 사용할 포트를 설정
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+    }
 
     @Test
-    void registerMember_Success() throws Exception {
-        // Given: 회원 가입 요청에 필요한 데이터를 준비
+    @DisplayName("회원 가입 성공 테스트")  // 성공적인 회원 가입을 테스트
+    void registerMember_Success() {
+        // Given: 회원가입 요청에 필요한 데이터 준비
         MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
         requestDto.setName("테스트");
         requestDto.setEmail("test@example.com");
-        requestDto.setPassword("password123!!");
-        requestDto.setPasswordConfirm("password123!!");
-        requestDto.setPhoneNumber("01012345678");
+        requestDto.setPassword("Pass123!@");
+        requestDto.setPasswordConfirm("Pass123!@");
+        requestDto.setPhoneNumber("010-1234-5678");
         requestDto.setNickname("testUser");
 
-        // 회원 등록 서비스가 정상적으로 수행되면, id가 1인 회원을 반환하도록 Mock 설정
-        Member mockMember = new Member();
-        mockMember.setId(1L);
-
-        when(memberService.registerMember(any(MemberRegisterRequestDto.class))).thenReturn(mockMember);
-
-        // When: MockMvc를 사용하여 /member/register로 POST 요청 보냄
-        ResultActions resultActions = mockMvc.perform(post("/member/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDto)));
-
-        // Then: 요청에 대한 기대 결과를 검증
-        resultActions
-                .andExpect(status().isCreated())  // HTTP 201 상태 확인
-                .andExpect(jsonPath("$.code").value(201))  // code 값 확인
-                .andExpect(jsonPath("$.message").value("정상적으로 생성되었습니다."))  // 메시지 확인
-                .andExpect(jsonPath("$.data.id").value(1L));  // 생성된 회원 ID 확인
-
-
-        // MemberService의 registerMember 메서드가 호출되었는지 검증
-        verify(memberService).registerMember(any(MemberRegisterRequestDto.class));
+        // When: 회원가입 API 호출
+        // Then: 회원이 성공적으로 생성되었는지 확인
+        given()
+                .contentType(ContentType.JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
+                .body(requestDto)  // 요청 본문으로 DTO 전송
+                .when()
+                .post("/member/register")  // POST 요청을 보냄 (회원가입 API)
+                .then()
+                .statusCode(201)  // 응답 상태 코드가 201(CREATED)인지 확인
+                .body("code", equalTo(201))  // 응답 본문에서 상태 코드가 201인지 확인
+                .body("message", equalTo("정상적으로 생성되었습니다."));  // 성공 메시지 확인
     }
 
     @Test
-    void registerMember_InvalidInput() throws Exception {
-        // Given: 이메일 없이 요청을 만들어 유효성 검사 실패를 유도
+    @DisplayName("유효하지 않은 값 예외처리 테스트")  // 잘못된 입력값으로 인한 예외처리 테스트
+    void registerMember_InvalidInput() {
+        // Given: 유효하지 않은 회원가입 요청 데이터 준비 (이메일 누락)
         MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
         requestDto.setName("테스트");
-        requestDto.setPassword("password123!!");
-        requestDto.setPasswordConfirm("password123!!");
+        requestDto.setPassword("pass23!!");
+        requestDto.setPasswordConfirm("pass23!!");
         requestDto.setPhoneNumber("01012345678");
         requestDto.setNickname("testUser");
 
-        // When: MockMvc를 사용하여 /member/register로 POST 요청을 보냄
-        ResultActions resultActions = mockMvc.perform(post("/member/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDto)));
-
-        // Then: 요청에 대한 기대 결과를 검증
-        resultActions
-                .andExpect(status().isBadRequest())  // HTTP 400 상태 확인
-                .andExpect(jsonPath("$.errorCode").value(400))  // errorCode 확인
-                .andExpect(jsonPath("$.errorMessage").value("유효성 검사 오류"))  // 공통 오류 메시지 확인
-                .andExpect(jsonPath("$.validation.email").value("이메일은 필수 항목입니다."));  // 필드별 검증 메시지 확인
+        // When: 잘못된 회원가입 API 호출
+        // Then: 유효성 검사 실패로 400(BAD REQUEST) 응답 확인
+        given()
+                .contentType(ContentType.JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
+                .body(requestDto)  // 요청 본문으로 DTO 전송
+                .when()
+                .post("/member/register")  // POST 요청을 보냄 (회원가입 API)
+                .then()
+                .statusCode(400)  // 응답 상태 코드가 400(BAD REQUEST)인지 확인
+                .body("errorCode", equalTo(400))  // 응답 본문에서 에러 코드가 400인지 확인
+                .body("errorMessage", equalTo("유효성 검사 오류"))  // 에러 메시지 확인
+                .body("validation.email", equalTo("이메일은 필수 항목입니다."));  // 이메일 유효성 검사 메시지 확인
     }
 
     @Test
-    void registerMember_DuplicateEmail() throws Exception {
-        // Given: 중복된 이메일로 요청을 만들어 이메일 중복 에러를 유도합니다.
+    @DisplayName("중복 이메일 회원가입 테스트")  // 중복된 이메일로 인한 회원가입 실패 테스트
+    void registerMember_DuplicateEmail() {
+        // Given: 이미 존재하는 이메일로 회원 저장
+        Member existingMember = new Member();
+        existingMember.setEmail("existing@example.com");
+        memberRepository.save(existingMember);  // 기존 회원을 DB에 저장하여 중복된 상태를 만듦
+
+        // 새로운 회원가입 요청 데이터 준비 (중복된 이메일 사용)
         MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
         requestDto.setName("테스트");
-        requestDto.setEmail("existing@example.com");  // 중복된 이메일
-        requestDto.setPassword("password123!!");
-        requestDto.setPasswordConfirm("password123!!");
+        requestDto.setEmail("existing@example.com");
+        requestDto.setPassword("pass123!!");
+        requestDto.setPasswordConfirm("pass123!!");
         requestDto.setPhoneNumber("01012345678");
         requestDto.setNickname("testUser");
 
-        // 이메일 중복으로 MemberException을 발생시키도록 Mock 설정
-        when(memberService.registerMember(any(MemberRegisterRequestDto.class)))
-                .thenThrow(new MemberException(EXISTS_MEMBER_EMAIL));
-
-        // When: MockMvc를 사용하여 /member/register로 POST 요청을 보냄
-        ResultActions resultActions = mockMvc.perform(post("/member/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDto)));
-
-        // Then: 예외가 발생했음을 확인하고, 이를 적절하게 검증
-        resultActions
-                .andExpect(status().isConflict())  // HTTP 409 상태 확인
-                .andExpect(jsonPath("$.errorCode").value(409))  // errorCode 값 확인
-                .andExpect(jsonPath("$.errorMessage").value("이미 등록된 회원 이메일입니다."));  // 메시지 확인
-
-        // 예외 발생 검증
-        verify(memberService).registerMember(any(MemberRegisterRequestDto.class));
+        // When: 중복된 이메일로 회원가입 API 호출
+        // Then: 중복된 이메일로 인해 409(CONFLICT) 응답 확인
+        given()
+                .contentType(ContentType.JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
+                .body(requestDto)  // 요청 본문으로 DTO 전송
+                .when()
+                .post("/member/register")  // POST 요청을 보냄 (회원가입 API)
+                .then()
+                .statusCode(409)  // 응답 상태 코드가 409(CONFLICT)인지 확인
+                .body("errorCode", equalTo(409))  // 응답 본문에서 에러 코드가 409인지 확인
+                .body("errorMessage", equalTo("이미 등록된 회원 이메일입니다."));  // 이메일 중복 에러 메시지 확인
     }
 }
