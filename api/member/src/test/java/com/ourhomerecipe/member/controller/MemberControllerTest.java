@@ -36,6 +36,7 @@ class MemberControllerTest {
         registry.add("spring.datasource.url", mysql::getJdbcUrl);  // 데이터베이스 URL 등록
         registry.add("spring.datasource.username", mysql::getUsername);  // 사용자 이름 등록
         registry.add("spring.datasource.password", mysql::getPassword);  // 비밀번호 등록
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
     }
 
     @LocalServerPort
@@ -48,6 +49,7 @@ class MemberControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        RestAssured.basePath = "/v1";
     }
 
     @Test
