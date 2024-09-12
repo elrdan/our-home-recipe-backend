@@ -38,6 +38,12 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.testcontainers:testcontainers'
         testImplementation 'org.testcontainers:mysql'
+        testImplementation 'org.testcontainers:junit-jupiter'
+        testImplementation 'io.rest-assured:rest-assured' //API 테스트를 위한 모듈
+
+
+        // MySQL JDBC Driver
+        implementation 'mysql:mysql-connector-java:8.0.33'
 
         testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
         testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library

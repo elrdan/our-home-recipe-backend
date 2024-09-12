@@ -18,11 +18,7 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-    // TestContainers 의존성 추가
-    implementation "org.testcontainers:testcontainers"
-    implementation "org.testcontainers:junit-jupiter"
-    implementation "org.testcontainers:mysql"
-
     // Spring Test 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-test'
+
 }

@@ -38,6 +38,7 @@ out/
 
 ### db ###
 /db/initdb.d/**
+/core/infra/src/main/resources/db/
 
 ### Docker ###
 docker-compose.yml
