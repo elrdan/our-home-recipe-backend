@@ -35,20 +35,18 @@ subprojects {
         annotationProcessor "org.projectlombok:lombok"
 
 
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'org.testcontainers:testcontainers'
-        testImplementation 'org.testcontainers:mysql'
-        testImplementation 'org.testcontainers:junit-jupiter'
-        testImplementation 'io.rest-assured:rest-assured' //API 테스트를 위한 모듈
-
-
         // MySQL JDBC Driver
         implementation 'mysql:mysql-connector-java:8.0.33'
+
+
 
         testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
         testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library
         testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // REST Docs 문서화
         testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2' // REST Docs로 작성된 테스트를 OpenAPI(Swagger) 규격의 API 명세로 변환
+
+
+
     }
 
     // Gradle에서 전역적으로 사용될 수 있는 추가 속성, 테스트 이후 생성되는 snippets가 저장될 경로를 지정
