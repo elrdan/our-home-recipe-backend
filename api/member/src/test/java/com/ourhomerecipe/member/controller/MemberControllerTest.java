@@ -35,13 +35,14 @@ class MemberControllerTest extends TestContainerConfig {
     @DisplayName("회원 가입 성공 테스트")  // 성공적인 회원 가입을 테스트
     void registerMember_Success() {
         // Given: 회원가입 요청에 필요한 데이터 준비
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setName("테스트");
-        requestDto.setEmail("test@example.com");
-        requestDto.setPassword("Pass123!@");
-        requestDto.setPasswordConfirm("Pass123!@");
-        requestDto.setPhoneNumber("010-1234-5678");
-        requestDto.setNickname("testUser");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .name("테스트")
+                .email("test@example.com")
+                .password("Pass123!@")
+                .passwordConfirm("Pass123!@")
+                .phoneNumber("010-1234-5678")
+                .nickname("testUser")
+                .build();
 
         // When: 회원가입 API 호출
         // Then: 회원이 성공적으로 생성되었는지 확인
@@ -60,12 +61,13 @@ class MemberControllerTest extends TestContainerConfig {
     @DisplayName("유효하지 않은 값 예외처리 테스트")  // 잘못된 입력값으로 인한 예외처리 테스트
     void registerMember_InvalidInput() {
         // Given: 유효하지 않은 회원가입 요청 데이터 준비 (이메일 누락)
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setName("테스트");
-        requestDto.setPassword("pass23!!");
-        requestDto.setPasswordConfirm("pass23!!");
-        requestDto.setPhoneNumber("01012345678");
-        requestDto.setNickname("testUser");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .name("테스트")
+                .password("Pass123!@")
+                .passwordConfirm("Pass123!@")
+                .phoneNumber("010-1234-5678")
+                .nickname("testUser")
+                .build();
 
         // When: 잘못된 회원가입 API 호출
         // Then: 유효성 검사 실패로 400(BAD REQUEST) 응답 확인
@@ -90,13 +92,14 @@ class MemberControllerTest extends TestContainerConfig {
         memberRepository.save(existingMember);  // 기존 회원을 DB에 저장하여 중복된 상태를 만듦
 
         // 새로운 회원가입 요청 데이터 준비 (중복된 이메일 사용)
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setName("테스트");
-        requestDto.setEmail("existing@example.com");
-        requestDto.setPassword("pass123!!");
-        requestDto.setPasswordConfirm("pass123!!");
-        requestDto.setPhoneNumber("01012345678");
-        requestDto.setNickname("testUser");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .name("테스트")
+                .email("existing@example.com")
+                .password("Pass123!@")
+                .passwordConfirm("Pass123!@")
+                .phoneNumber("010-1234-5678")
+                .nickname("testUser")
+                .build();
 
         // When: 중복된 이메일로 회원가입 API 호출
         // Then: 중복된 이메일로 인해 409(CONFLICT) 응답 확인
