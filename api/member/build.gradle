@@ -1,28 +1,41 @@
-// BootJar 태스크 설정: 실행 가능한 JAR 생성 활성화(애플리케이션 클래스와 모든 종속성이 포함되어 있음)
-bootJar { enabled = true }
-// Jar 태스크 설정: 일반 JAR 생성 비활성화(애플리케이션을 실행하기 위해 별도의 클래스 경로 설정이 필요, 종속성 포함하지 않음)
-jar { enabled = false }
+plugins {
+    id 'com.epages.restdocs-api-spec' version '0.18.2'  // REST Docs와 OpenAPI 변환을 위한 플러그인
+    id 'org.hidetake.swagger.generator' version "2.19.2" // swagger-ui 변환 플러그인
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
+tasks.withType(JavaExec) {
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+// Jar 태스크 설정: 일반 JAR 생성 비활성화
+jar {
+    enabled = false
+}
 
 dependencies {
-    // core:domain, core:infra, core:security, common 종속성
+    // Core 모듈 종속성
     implementation project(':core:domain')
     implementation project(':core:infra')
     implementation project(':core:security')
     implementation project(':common')
 
-
-    //Test 의존성
-    testImplementation 'org.junit.jupiter:junit-jupiter-api'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    testImplementation 'io.rest-assured:rest-assured'
-    testImplementation testFixtures(project(':core:infra'))
-
-    // Bean PasswordEncoder 제공
-    implementation "org.springframework.boot:spring-boot-starter-security"
-
-    // Bean Validation 제공
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-}
-tasks.test {
-    useJUnitPlatform()
+// YAML 파일을 Swagger UI가 접근할 수 있는 위치로 복사하는 태스크 정의
+task copyOpenApiSpec(type: Copy) {
+    dependsOn 'openapi3'                            // 'copyOpenApiSpec' 태스크가 실행되기 전에 'openapi3' 태스크가 완료되어야 함
+    from "build/api-spec/openapi-member.yaml"        // 복사할 원본 파일 경로 지정
+    into "src/main/resources/static"                 // 파일을 복사할 대상 디렉토리 지정 (상대 경로 사용)
 }

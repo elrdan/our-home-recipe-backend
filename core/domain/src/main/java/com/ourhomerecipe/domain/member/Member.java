@@ -59,6 +59,13 @@ public class Member extends MutableBaseEntity {
 	// 회원 제공자
 	private ProviderType provider;
 
+	public Member(String email, String password, String nickname, String phoneNumber, String name) {
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.phoneNumber = phoneNumber;
+		this.name = name;
+	}
 
 	public static Member fromMemberRegisterDto(MemberRegisterRequestDto registerRequestDto) {
 		Member member = Member.builder()

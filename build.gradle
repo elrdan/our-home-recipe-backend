@@ -2,8 +2,6 @@ plugins {
     id 'java'   // Java 플러그인을 적용하여 Java 애플리케이션 빌드 및 테스트 기능을 제공
     id 'org.springframework.boot' version '3.3.2' // Spring Boot 플러그인을 적용하여 Spring Boot 애플리케이션을 설정하고 실행할 수 있도록 도와준다.
     id 'io.spring.dependency-management' version '1.1.6' // 종속성 관리를 위해 사용되며, 종속성 버전을 중앙에서 관리할 수 있도록 해준다.
-    id 'com.epages.restdocs-api-spec' version '0.18.2' // REST Docs로 만든 텍스트를 기반으로 OpenAPI 스펙을 자동 생성하게 해준다.
-    id "org.asciidoctor.jvm.convert" version "3.3.2" // REST Docs가 생성한 AsciiDoc파일을 HTML로 변환해준다.
 }
 
 allprojects {
@@ -29,6 +27,7 @@ subprojects {
         implementation "org.springframework.boot:spring-boot-starter-data-jpa"
         implementation "org.springframework.boot:spring-boot-starter-web"
         implementation "org.springframework.boot:spring-boot-starter-test"
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0' // Swagger-UI 의존성 추가
 
         // Lombok
         implementation "org.projectlombok:lombok"
