@@ -11,17 +11,15 @@ dependencies {
     implementation project(':common')
 
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.testcontainers:testcontainers'
-    testImplementation 'org.testcontainers:mysql'
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'io.rest-assured:rest-assured' //API 테스트를 위한 모듈
-    testImplementation project(':core:infra')
+    //Test 의존성
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation testFixtures(project(':core:infra'))
 
 
     // MySQL JDBC Driver
     implementation 'mysql:mysql-connector-java:8.0.33'
-
 
 
     // Bean PasswordEncoder 제공
