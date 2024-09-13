@@ -3,6 +3,7 @@ package com.ourhomerecipe.member.controller;
 import com.ourhomerecipe.domain.member.Member;
 import com.ourhomerecipe.domain.member.repository.MemberRepository;
 import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
+import config.TestContainerConfig;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,34 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers  // Testcontainers를 사용하여 독립된 MySQL 환경에서 테스트 실행
-class MemberControllerTest {
-
-    // MySQL Testcontainer 설정: 테스트마다 새로운 MySQL 환경을 제공
-    @Container
-    public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
-            .withDatabaseName("testdb")  // 데이터베이스 이름 설정
-            .withUsername("test")         // 사용자 이름 설정
-            .withPassword("test")         // 비밀번호 설정
-            .withInitScript("db/initdb.d/1-schema.sql"); // 초기 스키마 설정
-
-    // MySQL Testcontainer에서 제공한 설정 정보를 동적으로 Spring에 반영
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mysql::getJdbcUrl);  // 데이터베이스 URL 등록
-        registry.add("spring.datasource.username", mysql::getUsername);  // 사용자 이름 등록
-        registry.add("spring.datasource.password", mysql::getPassword);  // 비밀번호 등록
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
-    }
+class MemberControllerTest extends TestContainerConfig {
 
     @LocalServerPort
     private int port;  // 테스트 시 사용할 랜덤 포트 설정
