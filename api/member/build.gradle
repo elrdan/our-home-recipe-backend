@@ -10,6 +10,13 @@ dependencies {
     implementation project(':core:security')
     implementation project(':common')
 
+
+    //Test 의존성
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation testFixtures(project(':core:infra'))
+
     // Bean PasswordEncoder 제공
     implementation "org.springframework.boot:spring-boot-starter-security"
 
