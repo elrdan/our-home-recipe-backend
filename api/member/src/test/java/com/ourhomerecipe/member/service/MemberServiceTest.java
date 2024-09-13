@@ -44,12 +44,14 @@ public class MemberServiceTest {
     @DisplayName("회원 가입 성공 테스트")  // 테스트 이름 설정
     void registerMember_Success() {
         // Given: 유효한 회원가입 요청 데이터 준비
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setEmail("test@example.com");
-        requestDto.setPassword("password123");
-        requestDto.setPasswordConfirm("password123");
-        requestDto.setPhoneNumber("01012345678");
-        requestDto.setNickname("testUser");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .name("테스트")
+                .email("test@example.com")
+                .password("Pass123!@")
+                .passwordConfirm("Pass123!@")
+                .phoneNumber("010-1234-5678")
+                .nickname("testUser")
+                .build();
 
         // Mock 설정: 중복 체크 시 모두 false 반환, 비밀번호 인코딩, save 호출 시 객체 반환
         when(memberRepository.existsByEmail(anyString())).thenReturn(false);
@@ -92,9 +94,10 @@ public class MemberServiceTest {
     @DisplayName("비밀번호 불일치로 인한 회원가입 실패 테스트")  // 비밀번호 불일치를 검증
     void registerMember_PasswordMismatch() {
         // Given: 비밀번호와 확인 비밀번호가 일치하지 않는 요청 데이터
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setPassword("password123");
-        requestDto.setPasswordConfirm("password456");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .password("password123")
+                .passwordConfirm("password456")
+                .build();
 
         // When & Then: 비밀번호 불일치로 인한 예외 발생 여부 검증
         MemberException exception = assertThrows(MemberException.class,
@@ -108,11 +111,12 @@ public class MemberServiceTest {
     @DisplayName("전화번호 중복으로 인한 회원가입 실패 테스트")  // 전화번호 중복 검증
     void registerMember_PhoneNumberAlreadyExists() {
         // Given: 이미 존재하는 전화번호로 회원가입 요청
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setEmail("test@example.com");
-        requestDto.setPassword("password123");
-        requestDto.setPasswordConfirm("password123");
-        requestDto.setPhoneNumber("01012345678");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .email("test@example.com")
+                .password("password123")
+                .passwordConfirm("password123")
+                .phoneNumber("01012345678")
+                .build();
 
         // Mock 설정: 이메일 중복은 없지만 전화번호 중복이 있음
         when(memberRepository.existsByEmail(anyString())).thenReturn(false);
@@ -130,12 +134,13 @@ public class MemberServiceTest {
     @DisplayName("닉네임 중복으로 인한 회원가입 실패 테스트")  // 닉네임 중복 검증
     void registerMember_NicknameAlreadyExists() {
         // Given: 이미 존재하는 닉네임으로 회원가입 요청
-        MemberRegisterRequestDto requestDto = new MemberRegisterRequestDto();
-        requestDto.setEmail("test@example.com");
-        requestDto.setPassword("password123");
-        requestDto.setPasswordConfirm("password123");
-        requestDto.setPhoneNumber("01012345678");
-        requestDto.setNickname("existingNickname");
+        MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+                .email("test@example.com")
+                .password("password123")
+                .passwordConfirm("password123")
+                .phoneNumber("01012345678")
+                .nickname("existingNickname")
+                .build();
 
         // Mock 설정: 이메일, 전화번호 중복 없음, 닉네임 중복 있음
         when(memberRepository.existsByEmail(anyString())).thenReturn(false);
