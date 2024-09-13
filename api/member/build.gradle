@@ -23,3 +23,6 @@ dependencies {
     // Bean Validation 제공
     implementation "org.springframework.boot:spring-boot-starter-validation"
 }
+tasks.test {
+    useJUnitPlatform()
+}
