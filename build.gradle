@@ -35,11 +35,6 @@ subprojects {
         annotationProcessor "org.projectlombok:lombok"
 
 
-        // MySQL JDBC Driver
-        implementation 'mysql:mysql-connector-java:8.0.33'
-
-
-
         testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
         testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library
         testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // REST Docs 문서화
@@ -74,27 +69,4 @@ subprojects {
         }
     }
 
-    // OpenAPI 생성
-    openapi3 {
-        servers = [
-                { url = 'http://localhost:8081/v1' }, // 8081 포트에서 사용
-                // { url = 'http://production-api-server-url.com/v1' } // 배포 이후 실제 도메인 주소
-        ]
-        title = 'Our Home Recipe API' // Swagger UI에 표시되는 타이틀
-        description = 'Our Home Recipe' // Swagger UI에 표시되는 설명, MD 형식으로 여러 기능 설명 추가
-        version = '1.0.0'
-        format = 'json'
-        outputFileNamePrefix = 'open-api-3-labeling-service'
-        outputDirectory = 'src/main/resources/static/docs'
     }
-
-    test {
-        outputs.dir snippetsDir // 테스트 실행 시 문서화된 스티펫을 해당 디렉토리에 저장
-        useJUnitPlatform()
-        testLogging {
-            events "passed", "skipped", "failed"
-            exceptionFormat "full"
-            showStandardStreams = true
-        }
-    }
-}

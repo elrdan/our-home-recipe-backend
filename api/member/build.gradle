@@ -17,11 +17,6 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation testFixtures(project(':core:infra'))
 
-
-    // MySQL JDBC Driver
-    implementation 'mysql:mysql-connector-java:8.0.33'
-
-
     // Bean PasswordEncoder 제공
     implementation "org.springframework.boot:spring-boot-starter-security"
 
