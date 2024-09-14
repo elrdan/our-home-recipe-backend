@@ -1,0 +1,16 @@
+spring:
+    application:
+        name: api-gateway
+    main:
+        web-application-type: reactive              # 반응형 웹 어플리케이션 설정 (Spring WebFlux 사용)
+    autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration        # 데이터베이스 관련 설정이 필요없으므로 비활성화 처리
+
+    profiles:
+        active: local
+
+    webflux:
+        base-path: /v1                              # WebFlux에서 공통 경로로 사용하는 기본 베이스 경로 설정
+
+server:
+    port: 8080
