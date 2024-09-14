@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum GlobalErrorCode implements BaseErrorCode {
+	VALIDATION_FAILED(400,"입력값에 대한 검증에 실패했습니다.", HttpStatus.BAD_REQUEST),
 	INTERNAL_SERVER_ERROR(500,"서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private final int errorCode;
