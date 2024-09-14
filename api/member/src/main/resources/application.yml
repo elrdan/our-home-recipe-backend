@@ -7,16 +7,3 @@ server:
     port: 8081                              # 서버가 사용할 포트 번호 설정
     servlet:
         context-path: /v1                     # 모든 요청이 '/v1' 경로로 시작하도록 컨텍스트 패스 설정
-
-springdoc:
-    swagger-ui:
-        path: /swagger-ui               # Swagger UI에 접근할 경로 설정
-        url: /openapi-member.yaml       # Swagger UI에서 로드할 OpenAPI YAML 파일 경로 설정
-        disable-swagger-default-url: true    # 기본 Swagger URL 비활성화 설정
-
-    # JWT Bearer 토큰 인증 정의
-    securitySchemes:
-        bearerAuthJWT:
-            type: http                    # 보안 스킴의 타입을 HTTP로 설정
-            scheme: bearer                # 인증 스킴을 Bearer로 설정
-            bearerFormat: JWT             # Bearer 토큰의 포맷을 JWT로 설정
