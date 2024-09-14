@@ -2,8 +2,11 @@ package com.ourhomerecipe.member.exception;
 
 import static com.ourhomerecipe.domain.common.error.code.GlobalErrorCode.*;
 
-import org.springframework.http.HttpStatus;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,14 +37,12 @@ public class GlobalExceptionHandler {
 	// 유효성 검사 실패 처리 (MethodArgumentNotValidException 처리 추가)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	protected ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-		// 기본적인 에러 응답 생성
-		ErrorResponse errorResponse = new ErrorResponse(400, "유효성 검사 오류");
+		log.error(">>>>> validation Failed : {}", ex);
+		BindingResult bindingResult = ex.getBindingResult();
 
-		// 유효성 검사에서 실패한 필드들에 대해 메시지 추가
-		ex.getBindingResult().getFieldErrors().forEach(error ->
-				errorResponse.addValidation(error.getField(), error.getDefaultMessage())
-		);
-
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		ErrorResponse errorResponse = VALIDATION_FAILED.getErrorResponse();
+		fieldErrors.forEach(error -> errorResponse.addValidation(error.getField(), error.getDefaultMessage()));
+		return ResponseEntity.status(VALIDATION_FAILED.getStatus()).body(errorResponse);
 	}
 }
