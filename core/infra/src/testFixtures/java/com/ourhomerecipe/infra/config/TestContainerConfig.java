@@ -1,4 +1,4 @@
-package config;
+package com.ourhomerecipe.infra.config;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

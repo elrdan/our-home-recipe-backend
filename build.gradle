@@ -32,40 +32,26 @@ subprojects {
         // Lombok
         implementation "org.projectlombok:lombok"
         annotationProcessor "org.projectlombok:lombok"
-
-
-        testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
-        testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library
-        testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // REST Docs 문서화
-        testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2' // REST Docs로 작성된 테스트를 OpenAPI(Swagger) 규격의 API 명세로 변환
-
-
-
     }
+}
 
-    // Gradle에서 전역적으로 사용될 수 있는 추가 속성, 테스트 이후 생성되는 snippets가 저장될 경로를 지정
-    ext {
-        snippetsDir = file('build/generated-snippets')
-    }
+/**
+ * allGeneratedDocs
+ * 각 서비스의 openapi3문서를 생성하고, 생성된 문서를 gateway 모듈에 복사하여 관리
+ */
+tasks.register("allGeneratedDocs", Copy) {
+    def services = ['member']
 
-    // REST Docs로 문서를 만드는 태스크
-    asciidoctor { 
-        dependsOn test // asciidoctor 작업이 실행되기 전에 test 작업이 먼저 실행되도록 설정
-        attributes 'snippets': snippetsDir // 기존에 설정한 디렉토리를 참조하도록 설정
-        inputs.dir snippetsDir // 내부의 파일이 변경되었을 때 문서를 다시 생성
-    }
+    services.each { service ->
+        dependsOn(":api:${service}:openapi3")
 
-    asciidoctor.doFirst {
-        delete file('src/main/resources/static/docs') // 기존 문서 삭제로 문서 중복 방지
-    }
+        def buildDir = project(":api:${service}").layout.buildDirectory
 
-    // Spring Boot 애플리케이션에서 실행가능한 JAR 파일로 패키징하는 태스크
-    bootJar {
-        dependsOn asciidoctor
-        copy {
-            from "${asciidoctor.outputDir}"
-            into 'src/main/resources/static/docs'
+        from(buildDir.file("api-spec/openapi3.yaml")) {
+            rename { fileName ->
+                fileName.replace("openapi3.yaml", "${service}-openapi3.yaml")
+            }
         }
+        into(project(":api:gateway").file("src/main/resources/static"))
     }
-
-    }
+}
