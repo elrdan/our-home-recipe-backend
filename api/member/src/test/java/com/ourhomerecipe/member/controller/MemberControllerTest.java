@@ -95,7 +95,7 @@ class MemberControllerTest extends TestContainerConfig {
 	}
 
 	@Test
-	@DisplayName("1-2. 회원가입 테스트 - 실패: 유효하지 않은 값")
+	@DisplayName("1-2. 회원가입 테스트 - 실패 (유효하지 않은 값)")
 		// 유효하지 않는 입력값으로 인한 회원가입 실패
 	void registerMember_InvalidInput() {
 		// Given: 유효하지 않은 회원가입 요청 데이터 준비 (필수 값 누락, 유효하지 않은 값)
@@ -111,7 +111,7 @@ class MemberControllerTest extends TestContainerConfig {
 		// Then: 유효성 검사 실패로 400(BAD REQUEST) 응답 확인
 		given(spec)
 			// 문서화 필터 추가
-			.filter(document("회원 가입 API - 실패: 필드 유효성",
+			.filter(document("회원 가입 API - 실패 (유효하지 않은 값)",
 				resourceDetails()
 					.tag("회원 API")
 					.summary("회원 가입"),
@@ -137,7 +137,7 @@ class MemberControllerTest extends TestContainerConfig {
 	}
 
 	@Test
-	@DisplayName("1-3. 회원가입 테스트 - 실패: 중복 이메일")
+	@DisplayName("1-3. 회원가입 테스트 - 실패 (중복 이메일)")
 		// 중복된 이메일로 인한 회원가입 실패 테스트
 	void registerMember_DuplicateEmail() {
 		// Given: 회원가입 요청 데이터 준비(1-1 테스트에서 이미 가입된 정보)
@@ -154,7 +154,7 @@ class MemberControllerTest extends TestContainerConfig {
 		// Then: 중복된 이메일로 인해 409(CONFLICT) 응답 확인
 		given(spec)
 			// 문서화 필터 추가
-			.filter(document("회원 가입 API - 실패: 중복 이메일",
+			.filter(document("회원 가입 API - 실패 (중복 이메일)",
 				resourceDetails()
 					.tag("회원 API")
 					.summary("회원 가입"),
