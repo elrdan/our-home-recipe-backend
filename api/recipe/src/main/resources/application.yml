@@ -1,0 +1,9 @@
+spring:
+    profiles:
+        include: domain, infra, security    # 활성화할 추가 프로파일 설정 (도메인, 인프라, 보안 프로파일 포함)
+        active: local                       # 활성화할 프로파일 지정 (로컬 프로파일 활성화)
+
+server:
+    port: 8082                              # 서버가 사용할 포트 번호 설정
+    servlet:
+        context-path: /v1                   # 모든 요청이 '/v1' 경로로 시작하도록 컨텍스트 패스 설정
