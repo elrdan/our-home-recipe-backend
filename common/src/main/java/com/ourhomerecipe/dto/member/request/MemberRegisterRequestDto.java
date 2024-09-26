@@ -1,10 +1,16 @@
 package com.ourhomerecipe.dto.member.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Getter
@@ -36,7 +42,7 @@ public class MemberRegisterRequestDto {
 
 	@JsonProperty("phoneNumber")
 	@NotBlank(message = "핸드폰 번호는 필수 항목입니다.")
-	@Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$", message = "핸드폰 번호를 올바르게 입력해주세요.")
+	@Pattern(regexp = "^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$", message = "핸드폰 번호를 올바르게 입력해주세요.")
 	private String phoneNumber;
 
 	@JsonProperty("name")
@@ -44,4 +50,6 @@ public class MemberRegisterRequestDto {
 	@Pattern(regexp = "^[가-힣a-zA-Z]{2,20}$", message = "이름은 한글 또는 영문 2자 이상 20자 이하로 입력해주세요.")
 	private String name;
 
+	@Size(max = 25, message = "회원 소개글은 25자 이하로 입력해주세요.")
+	private String introduce;
 }

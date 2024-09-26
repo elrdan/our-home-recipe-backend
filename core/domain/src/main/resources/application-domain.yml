@@ -1,2 +1,3 @@
 spring:
-    config.activate.on-profile: local
+    mail:
+        auth-code-expiration-millis: 1800000    # 인증 코드 만료 시간 (밀리초) - 30분

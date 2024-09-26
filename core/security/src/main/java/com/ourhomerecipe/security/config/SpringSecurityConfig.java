@@ -117,10 +117,13 @@ public class SpringSecurityConfig {
 	 */
 	private RequestMatcher[] permitAllRequestMatchers() {
 		List<RequestMatcher> requestMatchers = List.of(
-			antMatcher(POST, "/member/register"),
+			antMatcher(POST, "/member/register"),						// 회원 등록
 
-			// 이메일 인증코드 보내기
-			antMatcher(POST, "/email/verification/send"),
+
+			antMatcher(POST, "/member/email/auth/request"),			// 이메일 인증 코드 요청
+			antMatcher(POST, "/member/email/auth/confirm"),			// 이메일 인증 코드 확인
+
+			antMatcher(POST, "/email/verification/send"),				// 이메일 인증 코드 메일 보내기
 
 			// 스웨거
 			antMatcher(GET, "/swagger-ui.html"),

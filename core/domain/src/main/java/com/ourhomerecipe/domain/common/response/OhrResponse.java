@@ -1,9 +1,9 @@
 package com.ourhomerecipe.domain.common.response;
 
-import static com.ourhomerecipe.domain.common.code.GlobalSuccessCode.*;
+import static com.ourhomerecipe.domain.common.success.code.GlobalSuccessCode.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ourhomerecipe.domain.common.code.GlobalSuccessCode;
+import com.ourhomerecipe.domain.common.success.code.GlobalSuccessCode;
 
 import lombok.Getter;
 
@@ -13,6 +13,11 @@ public class OhrResponse<T> {
 	private String message;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T data;
+
+	public OhrResponse(GlobalSuccessCode statusCode) {
+		this.code = statusCode.getCode();
+		this.message = statusCode.getMessage();
+	}
 
 	public OhrResponse(T data) {
 		this.code = SUCCESS.getCode();

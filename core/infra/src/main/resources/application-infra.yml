@@ -24,6 +24,11 @@ spring:
         init:
             mode: always                                # 애플리케이션 시작 시 항상 SQL 스크립트를 실행하도록 설정
 
+    data:
+        redis:
+            host: ${REDIS_HOST:localhost}               # Redis 호스트 이름
+            port: ${REDIS_PORT:6379}                    # Redis 포트 번호
+
     mail:
         host: smtp.gmail.com                            # SMTP 서버 호스트 주소
         port: 587                                       # SMTP 서버 포트 번호 Gmail의 경우 587 포트는 TLS/STARTTLS를 사용

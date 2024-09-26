@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 plugins {
     id 'java'   // Java 플러그인을 적용하여 Java 애플리케이션 빌드 및 테스트 기능을 제공
     id 'org.springframework.boot' version '3.3.2' // Spring Boot 플러그인을 적용하여 Spring Boot 애플리케이션을 설정하고 실행할 수 있도록 도와준다.
@@ -11,6 +14,26 @@ allprojects {
     // 라이브러리들을 받아올 원격 저장소들을 설정함
     repositories {
         mavenCentral()
+    }
+}
+
+def dotenvPath = Paths.get(rootProject.rootDir.absolutePath, ".env")
+if (Files.exists(dotenvPath)) {
+    def dotenv = Files.readAllLines(dotenvPath)
+            .findAll { it.contains("=") }
+            .collect { it.split("=") }
+            .collectEntries { [(it[0]): it[1]] }
+
+    allprojects {
+        dotenv.each { key, value ->
+            project.ext[key] = value
+        }
+
+        tasks.withType(Test) {
+            dotenv.each { key, value ->
+                environment(key, value)
+            }
+        }
     }
 }
 

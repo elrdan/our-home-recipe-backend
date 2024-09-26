@@ -18,25 +18,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/member-register710302733'
+              $ref: '#/components/schemas/member-register1610089643'
             examples:
               회원 가입 API - 성공:
-                value: "{\"email\":\"test@example.com\",\"password\":\"Pass123!@\"\
-                  ,\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"testUser\",\"\
-                  phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
+                value: "{\"introduce\":\"\",\"email\":\"test@example.com\",\"password\"\
+                  :\"Pass123!@\",\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"\
+                  testUser\",\"phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
               회원 가입 API - 실패(유효하지 않은 값):
-                value: "{\"email\":null,\"password\":\"Pass123\",\"passwordConfirm\"\
-                  :\"Pass123\",\"nickname\":\"testUsertestUsertestUser\",\"phoneNumber\"\
-                  :\"012-1234-5678\",\"name\":\"테스트124123124\"}"
+                value: "{\"introduce\":\"\",\"email\":null,\"password\":\"Pass123\"\
+                  ,\"passwordConfirm\":\"Pass123\",\"nickname\":\"testUsertestUsertestUser\"\
+                  ,\"phoneNumber\":\"012-1234-5678\",\"name\":\"테스트124123124\"}"
               회원 가입 API - 실패(중복 이메일):
-                value: "{\"email\":\"test@example.com\",\"password\":\"Pass123!@\"\
-                  ,\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"testUser\",\"\
-                  phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
+                value: "{\"introduce\":\"\",\"email\":\"test@example.com\",\"password\"\
+                  :\"Pass123!@\",\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"\
+                  testUser\",\"phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
       responses:
         "201":
           description: "201"
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/member-register1233141654'
               examples:
@@ -54,8 +54,9 @@ paths:
                   value: "{\"errorCode\":400,\"errorMessage\":\"입력값에 대한 검증에 실패했습니다\
                     .\",\"validation\":{\"password\":\"유효하지 않은 비밀번호 형식입니다.\",\"phoneNumber\"\
                     :\"핸드폰 번호를 올바르게 입력해주세요.\",\"passwordConfirm\":\"유효하지 않은 비밀번호 형\
-                    식입니다.\",\"name\":\"이름은 한글 또는 영문 2자 이상 20자 이하로 입력해주세요.\",\"nickname\"\
-                    :\"닉네임은 2자 이상 8자 이하로 입력해주세요.\",\"email\":\"이메일은 필수 항목입니다.\"}}"
+                    식입니다.\",\"nickname\":\"닉네임은 2자 이상 8자 이하로 입력해주세요.\",\"name\":\"\
+                    이름은 한글 또는 영문 2자 이상 20자 이하로 입력해주세요.\",\"email\":\"이메일은 필수 항목입니다\
+                    .\"}}"
         "409":
           description: "409"
           content:
@@ -66,8 +67,121 @@ paths:
                 회원 가입 API - 실패(중복 이메일):
                   value: "{\"errorCode\":409,\"errorMessage\":\"이미 등록된 회원 이메일입니다.\"\
                     }"
+  /member/email/auth/confirm:
+    post:
+      tags:
+      - 회원 API
+      summary: 이메일 인증 코드 확인
+      description: 이메일 인증 코드 확인
+      operationId: '이메일 인증 코드 확인 API - '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/member-email-auth-confirm2121084288'
+            examples:
+              이메일 인증 코드 확인 API - 실패(인증 코드 x):
+                value: "{\"email\":\"seongo0521@gmail.com\",\"authCode\":\"123456\"\
+                  }"
+              이메일 인증 코드 확인 API - 성공:
+                value: "{\"email\":\"seongo0521@gmail.com\",\"authCode\":\"123456\"\
+                  }"
+      responses:
+        "401":
+          description: "401"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request-946372771'
+              examples:
+                이메일 인증 코드 확인 API - 실패(인증 코드 x):
+                  value: "{\"errorCode\":401,\"errorMessage\":\"인증 코드가 일치하지 않습니다.\"\
+                    }"
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
+              examples:
+                이메일 인증 코드 확인 API - 성공:
+                  value: "{\"code\":200,\"message\":\"이메일 인증이 정상적으로 처리되었습니다.\"}"
+  /member/email/auth/request:
+    post:
+      tags:
+      - 회원 API
+      summary: 이메일 인증 코드 요청
+      description: 이메일 인증 코드 요청
+      operationId: '이메일 인증 코드 요청 API - '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/member-email-auth-request-1523986593'
+            examples:
+              이메일 인증 코드 요청 API - 실패(이메일 서버 다운):
+                value: "{\"email\":\"seongo0521@gmail.com\"}"
+              이메일 인증 코드 요청 API - 실패(회원 등록된 이메일):
+                value: "{\"email\":\"test@example.com\"}"
+              이메일 인증 코드 요청 API - 성공:
+                value: "{\"email\":\"seongo0521@gmail.com\"}"
+      responses:
+        "504":
+          description: "504"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request-946372771'
+              examples:
+                이메일 인증 코드 요청 API - 실패(이메일 서버 다운):
+                  value: "{\"errorCode\":504,\"errorMessage\":\"이메일 전송에 실패했습니다.\"}"
+        "409":
+          description: "409"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request-946372771'
+              examples:
+                이메일 인증 코드 요청 API - 실패(회원 등록된 이메일):
+                  value: "{\"errorCode\":409,\"errorMessage\":\"이미 등록된 회원 이메일입니다.\"\
+                    }"
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
+              examples:
+                이메일 인증 코드 요청 API - 성공:
+                  value: "{\"code\":200,\"message\":\"인증 메일이 정상적으로 발송되었습니다.\"}"
 components:
   schemas:
+    member-register1610089643:
+      type: object
+      properties:
+        password:
+          type: string
+          description: 패스워드
+        phoneNumber:
+          type: string
+          description: 핸드폰 번호
+        passwordConfirm:
+          type: string
+          description: 패스워드 확인
+        introduce:
+          type: string
+          description: 소개
+        name:
+          type: string
+          description: 이름
+        nickname:
+          type: string
+          description: 닉네임
+        email:
+          description: 이메일(아이디)
+          oneOf:
+          - type: string
+          - null
     member-register-1497432643:
       type: object
       properties:
@@ -89,6 +203,15 @@ components:
         validation:
           type: object
           description: 유효하지 않은 필드
+    member-email-auth-request1575598845:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        message:
+          type: string
+          description: 상태 메시지
     member-register1233141654:
       type: object
       properties:
@@ -104,26 +227,27 @@ components:
         message:
           type: string
           description: 상태 메시지
-    member-register710302733:
+    member-email-auth-request-1523986593:
       type: object
       properties:
-        password:
-          type: string
-          description: 패스워드
-        phoneNumber:
-          type: string
-          description: 핸드폰 번호
-        passwordConfirm:
-          type: string
-          description: 패스워드 확인
-        name:
-          type: string
-          description: 이름
-        nickname:
-          type: string
-          description: 닉네임
         email:
+          type: string
           description: 이메일(아이디)
-          oneOf:
-          - type: string
-          - null
+    member-email-auth-request-946372771:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          description: 상태 메시지
+        errorCode:
+          type: number
+          description: 상태 코드
+    member-email-auth-confirm2121084288:
+      type: object
+      properties:
+        authCode:
+          type: string
+          description: 인증 코드
+        email:
+          type: string
+          description: 이메일(아이디)

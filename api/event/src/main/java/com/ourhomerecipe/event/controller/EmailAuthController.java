@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ourhomerecipe.dto.email.EmailVerificationDto;
+import com.ourhomerecipe.dto.email.request.EmailVerificationRequestDto;
 import com.ourhomerecipe.event.service.EmailService;
 
 import jakarta.validation.Valid;
@@ -22,8 +22,8 @@ public class EmailAuthController {
 
 	@PostMapping("/verification/send")
 	public ResponseEntity sendMessage(
-		@RequestBody @Valid EmailVerificationDto emailVerificationDto) {
-		emailService.sendEmail(emailVerificationDto);
+		@RequestBody @Valid EmailVerificationRequestDto emailVerificationRequestDto) {
+		emailService.sendEmail(emailVerificationRequestDto);
 		return new ResponseEntity<>(OK);
 	}
 }

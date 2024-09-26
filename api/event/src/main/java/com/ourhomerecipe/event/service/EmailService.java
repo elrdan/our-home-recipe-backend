@@ -6,7 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.ourhomerecipe.dto.email.EmailVerificationDto;
+import com.ourhomerecipe.dto.email.request.EmailVerificationRequestDto;
 import com.ourhomerecipe.event.exception.EventException;
 
 import jakarta.mail.MessagingException;
@@ -23,8 +23,8 @@ public class EmailService {
 	/**
 	 * 이메일 전송
 	 */
-	public void sendEmail(EmailVerificationDto emailVerificationDto) {
-		MimeMessage message = createEmailForm(emailVerificationDto);
+	public void sendEmail(EmailVerificationRequestDto emailVerificationRequestDto) {
+		MimeMessage message = createEmailForm(emailVerificationRequestDto);
 
 		mailSender.send(message);
 	}
@@ -32,10 +32,10 @@ public class EmailService {
 	/**
 	 * 인증 이메일 html 메시지 생성
 	 */
-	private MimeMessage createEmailForm(EmailVerificationDto emailVerificationDto) {
-		String email = emailVerificationDto.getEmail();
+	private MimeMessage createEmailForm(EmailVerificationRequestDto emailVerificationRequestDto) {
+		String email = emailVerificationRequestDto.getEmail();
 		String title = "우리의 집 레시피 이메일 인증 번호";
-		String authCode = emailVerificationDto.getAuthCode();
+		String authCode = emailVerificationRequestDto.getAuthCode();
 
 		try{
 			MimeMessage message = mailSender.createMimeMessage();

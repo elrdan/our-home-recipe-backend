@@ -7,7 +7,7 @@ bootJar { enabled = true }
 // Jar 태스크 설정: 일반 JAR 생성 비활성화(애플리케이션을 실행하기 위해 별도의 클래스 경로 설정이 필요, 종속성 포함하지 않음)
 jar { enabled = false }
 
-def snippetsDir = project(":api:member").layout.buildDirectory.dir("generated-snippets")
+def snippetsDir = project(":api:event").layout.buildDirectory.dir("generated-snippets")
 def restdocsApiSpecVersion = "0.18.2"
 
 openapi3 {

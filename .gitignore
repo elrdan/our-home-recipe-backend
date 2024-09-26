@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### db ###
-db/**
+*.d
 
 ### Docker ###
 docker-compose.yml

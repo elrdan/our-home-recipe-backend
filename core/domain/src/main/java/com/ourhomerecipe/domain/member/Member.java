@@ -6,6 +6,7 @@ import static com.ourhomerecipe.domain.member.enums.StatusType.*;
 import java.sql.Date;
 
 import com.ourhomerecipe.domain.MutableBaseEntity;
+import com.ourhomerecipe.domain.TimestampedEntity;
 import com.ourhomerecipe.domain.member.enums.ProviderType;
 import com.ourhomerecipe.domain.member.enums.RoleType;
 import com.ourhomerecipe.domain.member.enums.StatusType;
@@ -13,6 +14,8 @@ import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +30,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member extends MutableBaseEntity {
+public class Member extends TimestampedEntity {
 	// 회원 식별자
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,13 +53,21 @@ public class Member extends MutableBaseEntity {
 	// 회원 이름
 	private String name;
 
+	// 회원 프로필 이미지
+	private String profileImage;
+
 	// 회원 상태
-	private StatusType status;
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private StatusType status = ACTIVE;
 
 	// 회원 권한
-	private RoleType role;
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private RoleType role = ROLE_USER;
 
 	// 회원 제공자
+	@Enumerated(EnumType.STRING)
 	private ProviderType provider;
 
 	public Member(String email, String password, String nickname, String phoneNumber, String name) {
@@ -67,14 +78,14 @@ public class Member extends MutableBaseEntity {
 		this.name = name;
 	}
 
-	public static Member fromMemberRegisterDto(MemberRegisterRequestDto registerRequestDto) {
+	public static Member fromMemberRegisterDto(MemberRegisterRequestDto registerDto) {
+		// TODO - 프로필 이미지 설정 추가해야 함.
+
 		Member member = Member.builder()
-			.email(registerRequestDto.getEmail())
-			.nickname(registerRequestDto.getNickname())
-			.phoneNumber(registerRequestDto.getPhoneNumber())
-			.name(registerRequestDto.getName())
-			.status(ACTIVE)
-			.role(ROLE_USER)
+			.email(registerDto.getEmail())
+			.nickname(registerDto.getNickname())
+			.phoneNumber(registerDto.getPhoneNumber())
+			.name(registerDto.getName())
 			.build();
 
 		return member;

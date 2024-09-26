@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ourhomerecipe.domain.common.error.code.BaseErrorCode;
 import com.ourhomerecipe.domain.common.error.response.ErrorResponse;
+import com.ourhomerecipe.domain.common.exception.CustomRedisException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +33,14 @@ public class GlobalExceptionHandler {
 		BaseErrorCode errorCode = ex.getErrorCode();
 		return ResponseEntity.status(errorCode.getStatus())
 				.body(errorCode.getErrorResponse());
+	}
+
+	@ExceptionHandler(CustomRedisException.class)
+	protected ResponseEntity<ErrorResponse> handleRedisException(MemberException ex) {
+		log.error(">>>>> RedisException : {}", ex);
+		BaseErrorCode errorCode = ex.getErrorCode();
+		return ResponseEntity.status(errorCode.getStatus())
+			.body(errorCode.getErrorResponse());
 	}
 
 	// 유효성 검사 Handler

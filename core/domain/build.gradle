@@ -11,6 +11,9 @@ dependencies {
     // common 종속성
     implementation project(':common')
 
+    // Redis 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // querydsl
     implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
 }
