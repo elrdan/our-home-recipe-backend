@@ -1,0 +1,129 @@
+openapi: 3.0.1
+info:
+  title: 우리집 레시피 API Documentation
+  description: Spring REST Docs with SwaggerUI
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/v1
+tags: []
+paths:
+  /member/register:
+    post:
+      tags:
+      - 회원 API
+      summary: 회원 가입
+      description: 회원 가입
+      operationId: '회원 가입 API - '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/member-register710302733'
+            examples:
+              회원 가입 API - 성공:
+                value: "{\"email\":\"test@example.com\",\"password\":\"Pass123!@\"\
+                  ,\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"testUser\",\"\
+                  phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
+              회원 가입 API - 실패(유효하지 않은 값):
+                value: "{\"email\":null,\"password\":\"Pass123\",\"passwordConfirm\"\
+                  :\"Pass123\",\"nickname\":\"testUsertestUsertestUser\",\"phoneNumber\"\
+                  :\"012-1234-5678\",\"name\":\"테스트124123124\"}"
+              회원 가입 API - 실패(중복 이메일):
+                value: "{\"email\":\"test@example.com\",\"password\":\"Pass123!@\"\
+                  ,\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"testUser\",\"\
+                  phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/member-register1233141654'
+              examples:
+                회원 가입 API - 성공:
+                  value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
+                    id\":1}}"
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-register-2085757751'
+              examples:
+                회원 가입 API - 실패(유효하지 않은 값):
+                  value: "{\"errorCode\":400,\"errorMessage\":\"입력값에 대한 검증에 실패했습니다\
+                    .\",\"validation\":{\"password\":\"유효하지 않은 비밀번호 형식입니다.\",\"phoneNumber\"\
+                    :\"핸드폰 번호를 올바르게 입력해주세요.\",\"passwordConfirm\":\"유효하지 않은 비밀번호 형\
+                    식입니다.\",\"name\":\"이름은 한글 또는 영문 2자 이상 20자 이하로 입력해주세요.\",\"nickname\"\
+                    :\"닉네임은 2자 이상 8자 이하로 입력해주세요.\",\"email\":\"이메일은 필수 항목입니다.\"}}"
+        "409":
+          description: "409"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-register-1497432643'
+              examples:
+                회원 가입 API - 실패(중복 이메일):
+                  value: "{\"errorCode\":409,\"errorMessage\":\"이미 등록된 회원 이메일입니다.\"\
+                    }"
+components:
+  schemas:
+    member-register-1497432643:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          description: 에러 메시지
+        errorCode:
+          type: number
+          description: 에러 코드
+    member-register-2085757751:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          description: 에러 메시지
+        errorCode:
+          type: number
+          description: 에러 코드
+        validation:
+          type: object
+          description: 유효하지 않은 필드
+    member-register1233141654:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              description: 아이디 고유번호
+        message:
+          type: string
+          description: 상태 메시지
+    member-register710302733:
+      type: object
+      properties:
+        password:
+          type: string
+          description: 패스워드
+        phoneNumber:
+          type: string
+          description: 핸드폰 번호
+        passwordConfirm:
+          type: string
+          description: 패스워드 확인
+        name:
+          type: string
+          description: 이름
+        nickname:
+          type: string
+          description: 닉네임
+        email:
+          description: 이메일(아이디)
+          oneOf:
+          - type: string
+          - null

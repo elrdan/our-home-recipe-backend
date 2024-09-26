@@ -13,6 +13,7 @@ public class ErrorResponse {
 	private final int errorCode;
 	private final String errorMessage;
 	private final Map<String, String> validation = new HashMap<>();
+	private final Map<String, String> missingParams = new HashMap<>();
 
 	public ErrorResponse(int errorCode, String errorMessage) {
 		this.errorCode = errorCode;
@@ -21,5 +22,9 @@ public class ErrorResponse {
 
 	public void addValidation(String field, String message) {
 		validation.put(field, message);
+	}
+
+	public void addMissingParams(String param) {
+		missingParams.put(param, param + " 값이 확인되지 않습니다.");
 	}
 }

@@ -1,0 +1,2 @@
+member-service-url: http://api-member:8081
+event-service-url: http://api-event:8089

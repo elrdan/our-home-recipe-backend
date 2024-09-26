@@ -1,2 +1,3 @@
 member-service-url: http://localhost:8081
 recipe-service-url: http://localhost:8082
+event-service-url: http://localhost:8089

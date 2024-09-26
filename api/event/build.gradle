@@ -1,0 +1,55 @@
+plugins {
+    id 'com.epages.restdocs-api-spec' version '0.18.2'
+}
+
+// BootJar 태스크 설정: 실행 가능한 JAR 생성 활성화(애플리케이션 클래스와 모든 종속성이 포함되어 있음)
+bootJar { enabled = true }
+// Jar 태스크 설정: 일반 JAR 생성 비활성화(애플리케이션을 실행하기 위해 별도의 클래스 경로 설정이 필요, 종속성 포함하지 않음)
+jar { enabled = false }
+
+def snippetsDir = project(":api:member").layout.buildDirectory.dir("generated-snippets")
+def restdocsApiSpecVersion = "0.18.2"
+
+openapi3 {
+    server = "http://localhost:8080/v1"
+    title = "우리집 레시피 API Documentation"
+    description = "Spring REST Docs with SwaggerUI"
+    version = "0.0.1"
+    format = "yaml"
+}
+
+dependencies {
+    // core, common 모듈 종속성
+    implementation project(':core:domain')
+    implementation project(':core:infra')
+    implementation project(':core:security')
+    implementation project(':common')
+    implementation(testFixtures(project(':core:infra')))
+
+    // Security 의존성 - PasswordEncoder
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // SMTP
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.0.5")
+
+    testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
+    testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // REST Docs 문서화
+    testImplementation "com.epages:restdocs-api-spec-mockmvc:$restdocsApiSpecVersion" // REST Docs로 작성된 테스트를 OpenAPI(Swagger) 규격의 API 명세로 변환
+    testImplementation "com.epages:restdocs-api-spec-restassured:$restdocsApiSpecVersion" // REST Docs로 작성된 테스트를 OpenAPI(Swagger) 규격의 API 명세로 변환
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+}
+
+// 스니펫 문서 정리
+tasks.register("cleanGeneratedSnippets", Delete) {
+    delete snippetsDir
+}
+
+// Junit5 플랫폼을 사용하여 테스트
+tasks.withType(Test).configureEach {
+    dependsOn(tasks.named("cleanGeneratedSnippets"))
+
+    jvmArgs "-Xshare:off" // CDS 비활성화
+    outputs.dir(file(snippetsDir))
+    useJUnitPlatform()
+}

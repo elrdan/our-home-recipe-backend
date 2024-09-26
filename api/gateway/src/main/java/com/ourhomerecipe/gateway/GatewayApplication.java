@@ -21,17 +21,25 @@ public class GatewayApplication {
 	// RouteLocator를 설정하는 Bean 생성
 	@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-		@Value("${member-service-url}") String memberServiceUrl
+		@Value("${member-service-url}") String memberServiceUrl,
+		@Value("${event-service-url}") String eventServiceUrl
 	) {
 		// 각 서비스에 맞는 라우트 설정 호출
 		return builder.routes()
 			.route("api-member", memberRoute(memberServiceUrl))  // Member 관련 API 경로 라우트
+			.route("api-event", eventRoute(eventServiceUrl))
 			.build();
 	}
 
 	// Member 서비스에 대한 라우트 설정
 	private Function<PredicateSpec, Buildable<Route>> memberRoute(String memberServiceUrl) {
 		return r -> r.path("/v1/member/**")
+			.uri(memberServiceUrl);
+	}
+
+	// Event 서비스에 대한 라우트 설정
+	private Function<PredicateSpec, Buildable<Route>> eventRoute(String memberServiceUrl) {
+		return r -> r.path("/v1/email/**")
 			.uri(memberServiceUrl);
 	}
 }

@@ -35,9 +35,9 @@ dependencies {
     testFixturesImplementation 'org.testcontainers:junit-jupiter'
     testFixturesImplementation 'io.rest-assured:rest-assured'
 
+    // SMTP
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.0.5")
 
     // MySQL JDBC Driver
     implementation 'mysql:mysql-connector-java:8.0.33'
-
-
 }

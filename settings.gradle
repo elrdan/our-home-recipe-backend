@@ -12,4 +12,6 @@ include 'api:gateway'
 findProject(':api:gateway')?.name = 'gateway'
 include 'api:recipe'
 findProject(':api:recipe')?.name = 'recipe'
+include 'api:event'
+findProject(':api:event')?.name = 'event'
 

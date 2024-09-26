@@ -37,10 +37,13 @@ out/
 .vscode/
 
 ### db ###
-/core/infra/src/testFixtures/resources/db/**
+db/**
 
 ### Docker ###
 docker-compose.yml
 
-### docs ###
-**/static/*-openapi3.yaml
+### runServer ###
+runServer
+
+### .env ###
+.env
