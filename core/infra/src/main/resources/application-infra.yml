@@ -44,3 +44,51 @@ spring:
                     connectiontimeout: 5000             # 서버 연결 타임아웃 시간 (밀리초)
                     timeout: 5000                       # 서버 응답 타임아웃 시간 (밀리초)
                     writetimeout: 5000                  # 서버에 데이터 전송 타임아웃 시간 (밀리초)
+
+---
+spring:
+    config.activate.on-profile: dev
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/test
+        username: root
+        password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: none
+        defer-datasource-initialization: true           # script 파일이 hibernate 초기화 이후 동작하게 하는 옵션
+        properties:
+            dialect: org.hibernate.dialect.MySQLDialect
+
+    sql:
+        init:
+            mode: always                                # 애플리케이션 시작 시 항상 SQL 스크립트를 실행하도록 설정
+
+    data:
+        redis:
+            host: ${REDIS_HOST:localhost}
+            port: ${REDIS_PORT:6379}
+
+    mail:
+        host: smtp.gmail.com                    # SMTP 서버 호스트 주소
+        port: 587                               # SMTP 서버 포트 번호 Gmail의 경우 587 포트는 TLS/STARTTLS를 사용
+        username: ${SMTP_USERNAME}
+        password: ${SMTP_PASSWORD}
+        properties:
+            mail:
+                smtp:
+                    auth: true                  # SMTP 서버 인증 사용 여부
+                    starttls:
+                        enable: true            # TLS/STARTTLS 보안 사용 여부
+                        required: true          # TLS/STARTTLS 보안이 필수인지 여부
+                    connectiontimeout: 5000     # 서버 연결 타임아웃 시간 (밀리초)
+                    timeout: 5000               # 서버 응답 타임아웃 시간 (밀리초)
+                    writetimeout: 5000          # 서버에 데이터 전송 타임아웃 시간 (밀리초)
+
+
+logging:
+    level:
+        org.hibernate:
+            sql: debug
