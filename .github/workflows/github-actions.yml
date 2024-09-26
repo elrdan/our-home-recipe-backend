@@ -33,6 +33,7 @@ jobs:
                 run: |
                     ./gradlew -p api/gateway build -x test
                     ./gradlew -p api/member build -x test
+                    ./gradlew -p api/event build -x test
 
             # 멀티플랫폼 이미지 빌드 환경 설정
             -   name: Set up QEMU
