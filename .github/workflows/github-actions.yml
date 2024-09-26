@@ -1,0 +1,79 @@
+name: Build and Push Docker Images
+
+# dev 브랜치 push action
+on:
+    push:
+        branches:
+            - dev
+env:
+    CURRENT_VERSION: "0.1.0"
+
+jobs:
+    build-image-and-push:
+        runs-on: ubuntu-latest
+        # 권한을 read로 제한
+        permissions:
+            contents: read
+            # jdk 17 설정
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Set up JDK 17
+                uses: actions/setup-java@v4
+                with:
+                    java-version: "17"
+                    distribution: "temurin"
+
+            # gradle 설정
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@v3.1.0
+
+            # gradle build, active dev
+            # 테스트 없이 빌드
+            -   name: Build with Gradle
+                run: |
+                    ./gradlew -p api/gateway build -x test
+                    ./gradlew -p api/member build -x test
+
+            # 멀티플랫폼 이미지 빌드 환경 설정
+            -   name: Set up QEMU
+                uses: docker/setup-qemu-action@v3
+
+            # 멀티플랫폼 이미지 빌드 환경 설정
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
+
+            # dockerhub 에 로그인
+            -   name: Login to Docker Hub
+                run: |
+                    echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+            # Build and Push Docker Image
+            # api/gateway
+            -   name: Gateway API > Build and Push Docker images
+                uses: docker/build-push-action@v5
+                with:
+                    context: api/gateway
+                    file: api/gateway/Dockerfile
+                    platforms: linux/amd64,linux/arm64
+                    push: true
+                    tags: ${{ secrets.DOCKER_USERNAME }}/our-home-recipe-gateway:latest
+
+            # api/member
+            -   name: Member API > Build and Push Docker images
+                uses: docker/build-push-action@v5
+                with:
+                    context: api/member
+                    file: api/member/Dockerfile
+                    platforms: linux/amd64,linux/arm64
+                    push: true
+                    tags: ${{ secrets.DOCKER_USERNAME }}/our-home-recipe-member:latest
+
+            # api/event
+            -   name: Event API > Build and Push Docker images
+                uses: docker/build-push-action@v5
+                with:
+                    context: api/event
+                    file: api/event/Dockerfile
+                    platforms: linux/amd64,linux/arm64
+                    push: true
+                    tags: ${{ secrets.DOCKER_USERNAME }}/our-home-recipe-event:latest

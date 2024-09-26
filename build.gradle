@@ -20,7 +20,7 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
 
     group = 'com.ourhomerecipe.backend'
-    version = '0.0.1-SNAPSHOT'
+    version = '0.0.1'
 
     dependencies {
         // Spring Boot 기본 스타터
@@ -40,7 +40,7 @@ subprojects {
  * 각 서비스의 openapi3문서를 생성하고, 생성된 문서를 gateway 모듈에 복사하여 관리
  */
 tasks.register("allGeneratedDocs", Copy) {
-    def services = ['member', 'recipe']
+    def services = ['member']
 
     services.each { service ->
         dependsOn(":api:${service}:openapi3")
