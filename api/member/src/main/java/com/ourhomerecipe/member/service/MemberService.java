@@ -53,9 +53,7 @@ public class MemberService {
 		Member member = Member.fromMemberRegisterDto(registerRequestDto);
 		member.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
 
-		Member createMember = memberRepository.save(member);
-
-		return createMember;
+		return memberRepository.save(member);
 	}
 
 	/**
