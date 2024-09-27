@@ -37,6 +37,7 @@ dependencies {
     testFixturesImplementation 'org.testcontainers:mysql'
     testFixturesImplementation 'org.testcontainers:junit-jupiter'
     testFixturesImplementation 'io.rest-assured:rest-assured'
+    testFixturesImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 
     // SMTP
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.5")

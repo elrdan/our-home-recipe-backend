@@ -48,6 +48,33 @@ public class RedisRepository {
 	}
 
 	/**
+	 * DELETE Redis Key
+	 */
+	public void deleteRedisInfo(String email) {
+		redisTemplate.delete(email);
+	}
+
+	/**
+	 * SET refresh token - 리프래쉬 토큰 정보 저장
+	 */
+	public void setRedisRefreshToken(String email, String refreshToken, int expirationSeconds) {
+		ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+		valueOperations.set(email, Map.of("refreshToken", refreshToken), createExpireDuration(expirationSeconds));
+	}
+
+	/**
+	 * GET refresh token - 리프래쉬 토큰 정보 가져오기
+	 */
+	public Map getRefreshToken(Long memberId) {
+		Optional<Object> optionalResult = getKeyIfPresent(String.valueOf(memberId));
+		if(optionalResult.isPresent()) {
+			return (Map)optionalResult.get();
+		}else {
+			throw new CustomRedisException(NOT_EXIST_REFRESH_TOKEN);
+		}
+	}
+
+	/**
 	 * 만료 시간 생성
 	 */
 	private Duration createExpireDuration(int seconds) {

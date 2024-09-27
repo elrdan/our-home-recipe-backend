@@ -7,6 +7,35 @@ servers:
 - url: http://localhost:8080/v1
 tags: []
 paths:
+  /member/login:
+    post:
+      tags:
+      - 회원 API
+      summary: 회원 로그인
+      description: 회원 로그인
+      operationId: 회원 로그인 API - 성공
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/member-login-930702395'
+            examples:
+              회원 로그인 API - 성공:
+                value: "{\"email\":\"admin@gmail.com\",\"password\":\"Admin1234!@\"\
+                  }"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-login1470037158'
+              examples:
+                회원 로그인 API - 성공:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NDU0NDIyLCJleHAiOjE3Mjc0NTYyMjIsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.bGqhvtXuzIXe1acfG86WPRC7UrU5NgktBa31YDBWTD2duQ5cAE5wv4yof9IEd8KM62mm7ZsLUkOHjJSLZU2i8A\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NDU0NDIyLCJleHAiOjE3Mjc1NDA4MjJ9.Ac3tR48DsGnJri5Ojta8DJU0lzXACZcCaONsR8Ql3xHgg821-8f3QD2MH-TrNi8DYe7IiPdpCz8U3BSommdmEQ\"\
+                    }}"
   /member/register:
     post:
       tags:
@@ -18,20 +47,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/member-register1610089643'
+              $ref: '#/components/schemas/member-register-1137321134'
             examples:
               회원 가입 API - 성공:
-                value: "{\"introduce\":\"\",\"email\":\"test@example.com\",\"password\"\
-                  :\"Pass123!@\",\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"\
-                  testUser\",\"phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
+                value: "{\"email\":\"test@example.com\",\"password\":\"Pass123!@\"\
+                  ,\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"testUser\",\"\
+                  phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\",\"introduce\":\"\
+                  \"}"
               회원 가입 API - 실패(유효하지 않은 값):
-                value: "{\"introduce\":\"\",\"email\":null,\"password\":\"Pass123\"\
-                  ,\"passwordConfirm\":\"Pass123\",\"nickname\":\"testUsertestUsertestUser\"\
-                  ,\"phoneNumber\":\"012-1234-5678\",\"name\":\"테스트124123124\"}"
+                value: "{\"email\":\"\",\"password\":\"Pass123\",\"passwordConfirm\"\
+                  :\"Pass123\",\"nickname\":\"testUsertestUsertestUser\",\"phoneNumber\"\
+                  :\"012-1234-5678\",\"name\":\"테스트124123124\",\"introduce\":\"\"}"
               회원 가입 API - 실패(중복 이메일):
-                value: "{\"introduce\":\"\",\"email\":\"test@example.com\",\"password\"\
-                  :\"Pass123!@\",\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"\
-                  testUser\",\"phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\"}"
+                value: "{\"email\":\"test@example.com\",\"password\":\"Pass123!@\"\
+                  ,\"passwordConfirm\":\"Pass123!@\",\"nickname\":\"testUser\",\"\
+                  phoneNumber\":\"010-1234-5678\",\"name\":\"테스트\",\"introduce\":\"\
+                  \"}"
       responses:
         "201":
           description: "201"
@@ -42,7 +73,7 @@ paths:
               examples:
                 회원 가입 API - 성공:
                   value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
-                    id\":1}}"
+                    id\":2}}"
         "400":
           description: "400"
           content:
@@ -155,32 +186,6 @@ paths:
                   value: "{\"code\":200,\"message\":\"인증 메일이 정상적으로 발송되었습니다.\"}"
 components:
   schemas:
-    member-register1610089643:
-      type: object
-      properties:
-        password:
-          type: string
-          description: 패스워드
-        phoneNumber:
-          type: string
-          description: 핸드폰 번호
-        passwordConfirm:
-          type: string
-          description: 패스워드 확인
-        introduce:
-          type: string
-          description: 소개
-        name:
-          type: string
-          description: 이름
-        nickname:
-          type: string
-          description: 닉네임
-        email:
-          description: 이메일(아이디)
-          oneOf:
-          - type: string
-          - null
     member-register-1497432643:
       type: object
       properties:
@@ -190,6 +195,15 @@ components:
         errorCode:
           type: number
           description: 에러 코드
+    member-login-930702395:
+      type: object
+      properties:
+        password:
+          type: string
+          description: 패스워드
+        email:
+          type: string
+          description: 이메일(아이디)
     member-email-auth-request1575598845:
       type: object
       properties:
@@ -229,6 +243,42 @@ components:
             id:
               type: number
               description: 아이디 고유번호
+        message:
+          type: string
+          description: 상태 메시지
+    member-register-1137321134:
+      type: object
+      properties:
+        password:
+          type: string
+          description: 패스워드
+        phoneNumber:
+          type: string
+          description: 핸드폰 번호
+        passwordConfirm:
+          type: string
+          description: 패스워드 확인
+        introduce:
+          type: string
+          description: 소개
+        name:
+          type: string
+          description: 이름
+        nickname:
+          type: string
+          description: 닉네임
+        email:
+          type: string
+          description: 이메일(아이디)
+    member-login1470037158:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          description: 토큰값
         message:
           type: string
           description: 상태 메시지

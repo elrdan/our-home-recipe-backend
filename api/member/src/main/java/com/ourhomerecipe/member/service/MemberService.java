@@ -10,6 +10,9 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +24,12 @@ import com.ourhomerecipe.domain.member.Member;
 import com.ourhomerecipe.domain.member.repository.MemberRepository;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
-import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
+import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
+import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
+import com.ourhomerecipe.dto.member.response.MemberTokenResDto;
 import com.ourhomerecipe.member.exception.MemberException;
+import com.ourhomerecipe.security.jwt.JwtProvider;
+import com.ourhomerecipe.security.service.MemberDetailsImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +42,8 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final RedisRepository redisRepository;
 	private final RestTemplate restTemplate;
+	private final JwtProvider jwtProvider;
+	private final AuthenticationManager authenticationManager;
 
 	@Value("${service-url}")
 	private String serviceUrl;
@@ -43,7 +52,7 @@ public class MemberService {
 	 * 회원 등록
 	 */
 	@Transactional
-	public Member registerMember(MemberRegisterRequestDto registerRequestDto) {
+	public Member registerMember(MemberRegisterReqDto registerRequestDto) {
 		existsByEmail(registerRequestDto.getEmail());														// 이메일 중복 확인
 		emailAuthCheck(registerRequestDto.getEmail());														// 이메일 인증 확인
 		validatePassword(registerRequestDto.getPassword(), registerRequestDto.getPasswordConfirm());		// 비밀번호 일치 확인
@@ -54,6 +63,29 @@ public class MemberService {
 		member.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
 
 		return memberRepository.save(member);
+	}
+
+	/**
+	 * 회원 로그인
+	 */
+	public MemberTokenResDto login(MemberLoginReqDto loginDto) {
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+			loginDto.getEmail(),
+			loginDto.getPassword()
+		);
+
+		Authentication authentication = authenticationManager.authenticate(authenticationToken);
+		String accessToken = jwtProvider.createAccessToken(authentication);
+		String refreshToken = jwtProvider.createRefreshToken(authentication);
+
+		MemberDetailsImpl memberDetails = (MemberDetailsImpl) authentication.getPrincipal();
+
+		registerRedisRefreshToken(memberDetails, refreshToken);
+
+		return MemberTokenResDto.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
 	}
 
 	/**
@@ -173,5 +205,13 @@ public class MemberService {
 					throw new MemberException(NOT_MATCHED_AUTH_CODE);
 				}
 			);
+	}
+
+	/**
+	 * refreshToken redis 저장
+	 */
+	private void registerRedisRefreshToken(MemberDetailsImpl memberDetails, String refreshToken) {
+		int refreshExpirationSeconds = jwtProvider.getRefreshExpirationSeconds();
+		redisRepository.setRedisRefreshToken(memberDetails.getUsername(), refreshToken, refreshExpirationSeconds);
 	}
 }

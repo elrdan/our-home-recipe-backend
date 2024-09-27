@@ -1,16 +1,14 @@
 package com.ourhomerecipe.domain.member;
 
+import static com.ourhomerecipe.domain.member.enums.ProviderType.*;
 import static com.ourhomerecipe.domain.member.enums.RoleType.*;
 import static com.ourhomerecipe.domain.member.enums.StatusType.*;
 
-import java.sql.Date;
-
-import com.ourhomerecipe.domain.MutableBaseEntity;
 import com.ourhomerecipe.domain.TimestampedEntity;
 import com.ourhomerecipe.domain.member.enums.ProviderType;
 import com.ourhomerecipe.domain.member.enums.RoleType;
 import com.ourhomerecipe.domain.member.enums.StatusType;
-import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
+import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -68,7 +66,8 @@ public class Member extends TimestampedEntity {
 
 	// 회원 제공자
 	@Enumerated(EnumType.STRING)
-	private ProviderType provider;
+	@Builder.Default
+	private ProviderType provider = NONE;
 
 	public Member(String email, String password, String nickname, String phoneNumber, String name) {
 		this.email = email;
@@ -78,7 +77,7 @@ public class Member extends TimestampedEntity {
 		this.name = name;
 	}
 
-	public static Member fromMemberRegisterDto(MemberRegisterRequestDto registerDto) {
+	public static Member fromMemberRegisterDto(MemberRegisterReqDto registerDto) {
 		// TODO - 프로필 이미지 설정 추가해야 함.
 
 		Member member = Member.builder()

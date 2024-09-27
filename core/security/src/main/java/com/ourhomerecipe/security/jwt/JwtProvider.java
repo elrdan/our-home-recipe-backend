@@ -15,7 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.ourhomerecipe.security.service.UserDetailsImpl;
+import com.ourhomerecipe.security.service.MemberDetailsImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -23,6 +23,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +36,7 @@ public class JwtProvider {
 	@Value("${jwt.access-expiration-seconds}")
 	private int accessExpirationSeconds;		// 엑세스 토큰 만료 시간
 
+	@Getter
 	@Value("${jwt.refresh-expiration-seconds}")
 	private int refreshExpirationSeconds;		// 리프래쉬 토큰 만료 시간
 
@@ -44,58 +46,45 @@ public class JwtProvider {
 	/**
 	 * 엑세스 토큰 생성
 	 */
-	public String createAccessToken(UserDetailsImpl userDetails) {
+	public String createAccessToken(Authentication authentication) {
 		Instant now = Instant.now();
 		Date expiration = Date.from(now.plusSeconds(accessExpirationSeconds));
 		SecretKey key = extractSecretKey();
+		MemberDetailsImpl memberDetails = (MemberDetailsImpl) authentication.getPrincipal();
 
-		StringBuilder roles = new StringBuilder();
+		String roles = "";
 		// 사용자 권한을 roles에 추가
-		if(userDetails.getAuthorities() != null && !userDetails.getAuthorities().isEmpty()) {
-			roles.append(
-				userDetails.getAuthorities().stream()
-					.map(GrantedAuthority::getAuthority)
-					.collect(Collectors.joining(", "))
-			);
+		if(authentication.getAuthorities() != null && !authentication.getAuthorities().isEmpty()) {
+			roles =	authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(", "));
 		}
 
 		return Jwts.builder()
-			.claim("id", userDetails.getId())				// 사용자 ID를 클레임에 추가
-			.claim("nickname", userDetails.getNickname())	// 사용자 닉네임 클레임에 추가
-			.setSubject(userDetails.getUsername())				// 사용자 이름을 subject로 설정
-			.setIssuedAt(Date.from(now))						// 토큰 발급 시간 설정
-			.setExpiration(expiration)							// 토큰 만료 시간 설정
-			.claim(AUTHENTICATION_CLAIM_NAME, roles.toString())	// 권한 정보 클레임에 추가
-			.signWith(key, SignatureAlgorithm.HS512)			// 알고리즘과 키값으로 서명
+			.claim("id", memberDetails.getId())							// 식별자 클레임 추가
+			.setSubject(memberDetails.getUsername())	   	     			// 이메일 subject로 설정
+			.setIssuedAt(Date.from(now))									// 토큰 발급 시간 설정
+			.setExpiration(expiration)										// 토큰 만료 시간 설정
+			.claim(AUTHENTICATION_CLAIM_NAME, roles)						// 권한 정보 클레임 추가
+			.signWith(key, SignatureAlgorithm.HS512)						// 알고리즘과 키값으로 서명
 			.compact();
 	}
 
 	/**
 	 * 리프래쉬 토큰 생성
 	 */
-	public String createRefreshToken(UserDetailsImpl userDetails) {
+	public String createRefreshToken(Authentication authentication) {
 		Instant now = Instant.now();
 		Date expiration = Date.from(now.plusSeconds(refreshExpirationSeconds));
 		SecretKey key = extractSecretKey();
-
-		StringBuilder roles = new StringBuilder();
-		// member roles 추출
-		if(userDetails.getAuthorities() != null && !userDetails.getAuthorities().isEmpty()) {
-			roles.append(
-				userDetails.getAuthorities().stream()
-					.map(GrantedAuthority::getAuthority)
-					.collect(Collectors.joining(", "))
-			);
-		}
+		MemberDetailsImpl memberDetails = (MemberDetailsImpl) authentication.getPrincipal();
 
 		return Jwts.builder()
-			.claim("id", userDetails.getId())				// 사용자 ID를 클레임에 추가
-			.claim("nickName", userDetails.getNickname())	// 사용자 닉네임 클레임에 추가
-			.setSubject(userDetails.getUsername())				// 사용자 이름을 subject로 설정
-			.setIssuedAt(Date.from(now))						// 토큰 발급 시간 설정
-			.setExpiration(expiration)							// 토큰 만료 시간 설정
-			.claim(AUTHENTICATION_CLAIM_NAME, roles.toString())	// 권한 정보 클레임에 추가
-			.signWith(key, SignatureAlgorithm.HS512)			// 알고리즘과 키값으로 서명
+			.claim("id", memberDetails.getId())							// 식별자 클레임 추가
+			.setSubject(memberDetails.getUsername())						// 이메일 subject로 설정
+			.setIssuedAt(Date.from(now))									// 토큰 발급 시간 설정
+			.setExpiration(expiration)										// 토큰 만료 시간 설정
+			.signWith(key, SignatureAlgorithm.HS512)						// 알고리즘과 키값으로 서명
 			.compact();
 	}
 
@@ -114,11 +103,11 @@ public class JwtProvider {
 			authorities = List.of(new SimpleGrantedAuthority(roles.toString()));
 		}
 
-		UserDetails user = UserDetailsImpl.builder()
+		UserDetails user = MemberDetailsImpl.builder()
 			.id(claims.get("id", Long.class))
 			.email(claims.getSubject())
 			.password(null)
-			.nickname(claims.get("nickName", String.class))
+			.nickname(claims.get("nickname", String.class))
 			.authorities(authorities)
 			.build();
 

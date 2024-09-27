@@ -118,6 +118,7 @@ public class SpringSecurityConfig {
 	private RequestMatcher[] permitAllRequestMatchers() {
 		List<RequestMatcher> requestMatchers = List.of(
 			antMatcher(POST, "/member/register"),						// 회원 등록
+			antMatcher(POST, "/member/login"),						// 회원 로그인
 
 
 			antMatcher(POST, "/member/email/auth/request"),			// 이메일 인증 코드 요청

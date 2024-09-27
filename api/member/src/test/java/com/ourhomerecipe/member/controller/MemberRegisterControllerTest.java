@@ -1,16 +1,13 @@
 package com.ourhomerecipe.member.controller;
 
-import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.*;
 import static com.ourhomerecipe.domain.common.error.code.MemberErrorCode.*;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,58 +15,32 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
-import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
-import com.ourhomerecipe.infra.config.TestContainerConfig;
+import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
+import com.ourhomerecipe.infra.config.BaseTest;
 import com.ourhomerecipe.member.exception.MemberException;
 import com.ourhomerecipe.member.service.MemberService;
 
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
-
 @ExtendWith(RestDocumentationExtension.class)
-// RestDocs가 RestDocumentationContextProvider를 테스트 메소드에 주입할 수 있도록 활성화
-@SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(value = MethodOrderer.DisplayName.class)
-class MemberControllerTest extends TestContainerConfig {
-
-	@LocalServerPort
-	private int port;  // 테스트 시 사용할 랜덤 포트 설정
-
+class MemberRegisterControllerTest extends BaseTest {
 	@SpyBean
 	private MemberService memberService;
 
-	private RequestSpecification spec;
-
 	@BeforeEach
-	void setUp(RestDocumentationContextProvider restDocumentation) { // RequestSpecification을 설정하는 ReauestSpecBuilder 생성
-		// 메소드가 true를 반환하도록 설정
-		doReturn(true).when(memberService).emailAuthCheck(anyString());
-
-		// documentationSpec에 포트, baseUri, basePath 및 문서화 필터를 모두 설정
-		this.spec = new RequestSpecBuilder()
-			.setPort(port)  // 포트 설정 -> 랜덤포트를 생성
-			.setBaseUri("http://localhost")  // 기본 URI 설정
-			.setBasePath("/v1")  // 기본 경로 설정
-			.addFilter(documentationConfiguration(restDocumentation))  // 문서화 필터 설정
-			.build();
-		// RestAssured의 포트와 경로를 추가로 설정할 필요 없음 (documentationSpec에 이미 포함됨)
-		// 기본 RestAssured 설정도 포트와 경로를 명시적으로 설정 (필요시)
-		RestAssured.port = port;
+	public void setUpEachTest() {
+		// 테스트마다 다른 설정 적용 가능
+		doReturn(true).when(memberService).emailAuthCheck("test@example.com");
 	}
 
 	@Test
 	@DisplayName("1-1. 회원가입 테스트 - 성공")
 	void registerMemberSuccess() {
-		MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+		MemberRegisterReqDto requestDto = MemberRegisterReqDto.builder()
 			.name("테스트")
 			.email("test@example.com")
 			.password("Pass123!@")
@@ -113,7 +84,8 @@ class MemberControllerTest extends TestContainerConfig {
 	@DisplayName("1-2. 회원가입 테스트 - 실패(유효하지 않은 값)")
 	void registerMemberInvalidInput() {
 		// Given: 유효하지 않은 회원가입 요청 데이터 준비 (필수 값 누락, 유효하지 않은 값)
-		MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+		MemberRegisterReqDto requestDto = MemberRegisterReqDto.builder()
+			.email("")
 			.name("테스트124123124")
 			.password("Pass123")
 			.passwordConfirm("Pass123")
@@ -131,7 +103,7 @@ class MemberControllerTest extends TestContainerConfig {
 					.tag("회원 API")
 					.summary("회원 가입"),
 				requestFields(
-					fieldWithPath("email").type(NULL).description("이메일(아이디)"),
+					fieldWithPath("email").type(STRING).description("이메일(아이디)"),
 					fieldWithPath("password").type(STRING).description("패스워드"),
 					fieldWithPath("passwordConfirm").type(STRING).description("패스워드 확인"),
 					fieldWithPath("phoneNumber").type(STRING).description("핸드폰 번호"),
@@ -156,7 +128,7 @@ class MemberControllerTest extends TestContainerConfig {
 	@DisplayName("1-3. 회원가입 테스트 - 실패(중복 이메일)")
 	void registerMemberDuplicateEmail() {
 		// Given: 회원가입 요청 데이터 준비(1-1 테스트에서 이미 가입된 정보)
-		MemberRegisterRequestDto requestDto = MemberRegisterRequestDto.builder()
+		MemberRegisterReqDto requestDto = MemberRegisterReqDto.builder()
 			.name("테스트")
 			.email("test@example.com")
 			.password("Pass123!@")

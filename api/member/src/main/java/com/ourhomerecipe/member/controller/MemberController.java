@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ourhomerecipe.domain.common.response.OhrResponse;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
-import com.ourhomerecipe.dto.member.request.MemberRegisterRequestDto;
+import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
+import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
 import com.ourhomerecipe.member.service.MemberService;
 
 import jakarta.validation.Valid;
@@ -29,9 +30,20 @@ public class MemberController {
 	 * 회원 등록
 	 */
 	@PostMapping("/register")
-	public ResponseEntity<OhrResponse<?>> registerMember(@Valid @RequestBody MemberRegisterRequestDto registerRequestDto) {
+	public ResponseEntity<OhrResponse<?>> registerMember(@Valid @RequestBody MemberRegisterReqDto registerRequestDto) {
 		return ResponseEntity.status(CREATE.getStatus())
 			.body(new OhrResponse<>(CREATE, Map.of("id", memberService.registerMember(registerRequestDto).getId())));
+	}
+
+	/**
+	 * 회원 로그인
+	 */
+	@PostMapping("/login")
+	public ResponseEntity<OhrResponse<?>> loginMember(
+		@Valid @RequestBody MemberLoginReqDto loginDto
+	) {
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(memberService.login(loginDto)));
 	}
 
 	/**
