@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(CustomRedisException.class)
-	protected ResponseEntity<ErrorResponse> handleRedisException(MemberException ex) {
+	protected ResponseEntity<ErrorResponse> handleRedisException(CustomRedisException ex) {
 		log.error(">>>>> RedisException : {}", ex);
 		BaseErrorCode errorCode = ex.getErrorCode();
 		return ResponseEntity.status(errorCode.getStatus())

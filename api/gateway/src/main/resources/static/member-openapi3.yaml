@@ -54,9 +54,8 @@ paths:
                   value: "{\"errorCode\":400,\"errorMessage\":\"입력값에 대한 검증에 실패했습니다\
                     .\",\"validation\":{\"password\":\"유효하지 않은 비밀번호 형식입니다.\",\"phoneNumber\"\
                     :\"핸드폰 번호를 올바르게 입력해주세요.\",\"passwordConfirm\":\"유효하지 않은 비밀번호 형\
-                    식입니다.\",\"nickname\":\"닉네임은 2자 이상 8자 이하로 입력해주세요.\",\"name\":\"\
-                    이름은 한글 또는 영문 2자 이상 20자 이하로 입력해주세요.\",\"email\":\"이메일은 필수 항목입니다\
-                    .\"}}"
+                    식입니다.\",\"name\":\"이름은 한글 또는 영문 2자 이상 20자 이하로 입력해주세요.\",\"nickname\"\
+                    :\"닉네임은 2자 이상 8자 이하로 입력해주세요.\",\"email\":\"이메일은 필수 항목입니다.\"}}"
         "409":
           description: "409"
           content:
@@ -191,6 +190,15 @@ components:
         errorCode:
           type: number
           description: 에러 코드
+    member-email-auth-request1575598845:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        message:
+          type: string
+          description: 상태 메시지
     member-register-2085757751:
       type: object
       properties:
@@ -203,15 +211,12 @@ components:
         validation:
           type: object
           description: 유효하지 않은 필드
-    member-email-auth-request1575598845:
+    member-email-auth-request-1523986593:
       type: object
       properties:
-        code:
-          type: number
-          description: 상태 코드
-        message:
+        email:
           type: string
-          description: 상태 메시지
+          description: 이메일(아이디)
     member-register1233141654:
       type: object
       properties:
@@ -227,12 +232,6 @@ components:
         message:
           type: string
           description: 상태 메시지
-    member-email-auth-request-1523986593:
-      type: object
-      properties:
-        email:
-          type: string
-          description: 이메일(아이디)
     member-email-auth-request-946372771:
       type: object
       properties:
