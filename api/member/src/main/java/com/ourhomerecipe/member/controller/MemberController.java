@@ -80,14 +80,6 @@ public class MemberController {
 			.body(new OhrResponse<>(LOGOUT));
 	}
 
-	@GetMapping("/me/profile")
-	public ResponseEntity<OhrResponse<?>> getMeProfile(
-		@AuthenticationPrincipal MemberDetailsImpl memberDetails
-	) {
-		return ResponseEntity.status(SUCCESS.getStatus())
-			.body(new OhrResponse<>(memberService.getMeProfile(memberDetails)));
-	}
-
 	/**
 	 * 내 프로필 조회
 	 */
