@@ -178,8 +178,17 @@ public class SpringSecurityConfig {
 		// Todo 특정 origin을 제어 및 Detail한 설정 추가
 
 		CorsConfiguration configuration = new CorsConfiguration();
+		/**
+		 * CorsConfiguration.setAllowCredentials(true)를 사용하면서
+		 * addAllowedOriginPattern("*")을 설정한 경우,
+		 * 크레덴셜(Credentials: 쿠키, 인증 헤더, TLS 인증서 등)이
+		 * 포함된 요청은 출처가 와일드카드(*)일 때 CORS 규칙에 의해 거부됩니다.
+		 */
+		// 여러 출처 허용 (localhost와 127.0.0.1을 둘 다 허용)
+		configuration.addAllowedOriginPattern("http://localhost:3000");
+		configuration.addAllowedOriginPattern("http://127.0.0.1:3000");
+
 		configuration.setAllowCredentials(true); // 크레덴셜 허용 설정
-		configuration.addAllowedOriginPattern("*"); // 모든 출처 허용
 		configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
 		configuration.addAllowedHeader("*"); // 모든 헤더 허용
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -195,7 +204,8 @@ public class SpringSecurityConfig {
 		http
 			// jwt, OAuth 토큰을 사용 -> OAuth의 경우는 이슈가 발생할 수 있음 OAuth 구성할때 체크
 			.csrf(AbstractHttpConfigurer::disable)
-			.cors(cors -> cors.configurationSource(corsConfigurationSource())) // cors 정책
+			// .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cors 정책
+			.cors(AbstractHttpConfigurer::disable)
 			.formLogin(AbstractHttpConfigurer::disable) // form 기반 로그인을 사용하지 않음.
 			.httpBasic(AbstractHttpConfigurer::disable) // 기본으로 제공하는 http 사용하지 않음
 			.rememberMe(AbstractHttpConfigurer::disable) // 토큰 기반이므로 세션 기반의 인증 사용하지 않음
