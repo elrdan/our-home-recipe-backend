@@ -7,9 +7,12 @@ import static org.springframework.util.StringUtils.*;
 
 import java.util.Map;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 	private final MemberService memberService;
 	private final JwtProvider jwtProvider;
+	private static final int PAGE_SIZE = 10;
 
 	/**
 	 * 회원 등록
@@ -108,6 +112,21 @@ public class MemberController {
 			.body(new OhrResponse<>(MEMBER_PROFILE_UPDATE_SUCCESS,
 				Map.of("id", memberService.updateMeProfile(memberDetails,
 					updateProfileReqDto, file).getId())));
+	}
+
+	/**
+	 * 회원 검색(닉네임)
+	 */
+	@GetMapping("/search/{nickname}")
+	public ResponseEntity<OhrResponse<?>> getSearchMember(
+		@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+		@PathVariable String nickname,
+		@RequestParam("page") int page
+	) {
+		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(memberService.getSearchMember(pageable, memberDetails, nickname)));
 	}
 
 	/**

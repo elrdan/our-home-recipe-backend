@@ -109,7 +109,7 @@ public class JwtProvider {
 			authorities = List.of(new SimpleGrantedAuthority(roles.toString()));
 		}
 
-		UserDetails user = MemberDetailsImpl.builder()
+		MemberDetailsImpl member = MemberDetailsImpl.builder()
 			.id(claims.get("id", Long.class))
 			.email(claims.getSubject())
 			.password(null)
@@ -117,7 +117,7 @@ public class JwtProvider {
 			.authorities(authorities)
 			.build();
 
-		return new UsernamePasswordAuthenticationToken(user, token, authorities);
+		return new UsernamePasswordAuthenticationToken(member, token, authorities);
 	}
 
 	/**

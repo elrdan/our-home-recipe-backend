@@ -139,10 +139,12 @@ public class SpringSecurityConfig {
 	}
 
 	/**
-	 * 일반 회원 endpoint
+	 * 어드민, 일반 회원 endpoint
 	 */
 	private RequestMatcher[] userAuthRequestMatchers() {
 		List<RequestMatcher> requestMatchers = List.of(
+			antMatcher(GET, "/member/search/*"),						// 회원 검색
+
 			antMatcher(GET, "/member/me/profile"),                	// 내 프로필 조회
 			antMatcher(POST, "/member/me/profile")                	// 내 프로필 수정
 		);

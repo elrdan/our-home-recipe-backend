@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.restdocs.RestDocumentationExtension;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
 import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
@@ -47,9 +46,9 @@ public class MemberControllerTest extends BaseTest {
 		accessToken = given(spec)
 			.contentType(JSON)
 			.body(requestDto)
-		.when()
+			.when()
 			.post("/member/login")
-		.then()
+			.then()
 			.statusCode(200)
 			.extract()
 			.path("data.accessToken");
@@ -93,7 +92,7 @@ public class MemberControllerTest extends BaseTest {
 					fieldWithPath("data.id").type(NUMBER).description("아이디 고유번호")
 				)))
 			.contentType(JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
-			.body(requestDto)				// 요청 본문 데이터 설정
+			.body(requestDto)                // 요청 본문 데이터 설정
 			.when()
 			.post("/member/register")
 			.then().log().all()  // 요청 및 응답 로그 출력
@@ -195,9 +194,9 @@ public class MemberControllerTest extends BaseTest {
 				)))
 			.contentType(JSON)
 			.body(requestDto)
-		.when()
+			.when()
 			.post("/member/login")
-		.then()
+			.then()
 			.statusCode(200);
 	}
 
@@ -206,7 +205,7 @@ public class MemberControllerTest extends BaseTest {
 	void getMeProfileSuccess() {
 		// 내 프로필 조회 API 문서화
 		given(spec)
-			.header("Authorization", "Bearer " + accessToken)		// accessToken 설정 추가
+			.header("Authorization", "Bearer " + accessToken)        // accessToken 설정 추가
 			.filter(document("내 프로필 조회 API",
 				resourceDetails()
 					.tag("회원 API")
@@ -226,7 +225,7 @@ public class MemberControllerTest extends BaseTest {
 
 	@Test
 	@DisplayName("6-1. 내 프로필 수정")
-	void updateMeProfileSuccess() throws JsonProcessingException {
+	void updateMeProfileSuccess() {
 		MemberUpdateProfileReqDto updateProfileReqDto = MemberUpdateProfileReqDto.builder()
 			.nickname("관리자2")
 			.introduce("")
@@ -265,11 +264,36 @@ public class MemberControllerTest extends BaseTest {
 	}
 
 	@Test
-	@DisplayName("7-1. 로그아웃")
+	@DisplayName("7-1. 회원 검색")
+	void getSearchMember() {
+		String nickname = "관리자 닉네임";
+		int page = 0;
+
+		given(spec)
+			.header("Authorization", "Bearer " + accessToken)
+			.filter(document("회원 검색 API",
+				resourceDetails()
+					.tag("회원 API")
+					.summary("회원 검색"),
+				// 응답 필드
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지"),
+					subsectionWithPath("data").type(OBJECT).description("회원 검색 데이터")
+				)))
+			.contentType(APPLICATION_JSON_VALUE)
+		.when()
+			.get("/member/search/{nickname}?page={page}", nickname, page)
+		.then()
+			.statusCode(200);
+	}
+
+	@Test
+	@DisplayName("8-1. 로그아웃")
 	void logoutMemberSuccess() {
 		// 로그아웃 API 문서화
 		given(spec)
-			.header("Authorization", "Bearer " + accessToken)		// accessToken 설정 추가
+			.header("Authorization", "Bearer " + accessToken)        // accessToken 설정 추가
 			.filter(document("로그아웃 API",
 				resourceDetails()
 					.tag("회원 API")
@@ -280,9 +304,9 @@ public class MemberControllerTest extends BaseTest {
 					fieldWithPath("message").type(STRING).description("상태 메시지")
 				)))
 			.contentType(JSON)
-		.when()
+			.when()
 			.post("/member/logout")
-		.then()
+			.then()
 			.statusCode(200);
 	}
 }

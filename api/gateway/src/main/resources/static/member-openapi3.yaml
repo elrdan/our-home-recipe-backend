@@ -33,8 +33,8 @@ paths:
               examples:
                 로그인 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTM2NTc0LCJleHAiOjE3Mjc1MzgzNzQsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.xyUhdAmjy3hH0m__ssO0JPI-6Mr7hoWb6CXGOkAQS3eqs8p-sPtHAwFOK-k7mNbfKE6cwbvxkU4EnIZYlxhF7A\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTM2NTc0LCJleHAiOjE3Mjc2MjI5NzR9.ShSTPiTA2tJepaSloxwuIPYB7QQTJo-aChEk35BSVVAuF7WVbmobX19QeUCouIjib0Q6Ate9v1ABKdh9ZOiZ-Q\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTU1NDc2LCJleHAiOjE3Mjc1NTcyNzYsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.HLH0ci6cpvBntqN35a6AeFQi-v--WZYXCuFM42GIteSECy1OPOZ-OyQoXJ5QHAZMbVvV5gNORU_oHc8kjtbclg\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTU1NDc2LCJleHAiOjE3Mjc2NDE4NzZ9.UhErdOvffA4hH_b73FjIB25XkmTo0ZLg_sFF3yA3Vgdoalp2yojeMqp2GG9nGH7m2Knlk9m3Cl-ubr-qm95bcg\"\
                     }}"
   /member/logout:
     post:
@@ -83,7 +83,7 @@ paths:
               examples:
                 회원 가입 API:
                   value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
-                    id\":2}}"
+                    id\":4}}"
   /member/me/profile:
     get:
       tags:
@@ -123,6 +123,38 @@ paths:
                 내 프로필 업데이트 API:
                   value: "{\"code\":200,\"message\":\"프로필 수정이 정상적으로 처리되었습니다.\",\"\
                     data\":{\"id\":1}}"
+      security:
+      - bearerAuthJWT: []
+  /member/search/{nickname}:
+    get:
+      tags:
+      - 회원 API
+      summary: 회원 검색
+      description: 회원 검색
+      operationId: 회원 검색 API
+      parameters:
+      - name: nickname
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-search-nickname-885510247'
+              examples:
+                회원 검색 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    totalPages\":0,\"totalElements\":0,\"content\":[],\"number\":0,\"\
+                    first\":true,\"last\":true,\"size\":10,\"sort\":{\"empty\":true,\"\
+                    sorted\":false,\"unsorted\":true},\"pageable\":{\"pageNumber\"\
+                    :0,\"pageSize\":10,\"sort\":{\"empty\":true,\"sorted\":false,\"\
+                    unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
+                    numberOfElements\":0,\"empty\":true}}"
       security:
       - bearerAuthJWT: []
   /member/email/auth/confirm:
@@ -178,6 +210,18 @@ paths:
                   value: "{\"code\":200,\"message\":\"인증 메일이 정상적으로 발송되었습니다.\"}"
 components:
   schemas:
+    member-search-nickname-885510247:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          description: 회원 검색 데이터
+        message:
+          type: string
+          description: 상태 메시지
     member-login-930702395:
       type: object
       properties:
@@ -217,22 +261,6 @@ components:
         message:
           type: string
           description: 상태 메시지
-    member-me-profile901414125:
-      type: object
-      properties:
-        code:
-          type: number
-          description: 상태 코드
-        data:
-          type: object
-          properties:
-            id:
-              type: number
-              description: 업데이트된 회원의 ID
-          description: 업데이트된 프로필 데이터
-        message:
-          type: string
-          description: 상태 메시지
     member-register-1137321134:
       type: object
       properties:
@@ -257,6 +285,22 @@ components:
         email:
           type: string
           description: 이메일(아이디)
+    member-me-profile901414125:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              description: 업데이트된 회원의 ID
+          description: 업데이트된 프로필 데이터
+        message:
+          type: string
+          description: 상태 메시지
     member-login-1584530892:
       type: object
       properties:

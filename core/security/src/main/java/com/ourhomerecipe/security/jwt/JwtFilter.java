@@ -15,7 +15,11 @@ import com.ourhomerecipe.domain.common.error.code.BaseErrorCode;
 import com.ourhomerecipe.domain.common.repository.RedisRepository;
 import com.ourhomerecipe.security.exception.CustomSecurityException;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.impl.DefaultClaims;
+import io.jsonwebtoken.impl.DefaultHeader;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,17 +39,24 @@ public class JwtFilter extends OncePerRequestFilter {
 		try{
 			String accessToken = jwtProvider.extractToken(request);
 
-			if(hasText(accessToken) && jwtProvider.validate(accessToken)) {
-				// Redis에서 토큰이 블랙리스트에 있는지 확인
-				String isLogout = redisRepository.getBlackListToken(accessToken);
+			if(hasText(accessToken)) {
+				if(jwtProvider.validate(accessToken)){
+					// Redis에서 토큰이 블랙리스트에 있는지 확인
+					String isLogout = redisRepository.getBlackListToken(accessToken);
 
-				if(hasText(isLogout)) {
-					throw new CustomSecurityException(LOGOUT_TOKEN);
+					if(hasText(isLogout)) {
+						throw new CustomSecurityException(LOGOUT_TOKEN);
+					}
+
+					// 정상적인 토큰의 경우 SecurityContext 저장
+					SecurityContextHolder.getContext()
+						.setAuthentication(jwtProvider.toAuthentication(accessToken));	// 인증 객체 설정
+				}else {
+					Header<?> header = new DefaultHeader<>();
+					Claims claims = new DefaultClaims();
+					String message = "토큰의 유효기한이 만료되었습니다.";
+					throw new ExpiredJwtException(header, claims, message);
 				}
-
-				// 정상적인 토큰의 경우 SecurityContext 저장
-				SecurityContextHolder.getContext()
-					.setAuthentication(jwtProvider.toAuthentication(accessToken));	// 인증 객체 설정
 			}else {
 				throw new AuthenticationCredentialsNotFoundException("토큰이 존재하지 않습니다.");
 			}

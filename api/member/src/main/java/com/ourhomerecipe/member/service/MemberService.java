@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +32,7 @@ import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
 import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
 import com.ourhomerecipe.dto.member.request.MemberUpdateProfileReqDto;
 import com.ourhomerecipe.dto.member.response.MemberMyProfileResDto;
+import com.ourhomerecipe.dto.member.response.MemberSearchResDto;
 import com.ourhomerecipe.dto.member.response.MemberTokenResDto;
 import com.ourhomerecipe.member.exception.MemberException;
 import com.ourhomerecipe.security.jwt.JwtProvider;
@@ -107,8 +110,19 @@ public class MemberService {
 	}
 
 	/**
+	 * 회원 검색(닉네임)
+	 */
+	@Transactional(readOnly = true)
+	public Page<MemberSearchResDto> getSearchMember(Pageable pageable, MemberDetailsImpl memberDetails, String nickname) {
+		long currentMemberId = memberDetails.getId();
+		return memberRepository.findByNicknameContaining(pageable, currentMemberId, nickname);
+
+	}
+
+	/**
 	 * 내 프로필 조회
 	 */
+	@Transactional(readOnly = true)
 	public MemberMyProfileResDto getMeProfile(MemberDetailsImpl memberDetails) {
 		MemberMyProfileResDto meProfile = memberRepository.getMeProfile(memberDetails.getId());
 

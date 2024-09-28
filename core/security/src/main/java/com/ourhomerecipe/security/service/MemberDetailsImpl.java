@@ -33,7 +33,7 @@ public class MemberDetailsImpl implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	public static UserDetails from(Member member) {
+	public static MemberDetailsImpl from(Member member) {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(member.getRole().name()));
 
