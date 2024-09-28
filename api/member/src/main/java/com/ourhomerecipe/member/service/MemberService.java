@@ -89,6 +89,16 @@ public class MemberService {
 	}
 
 	/**
+	 * 회원 로그아웃
+	 * jwt accessToken redis에 저장하여 관리
+	 */
+	public void logout(String accessToken) {
+		long expiration = jwtProvider.getExpiration(accessToken);
+
+		redisRepository.setBlackListToken(accessToken, expiration);
+	}
+
+	/**
 	 * email 중복 체크
 	 */
 	public void existsByEmail(String email) {
@@ -211,7 +221,7 @@ public class MemberService {
 	 * refreshToken redis 저장
 	 */
 	private void registerRedisRefreshToken(MemberDetailsImpl memberDetails, String refreshToken) {
-		int refreshExpirationSeconds = jwtProvider.getRefreshExpirationSeconds();
+		int refreshExpirationSeconds = jwtProvider.getRefreshExpirationMilliseconds();
 		redisRepository.setRedisRefreshToken(memberDetails.getUsername(), refreshToken, refreshExpirationSeconds);
 	}
 }

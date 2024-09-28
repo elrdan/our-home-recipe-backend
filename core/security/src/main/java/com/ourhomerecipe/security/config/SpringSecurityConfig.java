@@ -26,6 +26,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.ourhomerecipe.domain.common.repository.RedisRepository;
 import com.ourhomerecipe.security.exception.CustomAccessDeniedHandler;
 import com.ourhomerecipe.security.jwt.JwtFilter;
 import com.ourhomerecipe.security.jwt.JwtProvider;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 public class SpringSecurityConfig {
 	private final JwtProvider jwtProvider;
 	private final CustomAccessDeniedHandler customAccessDeniedHandler;
+	private final RedisRepository redisRepository;
 
 	/**
 	 * Password Encoder
@@ -108,7 +110,7 @@ public class SpringSecurityConfig {
 			.exceptionHandling(exception -> exception
 				.accessDeniedHandler(customAccessDeniedHandler)
 			)
-			.addFilterBefore(new JwtFilter(jwtProvider), ExceptionTranslationFilter.class);
+			.addFilterBefore(new JwtFilter(jwtProvider, redisRepository), ExceptionTranslationFilter.class);
 		return http.build();
 	}
 
@@ -119,7 +121,7 @@ public class SpringSecurityConfig {
 		List<RequestMatcher> requestMatchers = List.of(
 			antMatcher(POST, "/member/register"),						// 회원 등록
 			antMatcher(POST, "/member/login"),						// 회원 로그인
-
+			antMatcher(POST, "/member/logout"),						// 회원 로그아웃
 
 			antMatcher(POST, "/member/email/auth/request"),			// 이메일 인증 코드 요청
 			antMatcher(POST, "/member/email/auth/confirm"),			// 이메일 인증 코드 확인

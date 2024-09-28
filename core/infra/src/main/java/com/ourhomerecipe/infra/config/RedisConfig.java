@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,11 +25,21 @@ public class RedisConfig {
 		return new LettuceConnectionFactory(host, port);
 	}
 
-	@Bean
+	@Bean(name = "redisTemplate")
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<String, Object> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);
+		template.setKeySerializer(new StringRedisSerializer());
 		template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+		return template;
+	}
+
+	@Bean(name = "customStringRedisTemplate")
+	public RedisTemplate<String, String> customStringRedisTemplate(RedisConnectionFactory connectionFactory) {
+		RedisTemplate<String, String> template = new RedisTemplate<>();
+		template.setConnectionFactory(connectionFactory);
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setValueSerializer(new StringRedisSerializer()); // 값도 문자열로 처리
 		return template;
 	}
 }

@@ -12,55 +12,47 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ourhomerecipe.domain.common.error.code.BaseErrorCode;
+import com.ourhomerecipe.domain.common.repository.RedisRepository;
+import com.ourhomerecipe.security.exception.CustomSecurityException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-	private final String AUTHENTICATION_HEADER = "Authorization";		// HTTP 요청에서 사용될 인증 헤더의 이름
-	private final String AUTHENTICATION_SCHEME = "Bearer ";				// Bearer 토큰
-
 	private final JwtProvider jwtProvider;
-
-	public JwtFilter(JwtProvider jwtProvider) {
-		this.jwtProvider = jwtProvider;
-	}
+	private final RedisRepository redisRepository;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
 		try{
-			String accessToken = extractToken(request);
-			if(hasText(accessToken)) {
-				jwtProvider.validate(accessToken);						// 토큰 유효성 검증
+			String accessToken = jwtProvider.extractToken(request);
 
-				// 토큰 권한과 DB에 존재하는 권한 비교하는 로직 추가 예정
+			if(hasText(accessToken) && jwtProvider.validate(accessToken)) {
+				// Redis에서 토큰이 블랙리스트에 있는지 확인
+				String isLogout = redisRepository.getBlackListToken(accessToken);
 
+				if(!hasText(isLogout)) {
+					throw new CustomSecurityException(LOGOUT_TOKEN);
+				}
+
+				// 정상적인 토큰의 경우 SecurityContext 저장
 				SecurityContextHolder.getContext()
 					.setAuthentication(jwtProvider.toAuthentication(accessToken));	// 인증 객체 설정
+			}else {
+				throw new AuthenticationCredentialsNotFoundException("토큰이 존재하지 않습니다.");
 			}
 			filterChain.doFilter(request, response);
 		}catch (Exception e) {
 			handleException(e, response);
 		}
-	}
-
-	/**
-	 * 요청 헤더에서 JWT를 추출하고, Bearer 스키마를 기준으로 파싱
-	 */
-	private String extractToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader(AUTHENTICATION_HEADER);
-
-		if(hasText(bearerToken) && bearerToken.startsWith(AUTHENTICATION_SCHEME)){
-			return bearerToken.substring(AUTHENTICATION_SCHEME.length());
-		}
-
-		throw new AuthenticationCredentialsNotFoundException("토큰이 존재하지 않습니다.");
 	}
 
 	/**

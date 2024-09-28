@@ -1,6 +1,8 @@
 package com.ourhomerecipe.member.controller;
 
+import static com.ourhomerecipe.domain.common.error.code.SecurityErrorCode.*;
 import static com.ourhomerecipe.domain.common.success.code.GlobalSuccessCode.*;
+import static org.springframework.util.StringUtils.*;
 
 import java.util.Map;
 
@@ -16,7 +18,10 @@ import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
 import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
 import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
 import com.ourhomerecipe.member.service.MemberService;
+import com.ourhomerecipe.security.exception.CustomSecurityException;
+import com.ourhomerecipe.security.jwt.JwtProvider;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/member")
 public class MemberController {
 	private final MemberService memberService;
+	private final JwtProvider jwtProvider;
 
 	/**
 	 * 회원 등록
@@ -44,6 +50,25 @@ public class MemberController {
 	) {
 		return ResponseEntity.status(SUCCESS.getStatus())
 			.body(new OhrResponse<>(memberService.login(loginDto)));
+	}
+
+	/**
+	 * 회원 로그아웃
+	 */
+	@PostMapping("/logout")
+	public ResponseEntity<OhrResponse<?>> logoutMember(
+		HttpServletRequest request
+	) {
+		String token = jwtProvider.extractToken(request);
+
+		if(hasText(token) && jwtProvider.validate(token)) {
+			memberService.logout(token);
+		}else {
+			throw new CustomSecurityException(VALIDATION_NOT_EXISTS_TOKEN_FAILED);
+		}
+
+		return ResponseEntity.status(LOGOUT.getStatus())
+			.body(new OhrResponse<>(LOGOUT));
 	}
 
 	/**
