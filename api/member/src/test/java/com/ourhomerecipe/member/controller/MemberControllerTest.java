@@ -3,10 +3,12 @@ package com.ourhomerecipe.member.controller;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.*;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +19,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.restdocs.RestDocumentationExtension;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
 import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
 import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
+import com.ourhomerecipe.dto.member.request.MemberUpdateProfileReqDto;
 import com.ourhomerecipe.infra.config.BaseTest;
 import com.ourhomerecipe.member.service.MemberService;
 
@@ -52,7 +56,7 @@ public class MemberControllerTest extends BaseTest {
 	}
 
 	@Test
-	@DisplayName("1-1. 회원가입 테스트")
+	@DisplayName("1-1. 회원가입")
 	void registerMemberSuccess() {
 		MemberRegisterReqDto requestDto = MemberRegisterReqDto.builder()
 			.name("테스트")
@@ -165,7 +169,7 @@ public class MemberControllerTest extends BaseTest {
 	}
 
 	@Test
-	@DisplayName("4-1. 회원 로그인")
+	@DisplayName("4-1. 로그인")
 	void loginMemberSuccess() {
 		MemberLoginReqDto requestDto = MemberLoginReqDto.builder()
 			.email("admin@gmail.com")
@@ -174,10 +178,10 @@ public class MemberControllerTest extends BaseTest {
 
 		// 로그인 API 문서화
 		given(spec)
-			.filter(document("회원 로그인 API",
+			.filter(document("로그인 API",
 				resourceDetails()
 					.tag("회원 API")
-					.summary("회원 로그인"),
+					.summary("로그인"),
 				// 요청 필드
 				requestFields(
 					fieldWithPath("email").type(STRING).description("이메일(아이디)"),
@@ -187,7 +191,7 @@ public class MemberControllerTest extends BaseTest {
 				responseFields(
 					fieldWithPath("code").type(NUMBER).description("상태 코드"),
 					fieldWithPath("message").type(STRING).description("상태 메시지"),
-					subsectionWithPath("data").type(OBJECT).description("토큰값")
+					subsectionWithPath("data").type(OBJECT).description("토큰 데이터")
 				)))
 			.contentType(JSON)
 			.body(requestDto)
@@ -198,15 +202,78 @@ public class MemberControllerTest extends BaseTest {
 	}
 
 	@Test
-	@DisplayName("5-1. 회원 로그아웃")
+	@DisplayName("5-1. 내 프로필 조회")
+	void getMeProfileSuccess() {
+		// 내 프로필 조회 API 문서화
+		given(spec)
+			.header("Authorization", "Bearer " + accessToken)		// accessToken 설정 추가
+			.filter(document("내 프로필 조회 API",
+				resourceDetails()
+					.tag("회원 API")
+					.summary("내 프로필 조회"),
+				// 응답 필드
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지"),
+					subsectionWithPath("data").type(OBJECT).description("내 프로필 데이터")
+				)))
+			.contentType(JSON)
+			.when()
+			.get("/member/me/profile")
+			.then()
+			.statusCode(200);
+	}
+
+	@Test
+	@DisplayName("6-1. 내 프로필 수정")
+	void updateMeProfileSuccess() throws JsonProcessingException {
+		MemberUpdateProfileReqDto updateProfileReqDto = MemberUpdateProfileReqDto.builder()
+			.nickname("관리자2")
+			.introduce("")
+			.build();
+
+		// 내 프로필 업데이트 API 문서화
+		given(spec)
+			.header("Authorization", "Bearer " + accessToken)   // accessToken 설정 추가
+			.filter(document("내 프로필 업데이트 API",
+				resourceDetails()
+					.tag("회원 API")
+					.summary("내 프로필 업데이트"),
+				// 요청 필드 (Multipart 파트 설명)
+				requestParts(
+					partWithName("member").description("프로필 업데이트 요청 데이터 (JSON 형식)"),
+					partWithName("profileImage").optional().description("업데이트할 프로필 이미지 (JPEG/PNG 형식, 최대 크기: 5MB)")
+				),
+				// "member" 파트의 JSON 필드 설명 추가
+				requestPartFields("member",
+					fieldWithPath("nickname").description("닉네임"),
+					fieldWithPath("introduce").description("자기소개(선택 사항)")
+				),
+				// 응답 필드
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지"),
+					subsectionWithPath("data").type(OBJECT).description("업데이트된 프로필 데이터").optional(),
+					fieldWithPath("data.id").type(NUMBER).description("업데이트된 회원의 ID")
+				)))
+			.contentType(MULTIPART_FORM_DATA_VALUE)
+			.multiPart("member", updateProfileReqDto, APPLICATION_JSON_VALUE)  // 'member' 필드에 JSON 데이터 추가
+			.when()
+			.post("/member/me/profile")
+			.then()
+			.statusCode(200);
+	}
+
+	@Test
+	@DisplayName("7-1. 로그아웃")
 	void logoutMemberSuccess() {
 		// 로그아웃 API 문서화
 		given(spec)
 			.header("Authorization", "Bearer " + accessToken)		// accessToken 설정 추가
-			.filter(document("회원 로그아웃 API",
+			.filter(document("로그아웃 API",
 				resourceDetails()
 					.tag("회원 API")
-					.summary("회원 로그아웃"),
+					.summary("로그아웃"),
 				// 응답 필드
 				responseFields(
 					fieldWithPath("code").type(NUMBER).description("상태 코드"),

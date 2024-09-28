@@ -11,16 +11,16 @@ paths:
     post:
       tags:
       - 회원 API
-      summary: 회원 로그인
-      description: 회원 로그인
-      operationId: 회원 로그인 API
+      summary: 로그인
+      description: 로그인
+      operationId: 로그인 API
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/member-login-930702395'
             examples:
-              회원 로그인 API:
+              로그인 API:
                 value: "{\"email\":\"admin@gmail.com\",\"password\":\"Admin1234!@\"\
                   }"
       responses:
@@ -29,29 +29,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-login1470037158'
+                $ref: '#/components/schemas/member-login-1584530892'
               examples:
-                회원 로그인 API:
+                로그인 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NDg1ODk5LCJleHAiOjE3Mjc0ODc2OTksInJvbGVzIjoiUk9MRV9BRE1JTiJ9.ZvUivCytxnGuz4cecZ8swWjk3lxZgpD2djPtXDkaQGPREe8M8peejFve85syAhhaJ3xU2ttFj85MLlZAd4MlXg\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NDg1ODk5LCJleHAiOjE3Mjc1NzIyOTl9.4OtPv2JvuCd4PKmzfaMG9GFhUg70wszIqUj8QdrUi0Pyv9S2-4VuKcyCWJCeECh9eDf9ej9Be9qd1s9asxPNdg\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTM0NTQ2LCJleHAiOjE3Mjc1MzYzNDYsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.WIktJ_s07XLICoyuNs6SQScEtlk5DOLC8xotSDxoaUorvASDuhnQfgZEnFsCf9EES_yqi9UoU0qyDH65UMmW4A\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTM0NTQ2LCJleHAiOjE3Mjc2MjA5NDZ9._GzEJ0jL5kv2pwVdQ75e-9rlUHbVtGQjzKXLbpGaq30suJFF7-81LrHxajG2cUhvuU4wjO-wynOZgO_jkmfCIA\"\
                     }}"
   /member/logout:
     post:
       tags:
       - 회원 API
-      summary: 회원 로그아웃
-      description: 회원 로그아웃
-      operationId: 회원 로그아웃 API
+      summary: 로그아웃
+      description: 로그아웃
+      operationId: 로그아웃 API
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-logout1575598845'
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
               examples:
-                회원 로그아웃 API:
+                로그아웃 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 로그아웃 처리되었습니다.\"}"
       security:
       - bearerAuthJWT: []
@@ -84,6 +84,47 @@ paths:
                 회원 가입 API:
                   value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
                     id\":2}}"
+  /member/me/profile:
+    get:
+      tags:
+      - 회원 API
+      summary: 내 프로필 조회
+      description: 내 프로필 조회
+      operationId: 내 프로필 조회 API
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-me-profile-1720120988'
+              examples:
+                내 프로필 조회 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    id\":1,\"email\":\"admin@gmail.com\",\"nickname\":\"ê´€ë¦¬ìž\x90\
+                    \ ë‹‰ë„¤ìž„\",\"phoneNumber\":\"010-000-0000\",\"name\":\"ê´€ë\
+                    ¦¬ìž\x90\",\"profileImage\":\"\",\"introduce\":null}}"
+      security:
+      - bearerAuthJWT: []
+    post:
+      tags:
+      - 회원 API
+      summary: 내 프로필 업데이트
+      description: 내 프로필 업데이트
+      operationId: 내 프로필 업데이트 API
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-me-profile901414125'
+              examples:
+                내 프로필 업데이트 API:
+                  value: "{\"code\":200,\"message\":\"프로필 수정이 정상적으로 처리되었습니다.\",\"\
+                    data\":{\"id\":1}}"
+      security:
+      - bearerAuthJWT: []
   /member/email/auth/confirm:
     post:
       tags:
@@ -106,7 +147,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-logout1575598845'
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
               examples:
                 이메일 인증 코드 확인 API:
                   value: "{\"code\":200,\"message\":\"이메일 인증이 정상적으로 처리되었습니다.\"}"
@@ -131,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-logout1575598845'
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
               examples:
                 이메일 인증 코드 요청 API:
                   value: "{\"code\":200,\"message\":\"인증 메일이 정상적으로 발송되었습니다.\"}"
@@ -146,7 +187,7 @@ components:
         email:
           type: string
           description: 이메일(아이디)
-    member-logout1575598845:
+    member-email-auth-request1575598845:
       type: object
       properties:
         code:
@@ -176,6 +217,22 @@ components:
         message:
           type: string
           description: 상태 메시지
+    member-me-profile901414125:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              description: 업데이트된 회원의 ID
+          description: 업데이트된 프로필 데이터
+        message:
+          type: string
+          description: 상태 메시지
     member-register-1137321134:
       type: object
       properties:
@@ -200,7 +257,7 @@ components:
         email:
           type: string
           description: 이메일(아이디)
-    member-login1470037158:
+    member-login-1584530892:
       type: object
       properties:
         code:
@@ -208,7 +265,19 @@ components:
           description: 상태 코드
         data:
           type: object
-          description: 토큰값
+          description: 토큰 데이터
+        message:
+          type: string
+          description: 상태 메시지
+    member-me-profile-1720120988:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          description: 내 프로필 데이터
         message:
           type: string
           description: 상태 메시지

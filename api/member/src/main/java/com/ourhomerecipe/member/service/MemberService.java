@@ -2,6 +2,7 @@ package com.ourhomerecipe.member.service;
 
 import static com.ourhomerecipe.domain.common.error.code.EventErrorCode.*;
 import static com.ourhomerecipe.domain.common.error.code.MemberErrorCode.*;
+import static org.springframework.util.StringUtils.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ourhomerecipe.domain.common.repository.RedisRepository;
 import com.ourhomerecipe.domain.member.Member;
@@ -26,6 +28,8 @@ import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
 import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
 import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
+import com.ourhomerecipe.dto.member.request.MemberUpdateProfileReqDto;
+import com.ourhomerecipe.dto.member.response.MemberMyProfileResDto;
 import com.ourhomerecipe.dto.member.response.MemberTokenResDto;
 import com.ourhomerecipe.member.exception.MemberException;
 import com.ourhomerecipe.security.jwt.JwtProvider;
@@ -57,7 +61,11 @@ public class MemberService {
 		emailAuthCheck(registerRequestDto.getEmail());														// 이메일 인증 확인
 		validatePassword(registerRequestDto.getPassword(), registerRequestDto.getPasswordConfirm());		// 비밀번호 일치 확인
 		existsByPhoneNumber(registerRequestDto.getPhoneNumber());											// 휴대폰 중복 확인
-		existsByNickname(registerRequestDto.getNickname());													// 닉네임 중복 확인
+
+		// 닉네임 중복 확인
+		if(checkNickname(registerRequestDto.getNickname())) {
+			throw new MemberException(EXISTS_MEMBER_NICKNAME);
+		}
 
 		Member member = Member.fromMemberRegisterDto(registerRequestDto);
 		member.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
@@ -99,6 +107,59 @@ public class MemberService {
 	}
 
 	/**
+	 * 내 프로필 조회
+	 */
+	public MemberMyProfileResDto getMeProfile(MemberDetailsImpl memberDetails) {
+		MemberMyProfileResDto meProfile = memberRepository.getMeProfile(memberDetails.getId());
+
+		if(meProfile == null) {
+			throw new MemberException(NOT_EXISTS_MEMBER);
+		}
+
+		return meProfile;
+	}
+
+	/**
+	 * 내 프로필 수정
+	 */
+	@Transactional
+	public Member updateMeProfile(
+		MemberDetailsImpl memberDetails,
+		MemberUpdateProfileReqDto updateProfileReqDto,
+		MultipartFile file
+	) {
+		Member member = memberRepository.findById(memberDetails.getId())
+			.orElseThrow(() -> new MemberException(NOT_EXISTS_MEMBER));
+
+		String newNickname = updateProfileReqDto.getNickname();
+		String newIntroduce = updateProfileReqDto.getIntroduce();
+		boolean isChangeNickname = false;
+
+		if(hasText(newNickname)) {
+			if(newNickname.equals(member.getNickname()) || checkNickname(newNickname)) {
+				throw new MemberException(EXISTS_MEMBER_NICKNAME);
+			}
+
+			isChangeNickname = true;
+		}
+
+		if (isChangeNickname) {
+			member.updateProfile(newNickname, newIntroduce);
+		} else {
+			member.updateProfile(newIntroduce);
+		}
+
+		// 회원 프로필 이미지 변경
+		if(file != null && file.isEmpty()) {
+			// TODO - S3 설정 후 파일 업로드 처리 해야 함.
+			String newProfileImage = "";
+			member.updateProfileImage(newProfileImage);
+		}
+
+		return memberRepository.save(member);
+	}
+
+	/**
 	 * email 중복 체크
 	 */
 	public void existsByEmail(String email) {
@@ -122,15 +183,6 @@ public class MemberService {
 	public void existsByPhoneNumber(String phoneNumber) {
 		if(memberRepository.existsByPhoneNumber(phoneNumber)){
 			throw new MemberException(EXISTS_MEMBER_PHONE_NUMBER);
-		}
-	}
-
-	/**
-	 * nickname 중복 체크
-	 */
-	public void existsByNickname(String nickName) {
-		if(memberRepository.existsByNickname(nickName)) {
-			throw new MemberException(EXISTS_MEMBER_NICKNAME);
 		}
 	}
 
@@ -223,5 +275,12 @@ public class MemberService {
 	private void registerRedisRefreshToken(MemberDetailsImpl memberDetails, String refreshToken) {
 		int refreshExpirationSeconds = jwtProvider.getRefreshExpirationMilliseconds();
 		redisRepository.setRedisRefreshToken(memberDetails.getUsername(), refreshToken, refreshExpirationSeconds);
+	}
+
+	/**
+	 * 닉네임 중복 체크
+	 */
+	public boolean checkNickname(String nickname) {
+		return memberRepository.existsByNickname(nickname);
 	}
 }

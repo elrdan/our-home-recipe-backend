@@ -54,6 +54,9 @@ public class Member extends TimestampedEntity {
 	// 회원 프로필 이미지
 	private String profileImage;
 
+	// 회원 소개
+	private String introduce;
+
 	// 회원 상태
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
@@ -88,5 +91,21 @@ public class Member extends TimestampedEntity {
 			.build();
 
 		return member;
+	}
+
+	/**
+	 * 닉네임의 경우 공백값이 올 수 없고, 소개의 경우는 공백값을 사용할 수 있게 처리
+	 */
+	public void updateProfile(String newNickname, String newIntroduce) {
+		this.nickname = newNickname;
+		this.introduce = newIntroduce;
+	}
+
+	public void updateProfile(String newIntroduce) {
+		this.introduce = newIntroduce;
+	}
+
+	public void updateProfileImage(String newProfileImage) {
+
 	}
 }

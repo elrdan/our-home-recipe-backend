@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
 				// Redis에서 토큰이 블랙리스트에 있는지 확인
 				String isLogout = redisRepository.getBlackListToken(accessToken);
 
-				if(!hasText(isLogout)) {
+				if(hasText(isLogout)) {
 					throw new CustomSecurityException(LOGOUT_TOKEN);
 				}
 
@@ -73,6 +73,9 @@ public class JwtFilter extends OncePerRequestFilter {
 			// 접근권한이 없음
 			errorCode = VALIDATION_TOKEN_NOT_AUTHORIZATION;
 			log.warn(">>>>> AccessDeniedException : ", e);
+		}else if(e instanceof CustomSecurityException) {
+			errorCode = ((CustomSecurityException)e).getErrorCode();
+			log.warn(">>>>> CustomSecurityException : ", e);
 		}else {
 			errorCode = VALIDATION_TOKEN_FAILED;
 			log.warn(">>>>> TokenException : ", e);

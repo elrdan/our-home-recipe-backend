@@ -1,5 +1,6 @@
 package com.ourhomerecipe.member.controller;
 
+import static com.ourhomerecipe.domain.common.error.code.MemberErrorCode.*;
 import static com.ourhomerecipe.domain.common.error.code.SecurityErrorCode.*;
 import static com.ourhomerecipe.domain.common.success.code.GlobalSuccessCode.*;
 import static org.springframework.util.StringUtils.*;
@@ -7,19 +8,27 @@ import static org.springframework.util.StringUtils.*;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ourhomerecipe.domain.common.response.OhrResponse;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
 import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
 import com.ourhomerecipe.dto.member.request.MemberRegisterReqDto;
+import com.ourhomerecipe.dto.member.request.MemberUpdateProfileReqDto;
+import com.ourhomerecipe.member.exception.MemberException;
 import com.ourhomerecipe.member.service.MemberService;
 import com.ourhomerecipe.security.exception.CustomSecurityException;
 import com.ourhomerecipe.security.jwt.JwtProvider;
+import com.ourhomerecipe.security.service.MemberDetailsImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -69,6 +78,44 @@ public class MemberController {
 
 		return ResponseEntity.status(LOGOUT.getStatus())
 			.body(new OhrResponse<>(LOGOUT));
+	}
+
+	@GetMapping("/me/profile")
+	public ResponseEntity<OhrResponse<?>> getMeProfile(
+		@AuthenticationPrincipal MemberDetailsImpl memberDetails
+	) {
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(memberService.getMeProfile(memberDetails)));
+	}
+
+	/**
+	 * 내 프로필 조회
+	 */
+	@GetMapping("/me/profile")
+	public ResponseEntity<OhrResponse<?>> getMeProfile(
+		@AuthenticationPrincipal MemberDetailsImpl memberDetails
+	) {
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(memberService.getMeProfile(memberDetails)));
+	}
+
+	/**
+	 * 내 프로필 수정
+	 */
+	@PostMapping("/me/profile")
+	public ResponseEntity<OhrResponse<?>> updateMeProfile(
+		@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+		@Valid @RequestPart(name = "member", required = false) MemberUpdateProfileReqDto updateProfileReqDto,
+		@RequestParam(name = "profileImage", required = false) MultipartFile file
+	) {
+		if(updateProfileReqDto == null && (file == null || file.isEmpty())){
+			throw new MemberException(NO_UPDATE_FIELDS);
+		}
+
+		return ResponseEntity.status(MEMBER_PROFILE_UPDATE_SUCCESS.getStatus())
+			.body(new OhrResponse<>(MEMBER_PROFILE_UPDATE_SUCCESS,
+				Map.of("id", memberService.updateMeProfile(memberDetails,
+					updateProfileReqDto, file).getId())));
 	}
 
 	/**

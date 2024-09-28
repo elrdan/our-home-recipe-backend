@@ -143,7 +143,8 @@ public class SpringSecurityConfig {
 	 */
 	private RequestMatcher[] userAuthRequestMatchers() {
 		List<RequestMatcher> requestMatchers = List.of(
-			antMatcher(POST, "/member/delete")                // 회원 삭제
+			antMatcher(GET, "/member/me/profile"),                	// 내 프로필 조회
+			antMatcher(POST, "/member/me/profile")                	// 내 프로필 수정
 		);
 
 		return requestMatchers.toArray(RequestMatcher[]::new);
