@@ -54,7 +54,7 @@ public class JwtProvider {
 	 */
 	public String createAccessToken(Authentication authentication) {
 		Instant now = Instant.now();
-		Date expiration = Date.from(now.plusMillis(accessExpirationMilliseconds));
+		Date expiration = Date.from(now.plusSeconds(accessExpirationMilliseconds / 1000));
 		SecretKey key = extractSecretKey();
 		MemberDetailsImpl memberDetails = (MemberDetailsImpl)authentication.getPrincipal();
 
@@ -81,7 +81,7 @@ public class JwtProvider {
 	 */
 	public String createRefreshToken(Authentication authentication) {
 		Instant now = Instant.now();
-		Date expiration = Date.from(now.plusMillis(refreshExpirationMilliseconds));
+		Date expiration = Date.from(now.plusSeconds(refreshExpirationMilliseconds / 1000));
 		SecretKey key = extractSecretKey();
 		MemberDetailsImpl memberDetails = (MemberDetailsImpl)authentication.getPrincipal();
 
