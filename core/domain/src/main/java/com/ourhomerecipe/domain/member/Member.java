@@ -72,12 +72,16 @@ public class Member extends TimestampedEntity {
 	@Builder.Default
 	private ProviderType provider = NONE;
 
-	public Member(String email, String password, String nickname, String phoneNumber, String name) {
+	public Member(String email, String password, String nickname, String phoneNumber, String name, String introduce) {
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.phoneNumber = phoneNumber;
 		this.name = name;
+
+		if(introduce != null) {
+			this.introduce = introduce;
+		}
 	}
 
 	public static Member fromMemberRegisterDto(MemberRegisterReqDto registerDto) {
