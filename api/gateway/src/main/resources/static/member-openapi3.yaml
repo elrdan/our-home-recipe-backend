@@ -33,8 +33,8 @@ paths:
               examples:
                 로그인 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTU1NDc2LCJleHAiOjE3Mjc1NTcyNzYsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.HLH0ci6cpvBntqN35a6AeFQi-v--WZYXCuFM42GIteSECy1OPOZ-OyQoXJ5QHAZMbVvV5gNORU_oHc8kjtbclg\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTU1NDc2LCJleHAiOjE3Mjc2NDE4NzZ9.UhErdOvffA4hH_b73FjIB25XkmTo0ZLg_sFF3yA3Vgdoalp2yojeMqp2GG9nGH7m2Knlk9m3Cl-ubr-qm95bcg\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTcwMjA2LCJleHAiOjE3Mjc1NzIwMDYsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.R4VqZ8iEFvgb8C847Px9ITDqA9Nc4FJpDbLUspL_D0ICxepLWD-evvoU9qnfrnzpRob9biYVbBWXtYW3C_-LzA\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NTcwMjA2LCJleHAiOjE3Mjc2NTY2MDZ9.QcBcqBQtIVjGAgTQ4O68yFJoPxqqNhkdxU0GO2AEV2JpBOgFPF8qwpLAG9q69cvH3shZJj6iNV1G_f6csgWKcQ\"\
                     }}"
   /member/logout:
     post:
@@ -84,6 +84,32 @@ paths:
                 회원 가입 API:
                   value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
                     id\":4}}"
+  /member/follow/{followingId}:
+    post:
+      tags:
+      - 회원 API
+      summary: 회원 팔로우
+      description: 회원 팔로우
+      operationId: 회원 팔로우 API
+      parameters:
+      - name: followingId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
+              examples:
+                회원 팔로우 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\"}"
+      security:
+      - bearerAuthJWT: []
   /member/me/profile:
     get:
       tags:
@@ -149,12 +175,38 @@ paths:
               examples:
                 회원 검색 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalPages\":0,\"totalElements\":0,\"content\":[],\"number\":0,\"\
-                    first\":true,\"last\":true,\"size\":10,\"sort\":{\"empty\":true,\"\
+                    totalPages\":0,\"totalElements\":0,\"content\":[],\"size\":10,\"\
+                    number\":0,\"first\":true,\"last\":true,\"sort\":{\"empty\":true,\"\
                     sorted\":false,\"unsorted\":true},\"pageable\":{\"pageNumber\"\
                     :0,\"pageSize\":10,\"sort\":{\"empty\":true,\"sorted\":false,\"\
                     unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
                     numberOfElements\":0,\"empty\":true}}"
+      security:
+      - bearerAuthJWT: []
+  /member/unfollow/{followingId}:
+    post:
+      tags:
+      - 회원 API
+      summary: 회원 언팔로우
+      description: 회원 언팔로우
+      operationId: 회원 언팔로우 API
+      parameters:
+      - name: followingId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-email-auth-request1575598845'
+              examples:
+                회원 언팔로우 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\"}"
       security:
       - bearerAuthJWT: []
   /member/email/auth/confirm:

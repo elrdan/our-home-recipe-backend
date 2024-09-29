@@ -67,7 +67,7 @@ public class MemberService {
 
 		// 닉네임 중복 확인
 		if(checkNickname(registerRequestDto.getNickname())) {
-			throw new MemberException(EXISTS_MEMBER_NICKNAME);
+			throw new MemberException(ALREADY_MEMBER_NICKNAME);
 		}
 
 		Member member = Member.fromMemberRegisterDto(registerRequestDto);
@@ -151,7 +151,7 @@ public class MemberService {
 
 		if(hasText(newNickname)) {
 			if(newNickname.equals(member.getNickname()) || checkNickname(newNickname)) {
-				throw new MemberException(EXISTS_MEMBER_NICKNAME);
+				throw new MemberException(ALREADY_MEMBER_NICKNAME);
 			}
 
 			isChangeNickname = true;
@@ -178,7 +178,7 @@ public class MemberService {
 	 */
 	public void existsByEmail(String email) {
 		if(memberRepository.existsByEmail(email)){
-			throw new MemberException(EXISTS_MEMBER_EMAIL);
+			throw new MemberException(ALREADY_MEMBER_EMAIL);
 		}
 	}
 
@@ -196,7 +196,7 @@ public class MemberService {
 	 */
 	public void existsByPhoneNumber(String phoneNumber) {
 		if(memberRepository.existsByPhoneNumber(phoneNumber)){
-			throw new MemberException(EXISTS_MEMBER_PHONE_NUMBER);
+			throw new MemberException(ALREADY_MEMBER_PHONE_NUMBER);
 		}
 	}
 
@@ -222,7 +222,7 @@ public class MemberService {
 		String email = emailAuthDto.getEmail();
 
 		if(memberRepository.existsByEmail(email)){
-			throw new MemberException(EXISTS_MEMBER_EMAIL);
+			throw new MemberException(ALREADY_MEMBER_EMAIL);
 		}
 
 		String authCode = generateCode();

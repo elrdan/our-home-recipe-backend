@@ -145,6 +145,9 @@ public class SpringSecurityConfig {
 		List<RequestMatcher> requestMatchers = List.of(
 			antMatcher(GET, "/member/search/*"),						// 회원 검색
 
+			antMatcher(POST, "/member/follow/*"),						// 팔로우
+			antMatcher(POST, "/member/unfollow/*"),						// 언팔로우
+
 			antMatcher(GET, "/member/me/profile"),                	// 내 프로필 조회
 			antMatcher(POST, "/member/me/profile")                	// 내 프로필 수정
 		);
