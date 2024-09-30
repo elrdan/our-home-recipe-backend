@@ -101,9 +101,11 @@ public class SpringSecurityConfig {
 		httpSecuritySetting(http);
 		http
 			.securityMatchers(matcher -> matcher
+				.requestMatchers(GET,"/member/token/refresh")
 				.requestMatchers(userAuthRequestMatchers())
 			)
 			.authorizeHttpRequests(auth -> auth
+				.requestMatchers(GET,"/member/token/refresh").permitAll()
 				.requestMatchers(userAuthRequestMatchers()).hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
 				.anyRequest().authenticated()
 			)

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -153,4 +154,23 @@ public class MemberController {
 			.body(new OhrResponse<>(EMAIL_AUTH_CONFIRM));
 	}
 
+	/**
+	 * refreshToken를 사용해서 accessToken, refreshToken 재발급
+	 */
+	@GetMapping("/token/refresh")
+	public ResponseEntity<OhrResponse<?>> updateAccessTokenAndRefreshToken(
+		@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+		HttpServletRequest request
+	) {
+		String refreshToken = jwtProvider.extractToken(request);
+
+		if(hasText(refreshToken) && jwtProvider.validate(refreshToken)) {
+			memberService.logout(refreshToken);
+		}else {
+			throw new CustomSecurityException(VALIDATION_NOT_EXISTS_TOKEN_FAILED);
+		}
+
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(memberService.getNewAccessTokenAndRefreshToken(memberDetails, refreshToken)));
+	}
 }

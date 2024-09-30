@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class MutableBaseEntity {
+public abstract class MutableBaseEntity extends BaseEntity {
 	@LastModifiedBy
 	private String updatedBy;				// 수정자
 

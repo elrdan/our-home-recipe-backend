@@ -2,6 +2,7 @@ package com.ourhomerecipe.member.service;
 
 import static com.ourhomerecipe.domain.common.error.code.EventErrorCode.*;
 import static com.ourhomerecipe.domain.common.error.code.MemberErrorCode.*;
+import static com.ourhomerecipe.domain.common.error.code.SecurityErrorCode.*;
 import static org.springframework.util.StringUtils.*;
 
 import java.util.HashMap;
@@ -86,17 +87,12 @@ public class MemberService {
 		);
 
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-		String accessToken = jwtProvider.createAccessToken(authentication);
-		String refreshToken = jwtProvider.createRefreshToken(authentication);
-
 		MemberDetailsImpl memberDetails = (MemberDetailsImpl) authentication.getPrincipal();
 
-		registerRedisRefreshToken(memberDetails, refreshToken);
+		MemberTokenResDto memberTokenResDto = createToken(memberDetails);
+		registerRedisRefreshToken(memberDetails, memberTokenResDto.getRefreshToken());
 
-		return MemberTokenResDto.builder()
-			.accessToken(accessToken)
-			.refreshToken(refreshToken)
-			.build();
+		return memberTokenResDto;
 	}
 
 	/**
@@ -171,6 +167,23 @@ public class MemberService {
 		}
 
 		return memberRepository.save(member);
+	}
+
+	/**
+	 * 토큰 재발급
+	 * 클라이언트에서 보낸 리프래시 토큰을 Redis에 저장되어있는 refreshToken과 비교를 하여 refreshToken이 유효한지 체크하고,
+	 * 유효한 경우 accessToken과 refreshToken을 재발급 한다.
+	 */
+	public MemberTokenResDto getNewAccessTokenAndRefreshToken(MemberDetailsImpl memberDetails, String refreshToken) {
+		Map redisRefreshToken = redisRepository.getRefreshToken(memberDetails.getId());
+
+		if(refreshToken.equals(String.valueOf(redisRefreshToken.get(memberDetails.getUsername())))) {
+			MemberTokenResDto memberTokenResDto = createToken(memberDetails);
+			registerRedisRefreshToken(memberDetails, memberTokenResDto.getRefreshToken());
+			return memberTokenResDto;
+		}else {
+			throw new MemberException(VALIDATION_TOKEN_FAILED);
+		}
 	}
 
 	/**
@@ -296,5 +309,18 @@ public class MemberService {
 	 */
 	public boolean checkNickname(String nickname) {
 		return memberRepository.existsByNickname(nickname);
+	}
+
+	/**
+	 * 토큰 생성(Access Token, Refresh Token)
+	 */
+	private MemberTokenResDto createToken(MemberDetailsImpl memberDetails) {
+		String accessToken = jwtProvider.createAccessToken(memberDetails);
+		String refreshToken = jwtProvider.createRefreshToken(memberDetails);
+
+		return MemberTokenResDto.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
 	}
 }

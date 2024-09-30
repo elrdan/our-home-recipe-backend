@@ -10,6 +10,9 @@ import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -19,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.restdocs.RestDocumentationExtension;
 
+import com.ourhomerecipe.domain.common.repository.RedisRepository;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
 import com.ourhomerecipe.dto.email.request.EmailAuthRequestDto;
 import com.ourhomerecipe.dto.member.request.MemberLoginReqDto;
@@ -27,13 +31,19 @@ import com.ourhomerecipe.dto.member.request.MemberUpdateProfileReqDto;
 import com.ourhomerecipe.infra.config.BaseTest;
 import com.ourhomerecipe.member.service.MemberService;
 
+import io.restassured.response.Response;
+
 @ExtendWith(RestDocumentationExtension.class)
 @TestMethodOrder(value = MethodOrderer.DisplayName.class)
 public class MemberControllerTest extends BaseTest {
 	@SpyBean
 	private MemberService memberService;
 
+	@SpyBean
+	private RedisRepository redisRepository;
+
 	private String accessToken;
+	private String refreshToken;
 
 	@BeforeEach
 	public void setUpEachTest() {
@@ -42,16 +52,20 @@ public class MemberControllerTest extends BaseTest {
 			.password("Admin1234!@")
 			.build();
 
+
 		// 로그인 API 호출 후 accessToken 추출
-		accessToken = given(spec)
+		Response response = given(spec)
 			.contentType(JSON)
 			.body(requestDto)
-			.when()
+		.when()
 			.post("/member/login")
-			.then()
+		.then()
 			.statusCode(200)
 			.extract()
-			.path("data.accessToken");
+			.response(); // 전체 응답 추출
+
+		accessToken = response.path("data.accessToken");
+		refreshToken = response.path("data.refreshToken");
 	}
 
 	@Test
@@ -265,7 +279,7 @@ public class MemberControllerTest extends BaseTest {
 
 	@Test
 	@DisplayName("7-1. 회원 검색")
-	void getSearchMember() {
+	void getSearchMemberSuccess() {
 		String nickname = "관리자 닉네임";
 		int page = 0;
 
@@ -289,7 +303,35 @@ public class MemberControllerTest extends BaseTest {
 	}
 
 	@Test
-	@DisplayName("8-1. 로그아웃")
+	@DisplayName("8-1. 토큰 재발급")
+	void updateAccessTokenAndRefreshTokenSuccess() {
+		Map<String, String> map = new HashMap<>();
+		map.put("admin@gmail.com", refreshToken);
+
+		doReturn(map).when(redisRepository).getRefreshToken(1L);
+
+		// 토큰 재발급 API 문서화
+		given(spec)
+			.header("Authorization", "Bearer " + refreshToken)        // accessToken 설정 추가
+			.filter(document("토큰 재발급 API",
+				resourceDetails()
+					.tag("회원 API")
+					.summary("토큰 재발급"),
+				// 응답 필드
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지"),
+					subsectionWithPath("data").type(OBJECT).description("토큰 데이터")
+				)))
+			.contentType(JSON)
+		.when()
+			.get("/member/token/refresh")
+		.then()
+			.statusCode(200);
+	}
+
+	@Test
+	@DisplayName("9-1. 로그아웃")
 	void logoutMemberSuccess() {
 		// 로그아웃 API 문서화
 		given(spec)

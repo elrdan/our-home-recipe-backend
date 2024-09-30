@@ -52,16 +52,15 @@ public class JwtProvider {
 	/**
 	 * 엑세스 토큰 생성
 	 */
-	public String createAccessToken(Authentication authentication) {
+	public String createAccessToken(MemberDetailsImpl memberDetails) {
 		Instant now = Instant.now();
 		Date expiration = Date.from(now.plusSeconds(accessExpirationMilliseconds / 1000));
 		SecretKey key = extractSecretKey();
-		MemberDetailsImpl memberDetails = (MemberDetailsImpl)authentication.getPrincipal();
 
 		String roles = "";
 		// 사용자 권한을 roles에 추가
-		if (authentication.getAuthorities() != null && !authentication.getAuthorities().isEmpty()) {
-			roles = authentication.getAuthorities().stream()
+		if (memberDetails.getAuthorities() != null && !memberDetails.getAuthorities().isEmpty()) {
+			roles = memberDetails.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(", "));
 		}
@@ -79,18 +78,17 @@ public class JwtProvider {
 	/**
 	 * 리프래쉬 토큰 생성
 	 */
-	public String createRefreshToken(Authentication authentication) {
+	public String createRefreshToken(MemberDetailsImpl memberDetails) {
 		Instant now = Instant.now();
 		Date expiration = Date.from(now.plusSeconds(refreshExpirationMilliseconds / 1000));
 		SecretKey key = extractSecretKey();
-		MemberDetailsImpl memberDetails = (MemberDetailsImpl)authentication.getPrincipal();
 
 		return Jwts.builder()
 			.claim("id", memberDetails.getId())                            // 식별자 클레임 추가
-			.setSubject(memberDetails.getUsername())                        // 이메일 subject로 설정
-			.setIssuedAt(Date.from(now))                                    // 토큰 발급 시간 설정
+			.setSubject(memberDetails.getUsername())                          // 이메일 subject로 설정
+			.setIssuedAt(Date.from(now))                                      // 토큰 발급 시간 설정
 			.setExpiration(expiration)                                        // 토큰 만료 시간 설정
-			.signWith(key, SignatureAlgorithm.HS512)                        // 알고리즘과 키값으로 서명
+			.signWith(key, SignatureAlgorithm.HS512)                          // 알고리즘과 키값으로 서명
 			.compact();
 	}
 
