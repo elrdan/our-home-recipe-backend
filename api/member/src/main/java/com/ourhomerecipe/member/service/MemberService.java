@@ -175,9 +175,9 @@ public class MemberService {
 	 * 유효한 경우 accessToken과 refreshToken을 재발급 한다.
 	 */
 	public MemberTokenResDto getNewAccessTokenAndRefreshToken(MemberDetailsImpl memberDetails, String refreshToken) {
-		Map redisRefreshToken = redisRepository.getRefreshToken(memberDetails.getId());
+		Map redisRefreshToken = redisRepository.getRefreshToken(memberDetails.getUsername());
 
-		if(refreshToken.equals(String.valueOf(redisRefreshToken.get(memberDetails.getUsername())))) {
+		if(refreshToken.equals(String.valueOf(redisRefreshToken.get("refreshToken")))) {
 			MemberTokenResDto memberTokenResDto = createToken(memberDetails);
 			registerRedisRefreshToken(memberDetails, memberTokenResDto.getRefreshToken());
 			return memberTokenResDto;

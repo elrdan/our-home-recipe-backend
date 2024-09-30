@@ -308,7 +308,7 @@ public class MemberControllerTest extends BaseTest {
 		Map<String, String> map = new HashMap<>();
 		map.put("admin@gmail.com", refreshToken);
 
-		doReturn(map).when(redisRepository).getRefreshToken(1L);
+		doReturn(map).when(redisRepository).getRefreshToken("admin@gmail.com");
 
 		// 토큰 재발급 API 문서화
 		given(spec)

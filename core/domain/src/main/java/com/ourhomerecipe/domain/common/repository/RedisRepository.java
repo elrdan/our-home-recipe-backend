@@ -70,8 +70,8 @@ public class RedisRepository {
 	/**
 	 * GET refresh token - 리프래쉬 토큰 정보 가져오기
 	 */
-	public Map getRefreshToken(Long memberId) {
-		Optional<Object> optionalResult = getKeyIfPresent(String.valueOf(memberId));
+	public Map getRefreshToken(String email) {
+		Optional<Object> optionalResult = getKeyIfPresent(email);
 		if(optionalResult.isPresent()) {
 			return (Map)optionalResult.get();
 		}else {

@@ -164,10 +164,14 @@ public class MemberController {
 	) {
 		String refreshToken = jwtProvider.extractToken(request);
 
-		if(hasText(refreshToken) && jwtProvider.validate(refreshToken)) {
-			memberService.logout(refreshToken);
-		}else {
+		// 토큰이 없는 경우
+		if (!hasText(refreshToken)) {
 			throw new CustomSecurityException(VALIDATION_NOT_EXISTS_TOKEN_FAILED);
+		}
+
+		// 토큰이 검증이 실패한 경우
+		if (!jwtProvider.validate(refreshToken)) {
+			throw new CustomSecurityException(VALIDATION_TOKEN_FAILED);
 		}
 
 		return ResponseEntity.status(SUCCESS.getStatus())
