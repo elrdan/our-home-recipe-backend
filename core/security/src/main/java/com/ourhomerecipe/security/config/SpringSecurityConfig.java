@@ -101,11 +101,9 @@ public class SpringSecurityConfig {
 		httpSecuritySetting(http);
 		http
 			.securityMatchers(matcher -> matcher
-				.requestMatchers(GET,"/member/token/refresh")
 				.requestMatchers(userAuthRequestMatchers())
 			)
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers(GET,"/member/token/refresh").permitAll()
 				.requestMatchers(userAuthRequestMatchers()).hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
 				.anyRequest().authenticated()
 			)
@@ -124,6 +122,8 @@ public class SpringSecurityConfig {
 			antMatcher(POST, "/member/register"),						// 회원 등록
 			antMatcher(POST, "/member/login"),						// 회원 로그인
 			antMatcher(POST, "/member/logout"),						// 회원 로그아웃
+			antMatcher(GET, "/member/token/refresh"),					// 토큰 재발급
+
 
 			antMatcher(POST, "/member/email/auth/request"),			// 이메일 인증 코드 요청
 			antMatcher(POST, "/member/email/auth/confirm"),			// 이메일 인증 코드 확인
@@ -148,10 +148,12 @@ public class SpringSecurityConfig {
 			antMatcher(GET, "/member/search/*"),						// 회원 검색
 
 			antMatcher(POST, "/member/follow/*"),						// 팔로우
-			antMatcher(POST, "/member/unfollow/*"),						// 언팔로우
+			antMatcher(POST, "/member/unfollow/*"),					// 언팔로우
 
 			antMatcher(GET, "/member/me/profile"),                	// 내 프로필 조회
-			antMatcher(POST, "/member/me/profile")                	// 내 프로필 수정
+			antMatcher(POST, "/member/me/profile"),                	// 내 프로필 수정
+
+			antMatcher(POST, "/recipe/register")
 		);
 
 		return requestMatchers.toArray(RequestMatcher[]::new);

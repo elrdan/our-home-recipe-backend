@@ -33,6 +33,7 @@ jobs:
                 run: |
                     ./gradlew -p api/gateway build -x test
                     ./gradlew -p api/member build -x test
+                    ./gradlew -p api/recipe build -x test
                     ./gradlew -p api/event build -x test
 
             # 멀티플랫폼 이미지 빌드 환경 설정
@@ -68,6 +69,16 @@ jobs:
                     platforms: linux/amd64,linux/arm64
                     push: true
                     tags: ${{ secrets.DOCKER_USERNAME }}/our-home-recipe-member:latest
+
+            # api/recipe
+            -   name: Recipe API > Build and Push Docker images
+                uses: docker/build-push-action@v5
+                with:
+                    context: api/recipe
+                    file: api/recipe/Dockerfile
+                    platforms: linux/amd64,linux/arm64
+                    push: true
+                    tags: ${{ secrets.DOCKER_USERNAME }}/our-home-recipe-recipe:latest
 
             # api/event
             -   name: Event API > Build and Push Docker images

@@ -26,6 +26,8 @@ dependencies {
     implementation project(':common')
     implementation(testFixtures(project(':core:infra')))
 
+    implementation 'org.springframework.boot:spring-boot-starter-security' // Security 의존성
+
     testImplementation "org.mockito:mockito-core:5.2.0" // Mocking framework
     testImplementation "org.assertj:assertj-core:3.23.1" // Assertions library
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // REST Docs 문서화

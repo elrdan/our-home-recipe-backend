@@ -33,8 +33,8 @@ paths:
               examples:
                 로그인 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NjgyNjkxLCJleHAiOjE3Mjc2ODQ0OTEsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.nw1Ar8KUlOQwuoDXmrTxId9DI_eVaW65u0crX7Fk2mwkeCtMiwE-c9dQv7sK2cwZWbG4ShJT6Vjzl89o9e0UvQ\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NjgyNjkxLCJleHAiOjE3Mjc3NjkwOTF9.p5PRH8uUcqupesvFKQnO1ykCtVuTZ_pwAOjIgSpmzRI-x5q5YSsEOGX8FX3JcrsrB4YhrvtcSVc7X9Cv9jeilw\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTExMjYzLCJleHAiOjE3Mjc5MTMwNjMsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.iMBNqtogso84q-4mjbuTGHVf2L15Czosj1JxaKf-DBZGKS1TUudAzlfmOO4LGxABAnMFEb4TJ7iX6Ixg1pm-FQ\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTExMjYzLCJleHAiOjE3Mjc5OTc2NjN9.rFCRYL9tri6bRQqnwyNKRNmsM-AjofK9YyCOizLTEs_qJxFPXZVncWRCrMDnzcpL_NyrFsNXmP6Xx0IL3XZUSQ\"\
                     }}"
   /member/logout:
     post:
@@ -175,11 +175,11 @@ paths:
               examples:
                 회원 검색 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalPages\":0,\"totalElements\":0,\"sort\":{\"empty\":true,\"\
-                    unsorted\":true,\"sorted\":false},\"content\":[],\"number\":0,\"\
-                    first\":true,\"last\":true,\"size\":10,\"pageable\":{\"pageNumber\"\
+                    totalPages\":0,\"totalElements\":0,\"first\":true,\"last\":true,\"\
+                    sort\":{\"empty\":true,\"unsorted\":true,\"sorted\":false},\"\
+                    size\":10,\"content\":[],\"number\":0,\"pageable\":{\"pageNumber\"\
                     :0,\"pageSize\":10,\"sort\":{\"empty\":true,\"unsorted\":true,\"\
-                    sorted\":false},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
+                    sorted\":false},\"offset\":0,\"unpaged\":false,\"paged\":true},\"\
                     numberOfElements\":0,\"empty\":true}}"
       security:
       - bearerAuthJWT: []
@@ -200,8 +200,8 @@ paths:
               examples:
                 토큰 재발급 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NjgyNjkyLCJleHAiOjE3Mjc2ODQ0OTIsInJvbGVzIjoiIn0._450RsNqzqJDL5XwxbvDUUdkfOTLM9jSQo3zdhlU7jFh2DoeDkIxIzc-7RgnTrNl7Rjbvi7bCN72D6s7BZ7m-Q\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3NjgyNjkyLCJleHAiOjE3Mjc3NjkwOTJ9.8bMRqNVfXoVZMeoJM5oBURSY_XGCJl_j_s0hi_x8DSDxE6vUO8ahcHGsaJeGajUvFlh8NOcDE2-IuDj33PMbfw\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTExMjY0LCJleHAiOjE3Mjc5MTMwNjQsInJvbGVzIjoiIn0.MhvMS8jj0HPtVQGdI7yN5a6a8DFxP5oQixCnyIa97l3Q2THmCkO4d92vS27EfKdBo6bgDrCySLUx3wm6zQNyYA\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTExMjY0LCJleHAiOjE3Mjc5OTc2NjR9.jRaoXgmFliatE218aoHXKuOCkRIoD5h_Peo12icplU54fxiMLZ39bqVBeB3NPy3qNHze4xVsQRjGAwh9U3pr0w\"\
                     }}"
       security:
       - bearerAuthJWT: []

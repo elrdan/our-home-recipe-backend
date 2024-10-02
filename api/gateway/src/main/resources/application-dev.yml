@@ -1,2 +1,3 @@
 member-service-url: http://api-member:8081
+recipe-service-url: http://api-recipe:8082
 event-service-url: http://api-event:8089

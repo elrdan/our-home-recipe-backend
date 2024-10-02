@@ -40,11 +40,11 @@ public class JwtProvider {
 	private final String AUTHENTICATION_CLAIM_NAME = "roles";
 
 	@Value("${jwt.access-expiration-milliseconds}")
-	private int accessExpirationMilliseconds;        // 엑세스 토큰 만료 시간
+	private long accessExpirationMilliseconds;        // 엑세스 토큰 만료 시간
 
 	@Getter
 	@Value("${jwt.refresh-expiration-milliseconds}")
-	private int refreshExpirationMilliseconds;        // 리프래쉬 토큰 만료 시간
+	private long refreshExpirationMilliseconds;        // 리프래쉬 토큰 만료 시간
 
 	@Value("${jwt.access-key}")
 	private String accessSecret;                // Jwt 서명 엑세스 키

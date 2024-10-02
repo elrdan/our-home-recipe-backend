@@ -12,9 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class Ingredient {
@@ -28,5 +30,7 @@ public class Ingredient {
 
 	private String name;
 
-	private String unit;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "unit_type_id")
+	private UnitType unitType;
 }

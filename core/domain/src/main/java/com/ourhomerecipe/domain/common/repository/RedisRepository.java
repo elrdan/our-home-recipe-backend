@@ -62,7 +62,7 @@ public class RedisRepository {
 	/**
 	 * SET refresh token - 리프래쉬 토큰 정보 저장
 	 */
-	public void setRedisRefreshToken(String email, String refreshToken, int expirationSeconds) {
+	public void setRedisRefreshToken(String email, String refreshToken, long expirationSeconds) {
 		ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 		valueOperations.set(email, Map.of("refreshToken", refreshToken), createExpireDuration(expirationSeconds));
 	}

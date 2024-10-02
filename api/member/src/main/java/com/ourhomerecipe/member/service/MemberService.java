@@ -300,7 +300,7 @@ public class MemberService {
 	 * refreshToken redis 저장
 	 */
 	private void registerRedisRefreshToken(MemberDetailsImpl memberDetails, String refreshToken) {
-		int refreshExpirationSeconds = jwtProvider.getRefreshExpirationMilliseconds();
+		long refreshExpirationSeconds = jwtProvider.getRefreshExpirationMilliseconds();
 		redisRepository.setRedisRefreshToken(memberDetails.getUsername(), refreshToken, refreshExpirationSeconds);
 	}
 

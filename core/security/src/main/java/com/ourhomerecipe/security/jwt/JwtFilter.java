@@ -54,7 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
 				}else {
 					Header<?> header = new DefaultHeader<>();
 					Claims claims = new DefaultClaims();
-					String message = "토큰의 유효기한이 만료되었습니다.";
+					String message = "정상적인 토큰이 아닙니다. 확인 후 다시 시도해주세요.";
 					throw new ExpiredJwtException(header, claims, message);
 				}
 			}else {

@@ -306,7 +306,7 @@ public class MemberControllerTest extends BaseTest {
 	@DisplayName("8-1. 토큰 재발급")
 	void updateAccessTokenAndRefreshTokenSuccess() {
 		Map<String, String> map = new HashMap<>();
-		map.put("admin@gmail.com", refreshToken);
+		map.put("refreshToken", refreshToken);
 
 		doReturn(map).when(redisRepository).getRefreshToken("admin@gmail.com");
 

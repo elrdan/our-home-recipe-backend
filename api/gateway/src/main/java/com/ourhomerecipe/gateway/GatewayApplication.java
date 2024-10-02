@@ -22,11 +22,13 @@ public class GatewayApplication {
 	@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
 		@Value("${member-service-url}") String memberServiceUrl,
+		@Value("${recipe-service-url}") String recipeServiceUrl,
 		@Value("${event-service-url}") String eventServiceUrl
 	) {
 		// 각 서비스에 맞는 라우트 설정 호출
 		return builder.routes()
-			.route("api-member", memberRoute(memberServiceUrl))  // Member 관련 API 경로 라우트
+			.route("api-member", memberRoute(memberServiceUrl))
+			.route("api-recipe", recipeRoute(recipeServiceUrl))
 			.route("api-event", eventRoute(eventServiceUrl))
 			.build();
 	}
@@ -35,6 +37,12 @@ public class GatewayApplication {
 	private Function<PredicateSpec, Buildable<Route>> memberRoute(String memberServiceUrl) {
 		return r -> r.path("/v1/member/**")
 			.uri(memberServiceUrl);
+	}
+
+	// Member 서비스에 대한 라우트 설정
+	private Function<PredicateSpec, Buildable<Route>> recipeRoute(String recipeServiceUrl) {
+		return r -> r.path("/v1/recipe/**")
+			.uri(recipeServiceUrl);
 	}
 
 	// Event 서비스에 대한 라우트 설정

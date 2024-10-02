@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -159,19 +158,22 @@ public class MemberController {
 	 */
 	@GetMapping("/token/refresh")
 	public ResponseEntity<OhrResponse<?>> updateAccessTokenAndRefreshToken(
-		@AuthenticationPrincipal MemberDetailsImpl memberDetails,
 		HttpServletRequest request
 	) {
 		String refreshToken = jwtProvider.extractToken(request);
 
-		// 토큰이 없는 경우
-		if (!hasText(refreshToken)) {
-			throw new CustomSecurityException(VALIDATION_NOT_EXISTS_TOKEN_FAILED);
-		}
+		MemberDetailsImpl memberDetails;
 
-		// 토큰이 검증이 실패한 경우
-		if (!jwtProvider.validate(refreshToken)) {
-			throw new CustomSecurityException(VALIDATION_TOKEN_FAILED);
+		// refreshToken 존재 확인
+		if (hasText(refreshToken)) {
+			// 토큰이 검증
+			if (jwtProvider.validate(refreshToken)) {
+				memberDetails = (MemberDetailsImpl)jwtProvider.toAuthentication(refreshToken).getPrincipal();
+			}else {
+				throw new CustomSecurityException(VALIDATION_TOKEN_FAILED);
+			}
+		}else {
+			throw new CustomSecurityException(VALIDATION_NOT_EXISTS_TOKEN_FAILED);
 		}
 
 		return ResponseEntity.status(SUCCESS.getStatus())

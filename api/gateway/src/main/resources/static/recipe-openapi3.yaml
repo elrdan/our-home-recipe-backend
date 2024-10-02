@@ -1,0 +1,101 @@
+openapi: 3.0.1
+info:
+  title: 우리집 레시피 API Documentation
+  description: Spring REST Docs with SwaggerUI
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/v1
+tags: []
+paths:
+  /recipe/register:
+    post:
+      tags:
+      - 레시피 API
+      summary: 레시피 등록
+      description: 레시피 등록
+      operationId: 레시피 등록 API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipe-register68666122'
+            examples:
+              레시피 등록 API:
+                value: "{\"recipeName\":\"레시피 테스트\",\"description\":\"레시피 테스트 설명\"\
+                  ,\"tags\":[{\"id\":12,\"type\":\"SERVING\",\"name\":\"ONE\"}],\"\
+                  ingredients\":[{\"id\":5,\"name\":\"돼지고기\",\"quantity\":\"100\"\
+                  }]}"
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-register-1362881254'
+              examples:
+                레시피 등록 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    id\":1}}"
+      security:
+      - bearerAuthJWT: []
+components:
+  schemas:
+    recipe-register68666122:
+      type: object
+      properties:
+        recipeName:
+          type: string
+          description: 레시피 이름
+        ingredients:
+          type: array
+          description: 재료 리스트
+          items:
+            type: object
+            properties:
+              quantity:
+                type: string
+                description: 재료 수량
+              name:
+                type: string
+                description: 재료 타입
+              id:
+                type: number
+                description: 재료 ID
+        description:
+          type: string
+          description: 레시피 설명
+        tags:
+          type: array
+          description: 태그 리스트
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: 태그 이름
+              id:
+                type: number
+                description: 태그 ID
+              type:
+                type: string
+                description: 태그 타입
+    recipe-register-1362881254:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              description: 레시피 고유번호
+        message:
+          type: string
+          description: 상태 메시지
+  securitySchemes:
+    bearerAuthJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
