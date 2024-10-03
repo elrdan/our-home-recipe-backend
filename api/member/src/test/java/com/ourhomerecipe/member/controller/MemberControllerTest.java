@@ -248,10 +248,10 @@ public class MemberControllerTest extends BaseTest {
 		// 내 프로필 업데이트 API 문서화
 		given(spec)
 			.header("Authorization", "Bearer " + accessToken)   // accessToken 설정 추가
-			.filter(document("내 프로필 업데이트 API",
+			.filter(document("내 프로필 수정 API",
 				resourceDetails()
 					.tag("회원 API")
-					.summary("내 프로필 업데이트"),
+					.summary("내 프로필 수정"),
 				// 요청 필드 (Multipart 파트 설명)
 				requestParts(
 					partWithName("member").description("프로필 업데이트 요청 데이터 (JSON 형식)"),
