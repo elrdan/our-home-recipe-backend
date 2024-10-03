@@ -145,17 +145,20 @@ public class MemberService {
 		Member member = memberRepository.findById(memberDetails.getId())
 			.orElseThrow(() -> new MemberException(NOT_EXISTS_MEMBER));
 
-		String newNickname = updateProfileReqDto.getNickname();
-		String newIntroduce = updateProfileReqDto.getIntroduce();
+		String newNickname = null;
+		String newIntroduce = null;
 		String newProfileImage = null;
 
-		// 닉네임 중복확인
-		if(hasText(newNickname)) {
-			if(newNickname.equals(member.getNickname()) || checkNickname(newNickname)) {
-				throw new MemberException(ALREADY_MEMBER_NICKNAME);
+		if(updateProfileReqDto != null) {
+			newNickname = updateProfileReqDto.getNickname();
+			newIntroduce = updateProfileReqDto.getIntroduce();
+
+			// 닉네임 중복확인
+			if(hasText(newNickname)) {
+				if(newNickname.equals(member.getNickname()) || checkNickname(newNickname)) {
+					throw new MemberException(ALREADY_MEMBER_NICKNAME);
+				}
 			}
-		}else {
-			newNickname = null;
 		}
 
 		// S3 이미지 업로드
