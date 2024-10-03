@@ -7,6 +7,45 @@ servers:
 - url: http://localhost:8080/v1
 tags: []
 paths:
+  /recipe/metadata:
+    get:
+      tags:
+      - 레시피 API
+      summary: 레시피 메타데이터 조회
+      description: 레시피 메타데이터 조회
+      operationId: 레시피 메타데이터 조회 API
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-metadata1687645871'
+              examples:
+                레시피 메타데이터 조회 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    ingredients\":[{\"ingredientId\":1,\"ingredientName\":\"ëŒ€íŒŒ\
+                    \"},{\"ingredientId\":2,\"ingredientName\":\"ì²­ì–‘ê³\_ì¶”\"},{\"\
+                    ingredientId\":3,\"ingredientName\":\"ìŒ€ëœ¨ë¬¼\"},{\"ingredientId\"\
+                    :4,\"ingredientName\":\"ê¹€ì¹˜\"},{\"ingredientId\":5,\"ingredientName\"\
+                    :\"ë\x8f¼ì§€ê³\_ê¸°\"},{\"ingredientId\":6,\"ingredientName\"\
+                    :\"êµ­ê°„ìž¥\"},{\"ingredientId\":7,\"ingredientName\":\"ê³\_ì\
+                    ¶§ê°€ë£¨\"},{\"ingredientId\":8,\"ingredientName\":\"ë‹¤ì§„ë§ˆ\
+                    ëŠ˜\"},{\"ingredientId\":9,\"ingredientName\":\"ìƒˆìš°ì\_“\"},{\"\
+                    ingredientId\":10,\"ingredientName\":\"ë\x90œìž¥\"}],\"tags\"\
+                    :[{\"tagTypeName\":\"SEASON\",\"tags\":[{\"tagId\":8,\"tagName\"\
+                    :\"ë´„\"},{\"tagId\":9,\"tagName\":\"ì—¬ë¦„\"},{\"tagId\":10,\"\
+                    tagName\":\"ê°€ì\x9d„\"},{\"tagId\":11,\"tagName\":\"ê²¨ìš¸\"\
+                    }]},{\"tagTypeName\":\"SERVING\",\"tags\":[{\"tagId\":12,\"tagName\"\
+                    :\"1ì\x9d¸ë¶„\"},{\"tagId\":13,\"tagName\":\"2ì\x9d¸ë¶„\"},{\"\
+                    tagId\":14,\"tagName\":\"3ì\x9d¸ë¶„\"},{\"tagId\":15,\"tagName\"\
+                    :\"4ì\x9d¸ë¶„\"},{\"tagId\":16,\"tagName\":\"ê°€ì¡±\"}]},{\"tagTypeName\"\
+                    :\"MEAL_TIME\",\"tags\":[{\"tagId\":1,\"tagName\":\"ì•„ì¹¨\"},{\"\
+                    tagId\":2,\"tagName\":\"ì\_\x90ì‹¬\"},{\"tagId\":3,\"tagName\"\
+                    :\"ì\_€ë…\x81\"}]},{\"tagTypeName\":\"PURPOSE\",\"tags\":[{\"\
+                    tagId\":4,\"tagName\":\"ì\x9d¼ìƒ\x81\"},{\"tagId\":5,\"tagName\"\
+                    :\"íŒŒí‹°\"},{\"tagId\":6,\"tagName\":\"ë‹¤ì\x9d´ì–´íŠ¸\"},{\"\
+                    tagId\":7,\"tagName\":\"ì†\x90ë‹˜\"}]}]}}"
   /recipe/register:
     post:
       tags:
@@ -18,13 +57,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/recipe-register68666122'
+              $ref: '#/components/schemas/recipe-register-1951027700'
             examples:
               레시피 등록 API:
                 value: "{\"recipeName\":\"레시피 테스트\",\"description\":\"레시피 테스트 설명\"\
-                  ,\"tags\":[{\"id\":12,\"type\":\"SERVING\",\"name\":\"ONE\"}],\"\
-                  ingredients\":[{\"id\":5,\"name\":\"돼지고기\",\"quantity\":\"100\"\
-                  }]}"
+                  ,\"tags\":[{\"tagId\":12,\"tagName\":\"ONE\",\"tagTypeName\":\"\
+                  SERVING\"}],\"ingredients\":[{\"ingredientId\":5,\"ingredientName\"\
+                  :\"돼지고기\",\"ingredientQuantity\":\"100\"}]}"
       responses:
         "201":
           description: "201"
@@ -34,13 +73,60 @@ paths:
                 $ref: '#/components/schemas/recipe-register-1362881254'
               examples:
                 레시피 등록 API:
-                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                  value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
                     id\":1}}"
       security:
       - bearerAuthJWT: []
 components:
   schemas:
-    recipe-register68666122:
+    recipe-metadata1687645871:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          properties:
+            ingredients:
+              type: array
+              description: 레시피 재료 목록
+              items:
+                type: object
+                properties:
+                  ingredientId:
+                    type: number
+                    description: 재료 ID
+                  ingredientName:
+                    type: string
+                    description: 재료 이름
+            tags:
+              type: array
+              description: 레시피 태그 목록
+              items:
+                type: object
+                properties:
+                  tagTypeName:
+                    type: string
+                    description: "태그 타입 이름 (예: SEASON, MEAL_TIME, SERVING, PURPOSE\
+                      \ 등)"
+                  tags:
+                    type: array
+                    description: 해당 태그 타입의 태그 목록
+                    items:
+                      type: object
+                      properties:
+                        tagId:
+                          type: number
+                          description: 태그 ID
+                        tagName:
+                          type: string
+                          description: "태그 이름 (예: 봄, 여름, 아침, 점심 등)"
+          description: 레시피 메타데이터
+        message:
+          type: string
+          description: 상태 메시지
+    recipe-register-1951027700:
       type: object
       properties:
         recipeName:
@@ -52,15 +138,15 @@ components:
           items:
             type: object
             properties:
-              quantity:
-                type: string
-                description: 재료 수량
-              name:
-                type: string
-                description: 재료 타입
-              id:
+              ingredientId:
                 type: number
                 description: 재료 ID
+              ingredientName:
+                type: string
+                description: 재료 타입
+              ingredientQuantity:
+                type: string
+                description: 재료 수량
         description:
           type: string
           description: 레시피 설명
@@ -70,15 +156,15 @@ components:
           items:
             type: object
             properties:
-              name:
-                type: string
-                description: 태그 이름
-              id:
+              tagId:
                 type: number
                 description: 태그 ID
-              type:
+              tagTypeName:
                 type: string
                 description: 태그 타입
+              tagName:
+                type: string
+                description: 태그 이름
     recipe-register-1362881254:
       type: object
       properties:

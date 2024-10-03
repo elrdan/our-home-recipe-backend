@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ValidTag(message = "등록되지 않은 태그입니다.")
-public class TagReqDto {
+public class RecipeTagReqDto {
 	@NotNull(message = "태그 식별자 값은 필수입니다.")
-	private Long id;
+	private Long tagId;
 
-	private TagType type;
+	private String tagName;
 
-	private String name;
+	private TagType tagTypeName;
 }

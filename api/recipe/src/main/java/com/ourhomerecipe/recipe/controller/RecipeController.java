@@ -5,6 +5,7 @@ import static com.ourhomerecipe.domain.common.success.code.GlobalSuccessCode.*;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +36,14 @@ public class RecipeController {
 				CREATE,
 				Map.of("id", recipeService.registerRecipe(recipeRegisterReqDto).getId())
 			));
+	}
+
+	/**
+	 * 레시피 메타 데이터 조회
+	 */
+	@GetMapping("/metadata")
+	public ResponseEntity<OhrResponse<?>> getMetadataRecipe() {
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(recipeService.getMetadataRecipe()));
 	}
 }

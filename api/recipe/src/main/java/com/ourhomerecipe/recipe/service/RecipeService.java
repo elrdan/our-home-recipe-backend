@@ -3,6 +3,7 @@ package com.ourhomerecipe.recipe.service;
 import static com.ourhomerecipe.domain.common.error.code.RecipeErrorCode.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +18,12 @@ import com.ourhomerecipe.domain.recipe.repository.RecipeIngredientRepository;
 import com.ourhomerecipe.domain.recipe.repository.RecipeRepository;
 import com.ourhomerecipe.domain.recipe.repository.RecipeTagRepository;
 import com.ourhomerecipe.domain.tag.Tag;
-import com.ourhomerecipe.dto.recipe.request.IngredientReqDto;
+import com.ourhomerecipe.dto.recipe.request.RecipeIngredientReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
-import com.ourhomerecipe.dto.recipe.request.TagReqDto;
+import com.ourhomerecipe.dto.recipe.request.RecipeTagReqDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeIngredientResDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeMetadataResDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeTagResDto;
 import com.ourhomerecipe.recipe.exception.RecipeException;
 
 import jakarta.persistence.EntityManager;
@@ -50,8 +54,8 @@ public class RecipeService {
 
 		// 레시피, 재료 관계 저장
 		try {
-			for(IngredientReqDto ingredientData: recipeRegisterReqDto.getIngredients()) {
-				Ingredient ingredient = entityManager.getReference(Ingredient.class, ingredientData.getId());
+			for(RecipeIngredientReqDto ingredientData: recipeRegisterReqDto.getIngredients()) {
+				Ingredient ingredient = entityManager.getReference(Ingredient.class, ingredientData.getIngredientId());
 
 				RecipeIngredientId recipeIngredientId = RecipeIngredientId.builder()
 					.recipeId(recipe.getId())
@@ -62,7 +66,7 @@ public class RecipeService {
 					.id(recipeIngredientId)
 					.recipe(recipe)
 					.ingredient(ingredient)
-					.quantity(new BigDecimal(ingredientData.getQuantity()))
+					.quantity(new BigDecimal(ingredientData.getIngredientQuantity()))
 					.build();
 
 				recipeIngredientRepository.save(recipeIngredient);
@@ -73,8 +77,8 @@ public class RecipeService {
 
 		// 레시피, 태그 관계 저장
 		try {
-			for(TagReqDto tagData: recipeRegisterReqDto.getTags()) {
-				Tag tag = entityManager.getReference(Tag.class, tagData.getId());
+			for(RecipeTagReqDto tagData: recipeRegisterReqDto.getTags()) {
+				Tag tag = entityManager.getReference(Tag.class, tagData.getTagId());
 
 				RecipeTagId recipeTagId = RecipeTagId.builder()
 					.recipeId(recipe.getId())
@@ -94,5 +98,19 @@ public class RecipeService {
 		}
 
 		return recipe;
+	}
+
+	/**
+	 * 레시피 메타 데이터 조회
+	 */
+	@Transactional(readOnly = true)
+	public RecipeMetadataResDto getMetadataRecipe() {
+		List<RecipeIngredientResDto> ingredients = recipeIngredientRepository.getAllIngredient();
+		List<RecipeTagResDto> tagList = recipeTagRepository.getAllTagAndType();
+
+		return RecipeMetadataResDto.builder()
+			.ingredients(ingredients)
+			.tags(tagList)
+			.build();
 	}
 }

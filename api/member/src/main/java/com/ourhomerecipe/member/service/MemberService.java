@@ -2,9 +2,11 @@ package com.ourhomerecipe.member.service;
 
 import static com.ourhomerecipe.domain.common.error.code.EventErrorCode.*;
 import static com.ourhomerecipe.domain.common.error.code.MemberErrorCode.*;
+import static com.ourhomerecipe.domain.common.error.code.S3ErrorCode.*;
 import static com.ourhomerecipe.domain.common.error.code.SecurityErrorCode.*;
 import static org.springframework.util.StringUtils.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ourhomerecipe.domain.common.repository.RedisRepository;
+import com.ourhomerecipe.domain.common.repository.S3Repository;
 import com.ourhomerecipe.domain.member.Member;
 import com.ourhomerecipe.domain.member.repository.MemberRepository;
 import com.ourhomerecipe.dto.email.request.EmailAuthConfirmRequestDto;
@@ -52,6 +55,7 @@ public class MemberService {
 	private final RestTemplate restTemplate;
 	private final JwtProvider jwtProvider;
 	private final AuthenticationManager authenticationManager;
+	private final S3Repository s3Repository;
 
 	@Value("${service-url}")
 	private String serviceUrl;
@@ -143,29 +147,27 @@ public class MemberService {
 
 		String newNickname = updateProfileReqDto.getNickname();
 		String newIntroduce = updateProfileReqDto.getIntroduce();
-		boolean isChangeNickname = false;
+		String newProfileImage = null;
 
+		// 닉네임 중복확인
 		if(hasText(newNickname)) {
 			if(newNickname.equals(member.getNickname()) || checkNickname(newNickname)) {
 				throw new MemberException(ALREADY_MEMBER_NICKNAME);
 			}
-
-			isChangeNickname = true;
+		}else {
+			newNickname = null;
 		}
 
-		if (isChangeNickname) {
-			member.updateProfile(newNickname, newIntroduce);
-		} else {
-			member.updateProfile(newIntroduce);
-		}
-
-		// 회원 프로필 이미지 변경
+		// S3 이미지 업로드
 		if(file != null && file.isEmpty()) {
-			// TODO - S3 설정 후 파일 업로드 처리 해야 함.
-			String newProfileImage = "";
-			member.updateProfileImage(newProfileImage);
+			try {
+				newProfileImage = s3Repository.uploadFile(file);
+			}catch(IOException e) {
+				throw new MemberException(S3_UPLOAD_FAILED);
+			}
 		}
 
+		member.updateProfile(newNickname, newIntroduce, newProfileImage);
 		return memberRepository.save(member);
 	}
 

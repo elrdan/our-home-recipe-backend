@@ -35,11 +35,10 @@ public class Recipe extends MutableBaseEntity {
 	private String description;
 
 	public static Recipe fromRecipeRegisterReqDto(RecipeRegisterReqDto registerDto) {
-		// TODO - Recipe 이미지 설정 추가해야 함.
-
 		Recipe recipe = Recipe.builder()
 			.name(registerDto.getRecipeName())
 			.description(registerDto.getDescription())
+			.image("https://our-home-recipe-bucket.s3.ap-northeast-2.amazonaws.com/no-image.jpg")
 			.build();
 
 		return recipe;

@@ -4,6 +4,8 @@ import static com.ourhomerecipe.domain.member.enums.ProviderType.*;
 import static com.ourhomerecipe.domain.member.enums.RoleType.*;
 import static com.ourhomerecipe.domain.member.enums.StatusType.*;
 
+import org.springframework.util.StringUtils;
+
 import com.ourhomerecipe.domain.TimestampedEntity;
 import com.ourhomerecipe.domain.member.enums.ProviderType;
 import com.ourhomerecipe.domain.member.enums.RoleType;
@@ -72,26 +74,17 @@ public class Member extends TimestampedEntity {
 	@Builder.Default
 	private ProviderType provider = NONE;
 
-	public Member(String email, String password, String nickname, String phoneNumber, String name, String introduce) {
-		this.email = email;
-		this.password = password;
-		this.nickname = nickname;
-		this.phoneNumber = phoneNumber;
-		this.name = name;
-
-		if(introduce != null) {
-			this.introduce = introduce;
-		}
-	}
-
 	public static Member fromMemberRegisterDto(MemberRegisterReqDto registerDto) {
-		// TODO - 프로필 이미지 설정 추가해야 함.
+		String introduce = registerDto.getIntroduce();
+		registerDto.setIntroduce(StringUtils.hasText(introduce) ? introduce : "");
 
 		Member member = Member.builder()
 			.email(registerDto.getEmail())
 			.nickname(registerDto.getNickname())
 			.phoneNumber(registerDto.getPhoneNumber())
 			.name(registerDto.getName())
+			.introduce(registerDto.getIntroduce())
+			.profileImage("https://our-home-recipe-bucket.s3.ap-northeast-2.amazonaws.com/no-image.jpg")
 			.build();
 
 		return member;
@@ -100,16 +93,15 @@ public class Member extends TimestampedEntity {
 	/**
 	 * 닉네임의 경우 공백값이 올 수 없고, 소개의 경우는 공백값을 사용할 수 있게 처리
 	 */
-	public void updateProfile(String newNickname, String newIntroduce) {
-		this.nickname = newNickname;
-		this.introduce = newIntroduce;
-	}
-
-	public void updateProfile(String newIntroduce) {
-		this.introduce = newIntroduce;
-	}
-
-	public void updateProfileImage(String newProfileImage) {
-
+	public void updateProfile(String newNickname, String newIntroduce, String newProfileImage) {
+		if (newNickname != null) {
+			this.nickname = newNickname;
+		}
+		if (newIntroduce != null) {
+			this.introduce = newIntroduce;
+		}
+		if (newProfileImage != null) {
+			this.profileImage = newProfileImage;
+		}
 	}
 }

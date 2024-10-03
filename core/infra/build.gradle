@@ -10,6 +10,7 @@ jar { enabled = true }
 ext {
     queryDslVersion = "5.0.0"
     mysqlVersion = "8.0.29"
+    s3Version = "1.12.470"
 }
 
 dependencies {
@@ -25,11 +26,14 @@ dependencies {
     // Spring Security 스타터: 인증 및 인가 기능을 제공
     implementation "org.springframework.boot:spring-boot-starter-security"
 
-    // Spring Test 의존성 추가
+    // Spring Test
     implementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // Redis 의존성
+    // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // S3
+    implementation "com.amazonaws:aws-java-sdk-s3:${s3Version}"
 
     // TestFixtures 의존성
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -5,14 +5,18 @@ jar { enabled = true }
 
 ext {
     queryDslVersion = "5.0.0"
+    s3Version = "1.12.470"
 }
 
 dependencies {
     // common 종속성
     implementation project(':common')
 
-    // Redis 의존성
+    // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // S3
+    implementation "com.amazonaws:aws-java-sdk-s3:${s3Version}"
 
     // querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"

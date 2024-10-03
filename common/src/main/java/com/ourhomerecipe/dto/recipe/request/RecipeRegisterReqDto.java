@@ -24,9 +24,9 @@ public class RecipeRegisterReqDto {
 
 	@Valid
 	@NotEmpty(message = "하나 이상의 태그가 필요합니다.")
-	private List<TagReqDto> tags;
+	private List<RecipeTagReqDto> tags;
 
 	@Valid
 	@NotEmpty(message = "하나 이상의 재료가 필요합니다.")
-	private List<IngredientReqDto> ingredients;
+	private List<RecipeIngredientReqDto> ingredients;
 }

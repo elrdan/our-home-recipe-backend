@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientReqDto {
+public class RecipeIngredientReqDto {
 	@NotNull(message = "재료 식별자는 필수입니다.")
-	private Long id;
+	private Long ingredientId;
 
 	@NotBlank(message = "재료 이름은 필수입니다.")
-	private String name;
+	private String ingredientName;
 
 	@NotBlank(message = "재료 수량은 필수입니다.")
-	private String quantity;
+	private String ingredientQuantity;
 }

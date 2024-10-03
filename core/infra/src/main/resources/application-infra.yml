@@ -45,6 +45,10 @@ spring:
                     timeout: 5000                       # 서버 응답 타임아웃 시간 (밀리초)
                     writetimeout: 5000                  # 서버에 데이터 전송 타임아웃 시간 (밀리초)
 
+    s3:
+        access-key: ${S3_ACCESS_KEY}
+        secret-access-key: ${S3_REFRESH_KEY}
+
 ---
 spring:
     config.activate.on-profile: dev
@@ -86,6 +90,10 @@ spring:
                     connectiontimeout: 5000     # 서버 연결 타임아웃 시간 (밀리초)
                     timeout: 5000               # 서버 응답 타임아웃 시간 (밀리초)
                     writetimeout: 5000          # 서버에 데이터 전송 타임아웃 시간 (밀리초)
+
+    s3:
+        access-key: ${S3_ACCESS_KEY}
+        secret-access-key: ${S3_REFRESH_KEY}
 
 
 logging:
