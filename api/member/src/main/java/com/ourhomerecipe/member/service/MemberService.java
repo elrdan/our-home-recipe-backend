@@ -162,7 +162,7 @@ public class MemberService {
 		}
 
 		// S3 이미지 업로드
-		if(file != null && file.isEmpty()) {
+		if(file != null && !file.isEmpty()) {
 			try {
 				newProfileImage = s3Repository.uploadFile(file);
 			}catch(IOException e) {
