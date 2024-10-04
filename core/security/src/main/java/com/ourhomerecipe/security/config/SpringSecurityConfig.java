@@ -132,6 +132,7 @@ public class SpringSecurityConfig {
 
 			antMatcher(GET, "/recipe/metadata"),						// 레시피 메타데이터
 			antMatcher(GET, "/recipe/member/search"),					// 레시피 사용자(nickname) 조회
+			antMatcher(GET, "/recipe/search"),						// 레시피 이름 조회
 
 			// 스웨거
 			antMatcher(GET, "/swagger-ui.html"),

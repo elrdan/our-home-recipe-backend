@@ -24,7 +24,7 @@ import com.ourhomerecipe.dto.recipe.request.RecipeIngredientReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeTagReqDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeIngredientResDto;
-import com.ourhomerecipe.dto.recipe.response.RecipeMemberSearchResDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeSearchResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeMetadataResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeTagResDto;
 import com.ourhomerecipe.recipe.exception.RecipeException;
@@ -117,8 +117,18 @@ public class RecipeService {
 			.build();
 	}
 
+	/**
+	 * 레시피 회원 닉네임 조회
+	 */
 	@Transactional(readOnly = true)
-	public Page<RecipeMemberSearchResDto> getMemberSearchRecipe(String nickname, Pageable pageable) {
-		return recipeRepository.getAllMemberRecipe(nickname, pageable);
+	public Page<RecipeSearchResDto> getMemberSearchRecipe(String nickname, Pageable pageable) {
+		return recipeRepository.getAllMemberSearchRecipe(nickname, pageable);
+	}
+
+	/**
+	 * 레시피 이름 조회
+	 */
+	public Page<RecipeSearchResDto> getSearchRecipe(String name, Pageable pageable) {
+		return recipeRepository.getAllSearchRecipe(name, pageable);
 	}
 }

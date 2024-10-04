@@ -64,4 +64,18 @@ public class RecipeController {
 		return ResponseEntity.status(SUCCESS.getStatus())
 			.body(new OhrResponse<>(recipeService.getMemberSearchRecipe(nickname, pageable)));
 	}
+
+	/**
+	 * 레시피 이름 조회
+	 */
+	@GetMapping("/search")
+	public ResponseEntity<OhrResponse<?>> getSearchRecipe(
+		@RequestParam("name") String name,
+		@RequestParam("page") int page
+	) {
+		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(recipeService.getSearchRecipe(name, pageable)));
+	}
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -44,5 +45,14 @@ public class GlobalExceptionHandler {
 		ErrorResponse errorResponse = VALIDATION_FAILED.getErrorResponse();
 		fieldErrors.forEach(error -> errorResponse.addValidation(error.getField(), error.getDefaultMessage()));
 		return ResponseEntity.status(VALIDATION_FAILED.getStatus()).body(errorResponse);
+	}
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
+		log.error(">>>>> MissingServletRequestParameterException : {}", ex);
+		ErrorResponse errorResponse = MISSING_REQUEST_PARAM.getErrorResponse();
+
+		errorResponse.addMissingParams(ex.getParameterName());
+		return ResponseEntity.status(MISSING_REQUEST_PARAM.getStatus()).body(errorResponse);
 	}
 }

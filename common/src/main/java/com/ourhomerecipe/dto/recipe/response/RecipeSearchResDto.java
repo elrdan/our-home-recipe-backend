@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class RecipeMemberSearchResDto {
+public class RecipeSearchResDto {
 	private Long recipeId;
 
 	private String recipeName;

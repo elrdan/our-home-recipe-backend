@@ -77,6 +77,29 @@ paths:
                     id\":3}}"
       security:
       - bearerAuthJWT: []
+  /recipe/search:
+    get:
+      tags:
+      - 레시피 API
+      summary: 레시피 이름 조회
+      description: 레시피 이름 조회
+      operationId: 레시피 이름 조회 API
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-search-203810791'
+              examples:
+                레시피 이름 조회 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    totalPages\":0,\"totalElements\":0,\"number\":0,\"content\":[],\"\
+                    sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"\
+                    size\":9,\"first\":true,\"last\":true,\"pageable\":{\"pageNumber\"\
+                    :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"sorted\":false,\"\
+                    unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
+                    numberOfElements\":0,\"empty\":true}}"
   /recipe/member/search:
     get:
       tags:
@@ -96,12 +119,24 @@ paths:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
                     totalPages\":0,\"totalElements\":0,\"number\":0,\"content\":[],\"\
                     sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"\
-                    first\":true,\"last\":true,\"size\":9,\"pageable\":{\"pageNumber\"\
+                    size\":9,\"first\":true,\"last\":true,\"pageable\":{\"pageNumber\"\
                     :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"sorted\":false,\"\
                     unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
                     numberOfElements\":0,\"empty\":true}}"
 components:
   schemas:
+    recipe-search-203810791:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          description: "레시피 정보, 페이징 정보"
+        message:
+          type: string
+          description: 상태 메시지
     recipe-metadata1687645871:
       type: object
       properties:
