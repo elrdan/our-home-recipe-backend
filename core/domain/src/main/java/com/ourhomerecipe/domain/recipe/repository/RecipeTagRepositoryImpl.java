@@ -25,15 +25,12 @@ public class RecipeTagRepositoryImpl implements RecipeTagCustom {
 	@Override
 	public List<RecipeTagResDto> getAllTagAndType() {
 		// 태그 타입별로 그룹핑
-		Map<TagType, RecipeTagResDto> tagTypeMap = new HashMap<>();
+		Map<String, RecipeTagResDto> tagTypeMap = new HashMap<>();
 
 		// 프로젝션을 사용하여 TagDto와 TagTypeName을 매핑
 		queryFactory
 			.select(
-				fields(
-					RecipeTagResDto.class,
-					tagType.name.as("tagTypeName") // TagTypeName을 직접 가져옴
-				),
+				tagType.name.as("tagTypeName"), // enum 상수 이름 가져옴
 				fields(
 					RecipeTagResDto.TagDto.class,
 					tag.id.as("tagId"),
@@ -43,20 +40,21 @@ public class RecipeTagRepositoryImpl implements RecipeTagCustom {
 			.join(tag.tagType, tagType)
 			.fetch()
 			.forEach(tuple -> {
-				// TagTypeName 추출
-				RecipeTagResDto tagResDto = tuple.get(0, RecipeTagResDto.class);
-				RecipeTagResDto recipeTagResDto = tagTypeMap.get(tagResDto.getTagTypeName());
+				// TagType 상수 이름을 가져옴
+				String tagTypeName = tuple.get(0, String.class);
+
+				RecipeTagResDto recipeTagResDto = tagTypeMap.get(tagTypeName); // label을 사용
 
 				// 해당 TagTypeName이 처음 발견되면 새로운 DTO 생성
 				if (recipeTagResDto == null) {
 					recipeTagResDto = new RecipeTagResDto();
-					recipeTagResDto.setTagTypeName(tagResDto.getTagTypeName());
+					recipeTagResDto.setTagTypeName(tagTypeName); // label 값 설정
 					recipeTagResDto.setTags(new ArrayList<>());
-					tagTypeMap.put(tagResDto.getTagTypeName(), recipeTagResDto);
+					tagTypeMap.put(tagTypeName, recipeTagResDto);
 				}
 
 				// TagDto를 추가
-				RecipeTagResDto.TagDto tagDto = tuple.get(1, RecipeTagResDto.TagDto.class); // 두 번째 항목에서 TagDto를 가져옴
+				RecipeTagResDto.TagDto tagDto = tuple.get(1, RecipeTagResDto.TagDto.class);
 				recipeTagResDto.getTags().add(tagDto);
 			});
 

@@ -5,6 +5,8 @@ import static com.ourhomerecipe.domain.common.error.code.RecipeErrorCode.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import com.ourhomerecipe.dto.recipe.request.RecipeIngredientReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeTagReqDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeIngredientResDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeMemberSearchResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeMetadataResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeTagResDto;
 import com.ourhomerecipe.recipe.exception.RecipeException;
@@ -112,5 +115,10 @@ public class RecipeService {
 			.ingredients(ingredients)
 			.tags(tagList)
 			.build();
+	}
+
+	@Transactional(readOnly = true)
+	public Page<RecipeMemberSearchResDto> getMemberSearchRecipe(String nickname, Pageable pageable) {
+		return recipeRepository.getAllMemberRecipe(nickname, pageable);
 	}
 }

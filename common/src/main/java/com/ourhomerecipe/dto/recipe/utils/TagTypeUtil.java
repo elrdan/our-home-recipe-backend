@@ -1,5 +1,7 @@
 package com.ourhomerecipe.dto.recipe.utils;
 
+import static com.ourhomerecipe.dto.recipe.enums.TagType.*;
+
 import com.ourhomerecipe.dto.recipe.enums.CookingTime;
 import com.ourhomerecipe.dto.recipe.enums.DifficultyType;
 import com.ourhomerecipe.dto.recipe.enums.MealTimeType;
@@ -10,19 +12,19 @@ import com.ourhomerecipe.dto.recipe.enums.TagType;
 import com.ourhomerecipe.dto.recipe.enums.Tagable;
 
 public class TagTypeUtil {
-	public static Class<? extends Tagable> getTagableClassForTagType(TagType tagType) {
+	public static Class<? extends Tagable> getTagableClassForTagType(String tagType) {
 		switch (tagType) {
-			case MEAL_TIME:
+			case "식사 시간":
 				return MealTimeType.class;
-			case PURPOSE:
+			case "목적":
 				return PurposeType.class;
-			case SEASON:
+			case "계절":
 				return SeasonType.class;
-			case SERVING:
+			case "인분":
 				return ServingType.class;
-			case DIFFICULTY:
+			case "난이도":
 				return DifficultyType.class;
-			case COOKING_TIME:
+			case "조리 시간":
 				return CookingTime.class;
 			// 다른 케이스 추가
 			default:

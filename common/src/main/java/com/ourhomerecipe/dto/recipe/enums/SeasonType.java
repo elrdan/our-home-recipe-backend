@@ -4,14 +4,20 @@ import lombok.Getter;
 
 @Getter
 public enum SeasonType implements Tagable {
-	SPRING,     // 봄
-	SUMMER,     // 여름
-	AUTUMN,     // 가을
-	WINTER;     // 겨울
+	SPRING("봄"),
+	SUMMER("여름"),
+	AUTUMN("가을"),
+	WINTER("겨울");
+
+	private final String label;
+
+	SeasonType(String label) {
+		this.label = label;
+	}
 
 	@Override
 	public String getTagValue() {
-		return this.name();
+		return label;
 	}
 
 	@Override

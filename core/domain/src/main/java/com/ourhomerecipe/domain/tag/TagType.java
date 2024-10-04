@@ -19,6 +19,5 @@ public class TagType {
 	@Column(name = "tag_type_id")
 	private long id;
 
-	@Enumerated(EnumType.STRING)
-	private com.ourhomerecipe.dto.recipe.enums.TagType name;
+	private String name;
 }

@@ -131,6 +131,7 @@ public class SpringSecurityConfig {
 			antMatcher(POST, "/email/verification/send"),				// 이메일 인증 코드 메일 보내기
 
 			antMatcher(GET, "/recipe/metadata"),						// 레시피 메타데이터
+			antMatcher(GET, "/recipe/member/search"),					// 레시피 사용자(nickname) 조회
 
 			// 스웨거
 			antMatcher(GET, "/swagger-ui.html"),

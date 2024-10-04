@@ -32,7 +32,7 @@ public class RecipeControllerTest extends BaseTest {
 	void registerRecipeSuccess() {
 		RecipeTagReqDto recipeTagReqDto = RecipeTagReqDto.builder()
 			.tagId(12L)
-			.tagTypeName(TagType.SERVING)
+			.tagTypeName("인분")
 			.tagName("ONE")
 			.build();
 

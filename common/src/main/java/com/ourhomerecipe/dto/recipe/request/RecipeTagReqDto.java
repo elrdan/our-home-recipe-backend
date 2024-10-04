@@ -20,5 +20,5 @@ public class RecipeTagReqDto {
 
 	private String tagName;
 
-	private TagType tagTypeName;
+	private String tagTypeName;
 }

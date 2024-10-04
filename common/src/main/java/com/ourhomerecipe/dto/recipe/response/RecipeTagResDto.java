@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class RecipeTagResDto {
-	private TagType tagTypeName;
+	private String tagTypeName;
 
 	private List<TagDto> tags = new ArrayList<>();
 
