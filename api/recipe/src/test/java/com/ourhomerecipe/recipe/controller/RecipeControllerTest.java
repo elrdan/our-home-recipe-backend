@@ -33,7 +33,7 @@ public class RecipeControllerTest extends BaseTest {
 		RecipeTagReqDto recipeTagReqDto = RecipeTagReqDto.builder()
 			.tagId(12L)
 			.tagTypeName("인분")
-			.tagName("ONE")
+			.tagName("1인분")
 			.build();
 
 		List<RecipeTagReqDto> tags = new ArrayList<>();
@@ -124,4 +124,51 @@ public class RecipeControllerTest extends BaseTest {
 		.then().log().all()  // 요청 및 응답 로그 출력
 			.statusCode(200);
 	}
+
+	@Test
+	@DisplayName("3-1. 레시피 회원 닉네임 조회")
+	void getMemberSearchRecipe() {
+		// 레시피 회원 닉네임 조회 API 문서화
+		given(spec)
+			.filter(document("레시피 회원 닉네임 조회 API",
+				resourceDetails()
+					.tag("레시피 API")
+					.summary("레시피 회원 닉네임 조회"),
+				// 응답 필드 문서화
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지"),
+					// data 필드 자체에 대한 설명
+					fieldWithPath("data").type(OBJECT).description("레시피 회원 닉네임 조회 결과"),
+					fieldWithPath("data.totalPages").type(NUMBER).description("총 페이지 수"),
+					fieldWithPath("data.totalElements").type(NUMBER).description("총 요소 수"),
+					fieldWithPath("data.number").type(NUMBER).description("현재 페이지 번호"),
+					fieldWithPath("data.content").type(ARRAY).description("레시피 목록"),
+					fieldWithPath("data.pageable").type(OBJECT).description("페이징 정보"),
+					fieldWithPath("data.pageable.pageSize").type(NUMBER).description("페이지당 요소 수"),
+					fieldWithPath("data.pageable.pageNumber").type(NUMBER).description("현재 페이지 번호"),
+					fieldWithPath("data.pageable.offset").type(NUMBER).description("페이지 오프셋"),
+					fieldWithPath("data.pageable.sort").type(OBJECT).description("정렬 정보"),
+					fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("정렬 정보가 비어 있는지 여부"),
+					fieldWithPath("data.pageable.sort.unsorted").type(BOOLEAN).description("정렬되지 않은 상태 여부"),
+					fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("정렬된 상태 여부"),
+					fieldWithPath("data.pageable.unpaged").type(BOOLEAN).description("페이징 여부"),
+					fieldWithPath("data.pageable.paged").type(BOOLEAN).description("페이징 처리 여부"),
+					fieldWithPath("data.first").type(BOOLEAN).description("첫 번째 페이지 여부"),
+					fieldWithPath("data.last").type(BOOLEAN).description("마지막 페이지 여부"),
+					fieldWithPath("data.size").type(NUMBER).description("페이지 크기"),
+					fieldWithPath("data.sort.empty").type(BOOLEAN).description("정렬 정보가 비어 있는지 여부"),
+					fieldWithPath("data.sort.unsorted").type(BOOLEAN).description("정렬되지 않은 상태 여부"),
+					fieldWithPath("data.sort.sorted").type(BOOLEAN).description("정렬된 상태 여부"),
+					fieldWithPath("data.numberOfElements").type(NUMBER).description("현재 페이지의 요소 수"),
+					fieldWithPath("data.empty").type(BOOLEAN).description("데이터가 비어 있는지 여부")
+				)))
+			.contentType(JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
+		.when()
+			.params("nickname", "관리자", "page", 0)
+			.get("/recipe/member/search")
+		.then().log().all()  // 요청 및 응답 로그 출력
+			.statusCode(200);
+	}
+
 }

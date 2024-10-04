@@ -33,19 +33,19 @@ paths:
                     ¶§ê°€ë£¨\"},{\"ingredientId\":8,\"ingredientName\":\"ë‹¤ì§„ë§ˆ\
                     ëŠ˜\"},{\"ingredientId\":9,\"ingredientName\":\"ìƒˆìš°ì\_“\"},{\"\
                     ingredientId\":10,\"ingredientName\":\"ë\x90œìž¥\"}],\"tags\"\
-                    :[{\"tagTypeName\":\"SEASON\",\"tags\":[{\"tagId\":8,\"tagName\"\
-                    :\"ë´„\"},{\"tagId\":9,\"tagName\":\"ì—¬ë¦„\"},{\"tagId\":10,\"\
-                    tagName\":\"ê°€ì\x9d„\"},{\"tagId\":11,\"tagName\":\"ê²¨ìš¸\"\
-                    }]},{\"tagTypeName\":\"SERVING\",\"tags\":[{\"tagId\":12,\"tagName\"\
+                    :[{\"tagTypeName\":\"ì‹\x9dì‚¬ ì‹œê°„\",\"tags\":[{\"tagId\":1,\"\
+                    tagName\":\"ì•„ì¹¨\"},{\"tagId\":2,\"tagName\":\"ì\_\x90ì‹¬\"\
+                    },{\"tagId\":3,\"tagName\":\"ì\_€ë…\x81\"}]},{\"tagTypeName\"\
+                    :\"ê³„ì\_ˆ\",\"tags\":[{\"tagId\":8,\"tagName\":\"ë´„\"},{\"tagId\"\
+                    :9,\"tagName\":\"ì—¬ë¦„\"},{\"tagId\":10,\"tagName\":\"ê°€ì\x9d\
+                    „\"},{\"tagId\":11,\"tagName\":\"ê²¨ìš¸\"}]},{\"tagTypeName\"\
+                    :\"ëª©ì\_\x81\",\"tags\":[{\"tagId\":4,\"tagName\":\"ì\x9d¼ìƒ\x81\
+                    \"},{\"tagId\":5,\"tagName\":\"íŒŒí‹°\"},{\"tagId\":6,\"tagName\"\
+                    :\"ë‹¤ì\x9d´ì–´íŠ¸\"},{\"tagId\":7,\"tagName\":\"ì†\x90ë‹˜\"}]},{\"\
+                    tagTypeName\":\"ì\x9d¸ë¶„\",\"tags\":[{\"tagId\":12,\"tagName\"\
                     :\"1ì\x9d¸ë¶„\"},{\"tagId\":13,\"tagName\":\"2ì\x9d¸ë¶„\"},{\"\
                     tagId\":14,\"tagName\":\"3ì\x9d¸ë¶„\"},{\"tagId\":15,\"tagName\"\
-                    :\"4ì\x9d¸ë¶„\"},{\"tagId\":16,\"tagName\":\"ê°€ì¡±\"}]},{\"tagTypeName\"\
-                    :\"MEAL_TIME\",\"tags\":[{\"tagId\":1,\"tagName\":\"ì•„ì¹¨\"},{\"\
-                    tagId\":2,\"tagName\":\"ì\_\x90ì‹¬\"},{\"tagId\":3,\"tagName\"\
-                    :\"ì\_€ë…\x81\"}]},{\"tagTypeName\":\"PURPOSE\",\"tags\":[{\"\
-                    tagId\":4,\"tagName\":\"ì\x9d¼ìƒ\x81\"},{\"tagId\":5,\"tagName\"\
-                    :\"íŒŒí‹°\"},{\"tagId\":6,\"tagName\":\"ë‹¤ì\x9d´ì–´íŠ¸\"},{\"\
-                    tagId\":7,\"tagName\":\"ì†\x90ë‹˜\"}]}]}}"
+                    :\"4ì\x9d¸ë¶„\"},{\"tagId\":16,\"tagName\":\"ê°€ì¡±\"}]}]}}"
   /recipe/register:
     post:
       tags:
@@ -61,9 +61,9 @@ paths:
             examples:
               레시피 등록 API:
                 value: "{\"recipeName\":\"레시피 테스트\",\"description\":\"레시피 테스트 설명\"\
-                  ,\"tags\":[{\"tagId\":12,\"tagName\":\"ONE\",\"tagTypeName\":\"\
-                  SERVING\"}],\"ingredients\":[{\"ingredientId\":5,\"ingredientName\"\
-                  :\"돼지고기\",\"ingredientQuantity\":\"100\"}]}"
+                  ,\"tags\":[{\"tagId\":12,\"tagName\":\"1인분\",\"tagTypeName\":\"인\
+                  분\"}],\"ingredients\":[{\"ingredientId\":5,\"ingredientName\":\"\
+                  돼지고기\",\"ingredientQuantity\":\"100\"}]}"
       responses:
         "201":
           description: "201"
@@ -74,9 +74,32 @@ paths:
               examples:
                 레시피 등록 API:
                   value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
-                    id\":1}}"
+                    id\":3}}"
       security:
       - bearerAuthJWT: []
+  /recipe/member/search:
+    get:
+      tags:
+      - 레시피 API
+      summary: 레시피 회원 닉네임 조회
+      description: 레시피 회원 닉네임 조회
+      operationId: 레시피 회원 닉네임 조회 API
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-member-search-981347922'
+              examples:
+                레시피 회원 닉네임 조회 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    totalPages\":0,\"totalElements\":0,\"number\":0,\"content\":[],\"\
+                    sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"\
+                    first\":true,\"last\":true,\"size\":9,\"pageable\":{\"pageNumber\"\
+                    :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"sorted\":false,\"\
+                    unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
+                    numberOfElements\":0,\"empty\":true}}"
 components:
   schemas:
     recipe-metadata1687645871:
@@ -177,6 +200,96 @@ components:
             id:
               type: number
               description: 레시피 고유번호
+        message:
+          type: string
+          description: 상태 메시지
+    recipe-member-search-981347922:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          properties:
+            number:
+              type: number
+              description: 현재 페이지 번호
+            numberOfElements:
+              type: number
+              description: 현재 페이지의 요소 수
+            size:
+              type: number
+              description: 페이지 크기
+            last:
+              type: boolean
+              description: 마지막 페이지 여부
+            totalPages:
+              type: number
+              description: 총 페이지 수
+            pageable:
+              type: object
+              properties:
+                paged:
+                  type: boolean
+                  description: 페이징 처리 여부
+                pageNumber:
+                  type: number
+                  description: 현재 페이지 번호
+                offset:
+                  type: number
+                  description: 페이지 오프셋
+                pageSize:
+                  type: number
+                  description: 페이지당 요소 수
+                unpaged:
+                  type: boolean
+                  description: 페이징 여부
+                sort:
+                  type: object
+                  properties:
+                    unsorted:
+                      type: boolean
+                      description: 정렬되지 않은 상태 여부
+                    sorted:
+                      type: boolean
+                      description: 정렬된 상태 여부
+                    empty:
+                      type: boolean
+                      description: 정렬 정보가 비어 있는지 여부
+                  description: 정렬 정보
+              description: 페이징 정보
+            sort:
+              type: object
+              properties:
+                unsorted:
+                  type: boolean
+                  description: 정렬되지 않은 상태 여부
+                sorted:
+                  type: boolean
+                  description: 정렬된 상태 여부
+                empty:
+                  type: boolean
+                  description: 정렬 정보가 비어 있는지 여부
+            first:
+              type: boolean
+              description: 첫 번째 페이지 여부
+            content:
+              type: array
+              description: 레시피 목록
+              items:
+                oneOf:
+                - type: object
+                - type: boolean
+                - type: string
+                - type: number
+            empty:
+              type: boolean
+              description: 데이터가 비어 있는지 여부
+            totalElements:
+              type: number
+              description: 총 요소 수
+          description: 레시피 회원 닉네임 조회 결과
         message:
           type: string
           description: 상태 메시지

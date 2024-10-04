@@ -17,5 +17,5 @@ public class RecipeMemberSearchResDto {
 
 	private Integer viewCount;
 
-	private String createBy;
+	private String createdBy;
 }

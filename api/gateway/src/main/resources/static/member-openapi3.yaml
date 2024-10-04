@@ -29,12 +29,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-login-1584530892'
+                $ref: '#/components/schemas/member-token-refresh-1584530892'
               examples:
                 로그인 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTkwMjAyLCJleHAiOjE3Mjc5OTIwMDIsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.g7zjCjCK1SEltWdX7YWQcBpZHkjkPencoen3bpTLb6cO2Se-c3_ME1vKsnDbm3emk6WrMr95I70BTE0ZBrd-QA\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTkwMjAyLCJleHAiOjE3MjgwNzY2MDJ9.aMWGHcsKyOoZDKSC3YHnk8MleEltAOUrpMqjVDxz1S5WtOYLL9vFfJ5iqv2AZsXYGZicuS71QNXw2vo7KqbxXQ\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQzMjE5LCJleHAiOjE3MjgwNDUwMTksInJvbGVzIjoiUk9MRV9BRE1JTiJ9._HISSF1qM8tg7f2LyqOWdCN6OfFyxFaO3bksav4Z2e_UnV5PQBN8oUpcrlrcO5WgKQvHeTAs82rlBHtXsM96Pg\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQzMjE5LCJleHAiOjE3MjgxMjk2MTl9.uUAYS82LnO0U9qe7fPwnJKFFJ-MHTdTDpQkVt2YJrxfcBKiQaqK8h_p_XyAcodS8K0-ukLkxs2-jWER3UgY5fQ\"\
                     }}"
   /member/logout:
     post:
@@ -136,9 +136,9 @@ paths:
     post:
       tags:
       - 회원 API
-      summary: 내 프로필 업데이트
-      description: 내 프로필 업데이트
-      operationId: 내 프로필 업데이트 API
+      summary: 내 프로필 수정
+      description: 내 프로필 수정
+      operationId: 내 프로필 수정 API
       responses:
         "200":
           description: "200"
@@ -147,7 +147,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/member-me-profile901414125'
               examples:
-                내 프로필 업데이트 API:
+                내 프로필 수정 API:
                   value: "{\"code\":200,\"message\":\"프로필 수정이 정상적으로 처리되었습니다.\",\"\
                     data\":{\"id\":1}}"
       security:
@@ -176,12 +176,12 @@ paths:
               examples:
                 회원 검색 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalElements\":0,\"totalPages\":0,\"sort\":{\"empty\":true,\"\
-                    unsorted\":true,\"sorted\":false},\"number\":0,\"size\":10,\"\
-                    content\":[],\"first\":true,\"last\":true,\"numberOfElements\"\
-                    :0,\"pageable\":{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"\
-                    empty\":true,\"unsorted\":true,\"sorted\":false},\"offset\":0,\"\
-                    unpaged\":false,\"paged\":true},\"empty\":true}}"
+                    totalPages\":0,\"totalElements\":0,\"content\":[],\"number\":0,\"\
+                    sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"\
+                    first\":true,\"last\":true,\"size\":10,\"pageable\":{\"pageNumber\"\
+                    :0,\"pageSize\":10,\"sort\":{\"empty\":true,\"sorted\":false,\"\
+                    unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
+                    numberOfElements\":0,\"empty\":true}}"
       security:
       - bearerAuthJWT: []
   /member/token/refresh:
@@ -197,12 +197,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-login-1584530892'
+                $ref: '#/components/schemas/member-token-refresh-1584530892'
               examples:
                 토큰 재발급 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTkwMjA0LCJleHAiOjE3Mjc5OTIwMDQsInJvbGVzIjoiIn0.oUE7zNkgqChMZXjN3LUZbKBXb1lKIHnB7Zk52QWMfU26Wsg8M0zvedcnK9PUEJlnVyOYlUkpCtZr7L9xyyCnpQ\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI3OTkwMjA0LCJleHAiOjE3MjgwNzY2MDR9.lAejCDBBnk6b3cPX4MuVK3oTN7IPVQlQjX3xGBewSRknh67a1ZFAK3TQSWVapZ5SAAp0-tT-rteIw_l6PWfKGw\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQzMjIwLCJleHAiOjE3MjgwNDUwMjAsInJvbGVzIjoiIn0.ksX_qu1GOlvw_GGTeLa1oKgtQERJQEWumevnUUzKHVjBIHV3_Kvbk_Bs60Apx0lRnir0ttM11rpiYTtkI4QpsQ\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQzMjIwLCJleHAiOjE3MjgxMjk2MjB9.GBKIz-pSGusO79wcU3PsWjl52VvUoeUyPvAAKvU00COi7k8eEkbQgtiNqLAn2lIJAELZPbCis2sR5kis2TWaKQ\"\
                     }}"
       security:
       - bearerAuthJWT: []
@@ -376,7 +376,7 @@ components:
         message:
           type: string
           description: 상태 메시지
-    member-login-1584530892:
+    member-token-refresh-1584530892:
       type: object
       properties:
         code:

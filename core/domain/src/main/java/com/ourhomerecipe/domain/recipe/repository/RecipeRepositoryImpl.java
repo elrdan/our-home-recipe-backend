@@ -31,13 +31,14 @@ public class RecipeRepositoryImpl implements RecipeCustom {
 			.select(fields(RecipeMemberSearchResDto.class,
 				recipe.id.as("recipeId"),
 				recipe.name.as("recipeName"),
-				Expressions.numberTemplate(Double.class, "AVG({0})", recipeRating.rating).as("rating"),
+				Expressions.numberTemplate(Double.class, "COALESCE(AVG({0}), 0)", recipeRating.rating).as("rating"),
 				recipe.viewCount,
-				member.nickname
+				member.nickname.as("createdBy")
 			))
 			.from(recipe)
 			.leftJoin(member).on(recipe.createdBy.eq(member.email))
 			.leftJoin(recipeRating).on(recipe.id.eq(recipeRating.recipe.id))
+			.where(member.nickname.startsWith(nickname))
 			.groupBy(recipe.id, member.nickname, recipe.viewCount)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -48,6 +49,7 @@ public class RecipeRepositoryImpl implements RecipeCustom {
 			.from(recipe)
 			.leftJoin(member).on(recipe.createdBy.eq(member.email))
 			.leftJoin(recipeRating).on(recipe.id.eq(recipeRating.recipe.id))
+			.where(member.nickname.startsWith(nickname))
 			.groupBy(recipe.id, member.nickname, recipe.viewCount)
 			.fetchOne()).orElse(0L);
 
