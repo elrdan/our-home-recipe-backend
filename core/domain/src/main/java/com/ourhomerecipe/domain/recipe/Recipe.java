@@ -43,4 +43,9 @@ public class Recipe extends MutableBaseEntity {
 
 		return recipe;
 	}
+
+	// 조회수 1증가
+	public void incrementViewCount() {
+		this.viewCount++;
+	}
 }

@@ -4,6 +4,7 @@ import static com.ourhomerecipe.domain.common.error.code.RecipeErrorCode.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +24,13 @@ import com.ourhomerecipe.domain.tag.Tag;
 import com.ourhomerecipe.dto.recipe.request.RecipeIngredientReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeTagReqDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeDetailResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeIngredientResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeSearchResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeMetadataResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeTagResDto;
 import com.ourhomerecipe.recipe.exception.RecipeException;
+import com.ourhomerecipe.security.service.MemberDetailsImpl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -108,8 +111,8 @@ public class RecipeService {
 	 */
 	@Transactional(readOnly = true)
 	public RecipeMetadataResDto getMetadataRecipe() {
-		List<RecipeIngredientResDto> ingredients = recipeIngredientRepository.getAllIngredient();
-		List<RecipeTagResDto> tagList = recipeTagRepository.getAllTagAndType();
+		List<RecipeIngredientResDto> ingredients = recipeIngredientRepository.getAll();
+		List<RecipeTagResDto> tagList = recipeTagRepository.getAll();
 
 		return RecipeMetadataResDto.builder()
 			.ingredients(ingredients)
@@ -122,13 +125,46 @@ public class RecipeService {
 	 */
 	@Transactional(readOnly = true)
 	public Page<RecipeSearchResDto> getMemberSearchRecipe(String nickname, Pageable pageable) {
-		return recipeRepository.getAllMemberSearchRecipe(nickname, pageable);
+		return recipeRepository.getAllByMemberNickname(nickname, pageable);
 	}
 
 	/**
 	 * 레시피 이름 조회
 	 */
 	public Page<RecipeSearchResDto> getSearchRecipe(String name, Pageable pageable) {
-		return recipeRepository.getAllSearchRecipe(name, pageable);
+		return recipeRepository.getAllByName(name, pageable);
 	}
+
+	/**
+	 * 레시피 상세 조회(Guest)
+	 */
+	public RecipeDetailResDto getDetailRecipe(Long recipeId) {
+		Recipe recipe = recipeRepository.findById(recipeId)
+			.orElseThrow(() -> new RecipeException(NOT_FOUND_RECIPE_DETAIL));
+
+		recipe.incrementViewCount();
+		recipeRepository.save(recipe);
+
+		// 레시피 조회
+		RecipeDetailResDto detailRecipe = recipeRepository.getDetailRecipe(recipeId);
+		// 레시피 재료 조회
+		detailRecipe.setIngredients(recipeIngredientRepository.getAllByRecipeId(recipeId));
+		// 레시피 태그 조회
+		detailRecipe.setTags(recipeTagRepository.getAllByRecipeId(recipeId));
+
+		return detailRecipe;
+	}
+
+	// /**
+	//  * 레시피 상세 조회(Member)
+	//  */
+	// public RecipeDetailResDto getDetailRecipe(Long recipeId, MemberDetailsImpl memberDetails) {
+	// 	RecipeDetailResDto detailRecipe = Optional.ofNullable(recipeRepository.getDetailRecipe(recipeId))
+	// 		.orElseThrow(() -> new RecipeException(NOT_FOUND_RECIPE_DETAIL));
+	//
+	// 	List<RecipeIngredientResDto> recipeIngredientList = recipeIngredientRepository.getAllByRecipeId(recipeId);
+	// 	List<RecipeTagResDto> recipeTagList = recipeTagRepository.getAllByRecipeId(recipeId);
+	//
+	// 	return detailRecipe;
+	// }
 }

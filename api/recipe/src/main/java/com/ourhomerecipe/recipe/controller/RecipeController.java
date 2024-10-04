@@ -1,13 +1,17 @@
 package com.ourhomerecipe.recipe.controller;
 
+import static com.ourhomerecipe.domain.common.error.code.SecurityErrorCode.*;
 import static com.ourhomerecipe.domain.common.success.code.GlobalSuccessCode.*;
+import static org.springframework.util.StringUtils.*;
 
 import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ourhomerecipe.domain.common.response.OhrResponse;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.recipe.service.RecipeService;
+import com.ourhomerecipe.security.exception.CustomSecurityException;
+import com.ourhomerecipe.security.jwt.JwtProvider;
+import com.ourhomerecipe.security.service.MemberDetailsImpl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class RecipeController {
 	private final RecipeService recipeService;
 	private static final int PAGE_SIZE = 9;
+	private static JwtProvider jwtProvider;
 
 	/**
 	 * 레시피 등록
@@ -77,5 +86,16 @@ public class RecipeController {
 
 		return ResponseEntity.status(SUCCESS.getStatus())
 			.body(new OhrResponse<>(recipeService.getSearchRecipe(name, pageable)));
+	}
+
+	/**
+	 * 레시피 상세 조회(guest)
+	 */
+	@GetMapping("/detail/guest/{recipeId}")
+	public ResponseEntity<OhrResponse<?>> getDetailGuestRecipe(
+		@PathVariable("recipeId") Long recipeId
+	) {
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(recipeService.getDetailRecipe(recipeId)));
 	}
 }

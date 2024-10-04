@@ -1,4 +1,4 @@
-package com.ourhomerecipe.domain.ingredient.enums;
+package com.ourhomerecipe.dto.recipe.enums;
 
 import lombok.Getter;
 

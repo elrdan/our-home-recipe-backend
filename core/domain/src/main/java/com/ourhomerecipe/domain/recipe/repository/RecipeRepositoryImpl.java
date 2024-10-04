@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.ourhomerecipe.dto.recipe.response.RecipeDetailResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeSearchResDto;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +26,7 @@ public class RecipeRepositoryImpl implements RecipeCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<RecipeSearchResDto> getAllMemberSearchRecipe(String nickname, Pageable pageable) {
+	public Page<RecipeSearchResDto> getAllByMemberNickname(String nickname, Pageable pageable) {
 		List<RecipeSearchResDto> recipeList = queryFactory
 			.select(fields(RecipeSearchResDto.class,
 				recipe.id.as("recipeId"),
@@ -56,7 +57,7 @@ public class RecipeRepositoryImpl implements RecipeCustom {
 	}
 
 	@Override
-	public Page<RecipeSearchResDto> getAllSearchRecipe(String name, Pageable pageable) {
+	public Page<RecipeSearchResDto> getAllByName(String name, Pageable pageable) {
 		List<RecipeSearchResDto> recipeList = queryFactory
 			.select(fields(RecipeSearchResDto.class,
 				recipe.id.as("recipeId"),
@@ -84,5 +85,24 @@ public class RecipeRepositoryImpl implements RecipeCustom {
 			.fetchOne()).orElse(0L);
 
 		return new PageImpl<>(recipeList, pageable, totalCount);
+	}
+
+	@Override
+	public RecipeDetailResDto getDetailRecipe(Long recipeId) {
+		return queryFactory.select(fields(RecipeDetailResDto.class,
+					recipe.id.as("recipeId"),
+					recipe.name.as("recipeName"),
+					recipe.image.as("recipeImage"),
+					fields(RecipeDetailResDto.RecipeMemberResDto.class,
+						member.id.as("memberId"),
+						member.nickname.as("memberNickname"),
+						member.profileImage.as("memberProfileImage")
+					).as("member")
+				)
+			)
+			.from(recipe)
+			.leftJoin(member).on(recipe.createdBy.eq(member.email))
+			.where(recipe.id.eq(recipeId))
+			.fetchOne();
 	}
 }

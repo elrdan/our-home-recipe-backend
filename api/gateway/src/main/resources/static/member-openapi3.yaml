@@ -29,12 +29,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-token-refresh-1584530892'
+                $ref: '#/components/schemas/member-login-1584530892'
               examples:
                 로그인 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQ5NzIwLCJleHAiOjE3MjgwNTE1MjAsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.nyVuhhAp0ZRi1xDuAwEHjHcXKGC8Sd_R8n4mEvi-YplwWvmhhyAYio2l3rhPgmzROuCpTPc8oisjSWH9_fArew\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQ5NzIwLCJleHAiOjE3MjgxMzYxMjB9.Tkxjv1bum5zSrOJoVjd3a0bGLzKPp0IXNI1KQAYSiSBDi_p8nJmYbryhP0kQg7vhGlHjvG1ezbuNWicD7JqXGw\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDg0ODY3LCJleHAiOjE3MjgwODY2NjcsInJvbGVzIjoiUk9MRV9BRE1JTiJ9.MJzr7CqgpWQvrR6ZYlEZdMDq1TcDbGVd1q1mz1jY68ktKe5gZdXapQpCtED_eacNWWAkCzeQxwOiZdh4MzbZPw\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDg0ODY3LCJleHAiOjE3MjgxNzEyNjd9.YQsGSoy4aio96mSAlRb2cj4zYFnS-B7pg7TTuusD0beViUj0icIgKisJ_oqUbTE-8Vkt3buB6IP2E6yS4U0YTA\"\
                     }}"
   /member/logout:
     post:
@@ -177,11 +177,11 @@ paths:
                 회원 검색 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
                     totalElements\":0,\"totalPages\":0,\"first\":true,\"last\":true,\"\
-                    content\":[],\"size\":10,\"number\":0,\"sort\":{\"empty\":true,\"\
-                    unsorted\":true,\"sorted\":false},\"numberOfElements\":0,\"pageable\"\
+                    size\":10,\"content\":[],\"number\":0,\"sort\":{\"empty\":true,\"\
+                    sorted\":false,\"unsorted\":true},\"numberOfElements\":0,\"pageable\"\
                     :{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"empty\":true,\"\
-                    unsorted\":true,\"sorted\":false},\"offset\":0,\"paged\":true,\"\
-                    unpaged\":false},\"empty\":true}}"
+                    sorted\":false,\"unsorted\":true},\"offset\":0,\"unpaged\":false,\"\
+                    paged\":true},\"empty\":true}}"
       security:
       - bearerAuthJWT: []
   /member/token/refresh:
@@ -197,12 +197,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/member-token-refresh-1584530892'
+                $ref: '#/components/schemas/member-login-1584530892'
               examples:
                 토큰 재발급 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQ5NzIxLCJleHAiOjE3MjgwNTE1MjEsInJvbGVzIjoiIn0.emMYfxJHvv108B3Lo7Pdtv-u6g3Yv-sov-dXbu0GkiM0kHxlCir251KsJi9tN7mz_UiVzSoNyn-4JK6eP7rMDg\"\
-                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDQ5NzIxLCJleHAiOjE3MjgxMzYxMjF9.WxQATM88j6oUpvDKC0Hfne5Xo6ODkvd3GXWmW7sPJfGB6FQ2WexjBWXY6pRB-dulZoe973fHQmzTQQBDZtQqYA\"\
+                    accessToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDg0ODY4LCJleHAiOjE3MjgwODY2NjgsInJvbGVzIjoiIn0.Kf5RPSRb4_NoK8zkt9VC07vPuBNGFIzf9IoZthOT9wqGMup1XoynNBlsLQxoJCtj6MXLOtW8YhsUb0zAujCJqw\"\
+                    ,\"refreshToken\":\"eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzI4MDg0ODY4LCJleHAiOjE3MjgxNzEyNjh9.4V0UwT-g9yXnbwbBVFhJJ_Npf9hTUGdtHGvXAa9P-5DIYdzqKjP05JdgJtrlDcu7R7bZwko7Nv18ynsb7AkMPw\"\
                     }}"
       security:
       - bearerAuthJWT: []
@@ -376,7 +376,7 @@ components:
         message:
           type: string
           description: 상태 메시지
-    member-token-refresh-1584530892:
+    member-login-1584530892:
       type: object
       properties:
         code:

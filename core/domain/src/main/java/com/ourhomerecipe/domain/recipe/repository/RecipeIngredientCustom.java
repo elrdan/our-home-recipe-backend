@@ -5,5 +5,7 @@ import java.util.List;
 import com.ourhomerecipe.dto.recipe.response.RecipeIngredientResDto;
 
 public interface RecipeIngredientCustom {
-	List<RecipeIngredientResDto> getAllIngredient();
+	List<RecipeIngredientResDto> getAll();
+
+	List<RecipeIngredientResDto> getAllByRecipeId(Long recipeId);
 }

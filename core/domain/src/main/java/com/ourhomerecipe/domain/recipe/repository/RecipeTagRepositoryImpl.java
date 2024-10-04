@@ -1,5 +1,6 @@
 package com.ourhomerecipe.domain.recipe.repository;
 
+import static com.ourhomerecipe.domain.recipe.QRecipeTag.*;
 import static com.ourhomerecipe.domain.tag.QTag.*;
 import static com.ourhomerecipe.domain.tag.QTagType.*;
 import static com.querydsl.core.types.Projections.*;
@@ -23,7 +24,7 @@ public class RecipeTagRepositoryImpl implements RecipeTagCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<RecipeTagResDto> getAllTagAndType() {
+	public List<RecipeTagResDto> getAll() {
 		// 태그 타입별로 그룹핑
 		Map<String, RecipeTagResDto> tagTypeMap = new HashMap<>();
 
@@ -49,6 +50,44 @@ public class RecipeTagRepositoryImpl implements RecipeTagCustom {
 				if (recipeTagResDto == null) {
 					recipeTagResDto = new RecipeTagResDto();
 					recipeTagResDto.setTagTypeName(tagTypeName); // label 값 설정
+					recipeTagResDto.setTags(new ArrayList<>());
+					tagTypeMap.put(tagTypeName, recipeTagResDto);
+				}
+
+				// TagDto를 추가
+				RecipeTagResDto.TagDto tagDto = tuple.get(1, RecipeTagResDto.TagDto.class);
+				recipeTagResDto.getTags().add(tagDto);
+			});
+
+		return new ArrayList<>(tagTypeMap.values());
+	}
+
+	@Override
+	public List<RecipeTagResDto> getAllByRecipeId(Long recipeId) {
+		// 태그 타입별로 그룹핑
+		Map<String, RecipeTagResDto> tagTypeMap = new HashMap<>();
+
+		queryFactory
+			.select(
+				tagType.name.as("tagTypeName"),
+				fields(RecipeTagResDto.TagDto.class,
+					tag.id.as("tagId"),
+					tag.name.as("tagName")
+				)
+			)
+			.from(recipeTag)
+			.where(recipeTag.recipe.id.eq(recipeId))
+			.leftJoin(tag).on(recipeTag.tag.id.eq(tag.id))
+			.leftJoin(tagType).on(tag.tagType.id.eq(tagType.id))
+			.fetch()
+			.forEach(tuple -> {
+				String tagTypeName = tuple.get(0, String.class);
+
+				RecipeTagResDto recipeTagResDto = tagTypeMap.get(tagTypeName);
+
+				if(recipeTagResDto == null) {
+					recipeTagResDto = new RecipeTagResDto();
+					recipeTagResDto.setTagTypeName(tagTypeName);
 					recipeTagResDto.setTags(new ArrayList<>());
 					tagTypeMap.put(tagTypeName, recipeTagResDto);
 				}

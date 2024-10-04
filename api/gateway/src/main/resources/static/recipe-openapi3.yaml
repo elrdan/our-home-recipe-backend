@@ -94,12 +94,12 @@ paths:
               examples:
                 레시피 이름 조회 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalPages\":0,\"totalElements\":0,\"number\":0,\"content\":[],\"\
-                    sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"\
-                    size\":9,\"first\":true,\"last\":true,\"pageable\":{\"pageNumber\"\
-                    :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"sorted\":false,\"\
-                    unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
-                    numberOfElements\":0,\"empty\":true}}"
+                    totalElements\":0,\"totalPages\":0,\"sort\":{\"empty\":true,\"\
+                    sorted\":false,\"unsorted\":true},\"first\":true,\"last\":true,\"\
+                    size\":9,\"content\":[],\"number\":0,\"numberOfElements\":0,\"\
+                    pageable\":{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\"\
+                    :true,\"sorted\":false,\"unsorted\":true},\"offset\":0,\"unpaged\"\
+                    :false,\"paged\":true},\"empty\":true}}"
   /recipe/member/search:
     get:
       tags:
@@ -117,12 +117,47 @@ paths:
               examples:
                 레시피 회원 닉네임 조회 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalPages\":0,\"totalElements\":0,\"number\":0,\"content\":[],\"\
-                    sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"\
-                    size\":9,\"first\":true,\"last\":true,\"pageable\":{\"pageNumber\"\
-                    :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"sorted\":false,\"\
-                    unsorted\":true},\"offset\":0,\"paged\":true,\"unpaged\":false},\"\
-                    numberOfElements\":0,\"empty\":true}}"
+                    totalElements\":0,\"totalPages\":0,\"sort\":{\"empty\":true,\"\
+                    sorted\":false,\"unsorted\":true},\"first\":true,\"last\":true,\"\
+                    size\":9,\"content\":[],\"number\":0,\"numberOfElements\":0,\"\
+                    pageable\":{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\"\
+                    :true,\"sorted\":false,\"unsorted\":true},\"offset\":0,\"unpaged\"\
+                    :false,\"paged\":true},\"empty\":true}}"
+  /recipe/detail/guest/{recipeId}:
+    get:
+      tags:
+      - 레시피 API
+      summary: 레시피 상세 조회(게스트)
+      description: 레시피 상세 조회(게스트)
+      operationId: 레시피 상세 조회 API
+      parameters:
+      - name: recipeId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-detail-guest-recipeId-240050280'
+              examples:
+                레시피 상세 조회 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    recipeId\":1,\"recipeName\":\"ë\x8f¼ì§€ê³\_ê¸°\",\"recipeImage\"\
+                    :\"https://our-home-recipe-bucket.s3.ap-northeast-2.amazonaws.com/no-image.jpg\"\
+                    ,\"tags\":[{\"tagTypeName\":\"ì‹\x9dì‚¬ ì‹œê°„\",\"tags\":[{\"\
+                    tagId\":1,\"tagName\":\"ì•„ì¹¨\"}]},{\"tagTypeName\":\"ëª©ì\_\x81\
+                    \",\"tags\":[{\"tagId\":5,\"tagName\":\"íŒŒí‹°\"}]}],\"ingredients\"\
+                    :[{\"ingredientId\":1,\"ingredientName\":\"ëŒ€íŒŒ\",\"ingredientQuantity\"\
+                    :2.00,\"ingredientUnit\":\"ea\"},{\"ingredientId\":5,\"ingredientName\"\
+                    :\"ë\x8f¼ì§€ê³\_ê¸°\",\"ingredientQuantity\":100.00,\"ingredientUnit\"\
+                    :\"g\"}],\"member\":{\"memberId\":1,\"memberNickname\":\"ê´€ë¦\
+                    ¬ìž\x90 ë‹‰ë„¤ìž„\",\"memberProfileImage\":\"https://our-home-recipe-bucket.s3.ap-northeast-2.amazonaws.com/no-image.jpg\"\
+                    }}}"
 components:
   schemas:
     recipe-search-203810791:
@@ -181,6 +216,18 @@ components:
                           type: string
                           description: "태그 이름 (예: 봄, 여름, 아침, 점심 등)"
           description: 레시피 메타데이터
+        message:
+          type: string
+          description: 상태 메시지
+    recipe-detail-guest-recipeId-240050280:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 상태 코드
+        data:
+          type: object
+          description: 레시피 상세 정보
         message:
           type: string
           description: 상태 메시지

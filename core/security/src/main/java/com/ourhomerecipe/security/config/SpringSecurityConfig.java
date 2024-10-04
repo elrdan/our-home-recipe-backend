@@ -133,6 +133,7 @@ public class SpringSecurityConfig {
 			antMatcher(GET, "/recipe/metadata"),						// 레시피 메타데이터
 			antMatcher(GET, "/recipe/member/search"),					// 레시피 사용자(nickname) 조회
 			antMatcher(GET, "/recipe/search"),						// 레시피 이름 조회
+			antMatcher(GET, "/recipe/detail/guest/*"),				// 레시피 상세 조회(guest)
 
 			// 스웨거
 			antMatcher(GET, "/swagger-ui.html"),
@@ -157,7 +158,8 @@ public class SpringSecurityConfig {
 			antMatcher(GET, "/member/me/profile"),                	// 내 프로필 조회
 			antMatcher(POST, "/member/me/profile"),                	// 내 프로필 수정
 
-			antMatcher(POST, "/recipe/register")
+			antMatcher(POST, "/recipe/register"),						// 레시피 등록
+			antMatcher(GET, "/recipe/detail/member/*")				// 레시피 상세 조회(member)
 		);
 
 		return requestMatchers.toArray(RequestMatcher[]::new);
