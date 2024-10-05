@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ourhomerecipe.domain.common.response.OhrResponse;
+import com.ourhomerecipe.dto.recipe.request.RecipeCommentReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.recipe.service.RecipeService;
 import com.ourhomerecipe.security.exception.CustomSecurityException;
@@ -66,7 +67,7 @@ public class RecipeController {
 	@GetMapping("/member/search")
 	public ResponseEntity<OhrResponse<?>> getMemberSearchRecipe(
 		@RequestParam("nickname") String nickname,
-		@RequestParam("page") int page
+		@RequestParam("page") Integer page
 	) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 
@@ -80,7 +81,7 @@ public class RecipeController {
 	@GetMapping("/search")
 	public ResponseEntity<OhrResponse<?>> getSearchRecipe(
 		@RequestParam("name") String name,
-		@RequestParam("page") int page
+		@RequestParam("page") Integer page
 	) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 
@@ -91,11 +92,37 @@ public class RecipeController {
 	/**
 	 * 레시피 상세 조회(guest)
 	 */
-	@GetMapping("/detail/guest/{recipeId}")
+	@GetMapping("/guest/{recipeId}")
 	public ResponseEntity<OhrResponse<?>> getDetailGuestRecipe(
 		@PathVariable("recipeId") Long recipeId
 	) {
 		return ResponseEntity.status(SUCCESS.getStatus())
 			.body(new OhrResponse<>(recipeService.getDetailRecipe(recipeId)));
 	}
+
+	/**
+	 * 레시피 코멘트 등록
+	 */
+	@PostMapping("/comment")
+	public ResponseEntity<OhrResponse<?>> regCommentRecipe(
+		@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+		@RequestBody RecipeCommentReqDto recipeCommentReqDto
+	) {
+		return ResponseEntity.status(CREATE.getStatus())
+			.body(new OhrResponse<>(
+				CREATE,
+				Map.of("id", recipeService.regCommentRecipe(recipeCommentReqDto, memberDetails).getId())
+			));
+	}
+
+	// @GetMapping("/comment")
+	// public ResponseEntity<OhrResponse<?>> getCommentRecipe(
+	// 	@RequestParam(name = "recipeId") Long recipeId,
+	// 	@RequestParam(name = "page") Integer page
+	// ) {
+	// 	Pageable pageable = PageRequest.of(page, 10);
+	//
+	// 	return ResponseEntity.status(SUCCESS.getStatus())
+	// 		.body(new OhrResponse<>(recipeService.getCommentRecipe(recipeId, pageable)));
+	// }
 }

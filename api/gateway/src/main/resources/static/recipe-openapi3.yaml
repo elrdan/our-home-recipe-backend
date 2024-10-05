@@ -7,6 +7,34 @@ servers:
 - url: http://localhost:8080/v1
 tags: []
 paths:
+  /recipe/comment:
+    post:
+      tags:
+      - 레시피 API
+      summary: 레시피 댓글 등록
+      description: 레시피 댓글 등록
+      operationId: 레시피 댓글 등록 API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipe-comment-88195989'
+            examples:
+              레시피 댓글 등록 API:
+                value: "{\"recipeId\":1,\"comment\":\"댓글 테스트\"}"
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-comment-240050280'
+              examples:
+                레시피 댓글 등록 API:
+                  value: "{\"code\":201,\"message\":\"정상적으로 생성되었습니다.\",\"data\":{\"\
+                    id\":1}}"
+      security:
+      - bearerAuthJWT: []
   /recipe/metadata:
     get:
       tags:
@@ -94,36 +122,13 @@ paths:
               examples:
                 레시피 이름 조회 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalElements\":0,\"totalPages\":0,\"sort\":{\"empty\":true,\"\
-                    sorted\":false,\"unsorted\":true},\"first\":true,\"last\":true,\"\
-                    size\":9,\"content\":[],\"number\":0,\"numberOfElements\":0,\"\
-                    pageable\":{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\"\
-                    :true,\"sorted\":false,\"unsorted\":true},\"offset\":0,\"unpaged\"\
-                    :false,\"paged\":true},\"empty\":true}}"
-  /recipe/member/search:
-    get:
-      tags:
-      - 레시피 API
-      summary: 레시피 회원 닉네임 조회
-      description: 레시피 회원 닉네임 조회
-      operationId: 레시피 회원 닉네임 조회 API
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/recipe-member-search-981347922'
-              examples:
-                레시피 회원 닉네임 조회 API:
-                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalElements\":0,\"totalPages\":0,\"sort\":{\"empty\":true,\"\
-                    sorted\":false,\"unsorted\":true},\"first\":true,\"last\":true,\"\
-                    size\":9,\"content\":[],\"number\":0,\"numberOfElements\":0,\"\
-                    pageable\":{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\"\
-                    :true,\"sorted\":false,\"unsorted\":true},\"offset\":0,\"unpaged\"\
-                    :false,\"paged\":true},\"empty\":true}}"
-  /recipe/detail/guest/{recipeId}:
+                    totalElements\":0,\"totalPages\":0,\"content\":[],\"first\":true,\"\
+                    last\":true,\"sort\":{\"empty\":true,\"unsorted\":true,\"sorted\"\
+                    :false},\"number\":0,\"size\":9,\"numberOfElements\":0,\"pageable\"\
+                    :{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\":true,\"\
+                    unsorted\":true,\"sorted\":false},\"offset\":0,\"unpaged\":false,\"\
+                    paged\":true},\"empty\":true}}"
+  /recipe/guest/{recipeId}:
     get:
       tags:
       - 레시피 API
@@ -143,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/recipe-detail-guest-recipeId-240050280'
+                $ref: '#/components/schemas/recipe-comment-240050280'
               examples:
                 레시피 상세 조회 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
@@ -158,6 +163,29 @@ paths:
                     :\"g\"}],\"member\":{\"memberId\":1,\"memberNickname\":\"ê´€ë¦\
                     ¬ìž\x90 ë‹‰ë„¤ìž„\",\"memberProfileImage\":\"https://our-home-recipe-bucket.s3.ap-northeast-2.amazonaws.com/no-image.jpg\"\
                     }}}"
+  /recipe/member/search:
+    get:
+      tags:
+      - 레시피 API
+      summary: 레시피 회원 닉네임 조회
+      description: 레시피 회원 닉네임 조회
+      operationId: 레시피 회원 닉네임 조회 API
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe-member-search-981347922'
+              examples:
+                레시피 회원 닉네임 조회 API:
+                  value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
+                    totalElements\":0,\"totalPages\":0,\"content\":[],\"first\":true,\"\
+                    last\":true,\"sort\":{\"empty\":true,\"unsorted\":true,\"sorted\"\
+                    :false},\"number\":0,\"size\":9,\"numberOfElements\":0,\"pageable\"\
+                    :{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\":true,\"\
+                    unsorted\":true,\"sorted\":false},\"offset\":0,\"unpaged\":false,\"\
+                    paged\":true},\"empty\":true}}"
 components:
   schemas:
     recipe-search-203810791:
@@ -172,6 +200,15 @@ components:
         message:
           type: string
           description: 상태 메시지
+    recipe-comment-88195989:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: 레시피 댓글
+        recipeId:
+          type: number
+          description: 레시피 고유 식별자
     recipe-metadata1687645871:
       type: object
       properties:
@@ -219,7 +256,7 @@ components:
         message:
           type: string
           description: 상태 메시지
-    recipe-detail-guest-recipeId-240050280:
+    recipe-comment-240050280:
       type: object
       properties:
         code:

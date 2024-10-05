@@ -13,14 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ourhomerecipe.domain.ingredient.Ingredient;
 import com.ourhomerecipe.domain.recipe.Recipe;
+import com.ourhomerecipe.domain.recipe.RecipeComment;
 import com.ourhomerecipe.domain.recipe.RecipeIngredient;
 import com.ourhomerecipe.domain.recipe.RecipeIngredientId;
 import com.ourhomerecipe.domain.recipe.RecipeTag;
 import com.ourhomerecipe.domain.recipe.RecipeTagId;
+import com.ourhomerecipe.domain.recipe.repository.RecipeCommentRepository;
 import com.ourhomerecipe.domain.recipe.repository.RecipeIngredientRepository;
 import com.ourhomerecipe.domain.recipe.repository.RecipeRepository;
 import com.ourhomerecipe.domain.recipe.repository.RecipeTagRepository;
 import com.ourhomerecipe.domain.tag.Tag;
+import com.ourhomerecipe.dto.recipe.request.RecipeCommentReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeIngredientReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeTagReqDto;
@@ -45,6 +48,7 @@ public class RecipeService {
 	private final RecipeRepository recipeRepository;
 	private final RecipeIngredientRepository recipeIngredientRepository;
 	private final RecipeTagRepository recipeTagRepository;
+	private final RecipeCommentRepository recipeCommentRepository;
 
 	/**
 	 * 레시피 등록
@@ -155,6 +159,24 @@ public class RecipeService {
 		return detailRecipe;
 	}
 
+	/**
+	 * 레시피 댓글 등록
+	 */
+	public RecipeComment regCommentRecipe(RecipeCommentReqDto recipeCommentReqDto, MemberDetailsImpl memberDetails) {
+		try{
+			Recipe recipe = entityManager.getReference(Recipe.class, recipeCommentReqDto.getRecipeId());
+
+			RecipeComment recipeComment = RecipeComment.builder()
+				.recipe(recipe)
+				.comment(recipeCommentReqDto.getComment())
+				.build();
+
+			return recipeCommentRepository.save(recipeComment);
+		}catch (EntityNotFoundException e) {
+			throw new RecipeException(NOT_FOUND_RECIPE);
+		}
+	}
+
 	// /**
 	//  * 레시피 상세 조회(Member)
 	//  */
@@ -167,4 +189,9 @@ public class RecipeService {
 	//
 	// 	return detailRecipe;
 	// }
+
+	// /**
+	//  * 레시피 코멘트 조회
+	//  */
+	// public getCommentRecipe(Long recipeId, Pageable pageable)
 }

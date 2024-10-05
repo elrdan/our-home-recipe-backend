@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum RecipeErrorCode implements BaseErrorCode {
+	NOT_FOUND_RECIPE(400, "레시피 정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
 	NOT_FOUND_RECIPE_DETAIL(400, "레시피 상세 정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
 	NOT_REGISTER_INGREDIENT(400, "등록되어 있지 않는 재료입니다.", HttpStatus.BAD_REQUEST),
 	NOT_REGISTER_TAG(400, "등록되어 있지 않는 태그입니다.", HttpStatus.BAD_REQUEST);
