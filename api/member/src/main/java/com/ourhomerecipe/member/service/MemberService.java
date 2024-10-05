@@ -72,7 +72,7 @@ public class MemberService {
 
 		// 닉네임 중복 확인
 		if(checkNickname(registerRequestDto.getNickname())) {
-			throw new MemberException(ALREADY_MEMBER_NICKNAME);
+			throw new MemberException(ALREADY_NICKNAME);
 		}
 
 		Member member = Member.fromMemberRegisterDto(registerRequestDto);
@@ -156,7 +156,7 @@ public class MemberService {
 			// 닉네임 중복확인
 			if(hasText(newNickname)) {
 				if(newNickname.equals(member.getNickname()) || checkNickname(newNickname)) {
-					throw new MemberException(ALREADY_MEMBER_NICKNAME);
+					throw new MemberException(ALREADY_NICKNAME);
 				}
 			}
 		}

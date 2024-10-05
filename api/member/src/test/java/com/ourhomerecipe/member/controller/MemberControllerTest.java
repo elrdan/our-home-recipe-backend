@@ -231,9 +231,9 @@ public class MemberControllerTest extends BaseTest {
 					subsectionWithPath("data").type(OBJECT).description("내 프로필 데이터")
 				)))
 			.contentType(JSON)
-			.when()
+		.when()
 			.get("/member/me/profile")
-			.then()
+		.then()
 			.statusCode(200);
 	}
 
@@ -331,7 +331,28 @@ public class MemberControllerTest extends BaseTest {
 	}
 
 	@Test
-	@DisplayName("9-1. 로그아웃")
+	@DisplayName("9-1. 닉네임 중복 확인")
+	void checkNicknameMemberSuccess() {
+		given(spec)
+			.filter(document("닉네임 중복 확인 API",
+				resourceDetails()
+					.tag("회원 API")
+					.summary("닉네임 중복 확인"),
+				// 응답 필드
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지")
+				)))
+			.contentType(JSON)
+		.when()
+			.param("nickname", "testUser1")
+			.get("/member/check-nickname")
+		.then()
+			.statusCode(200);
+	}
+
+	@Test
+	@DisplayName("10-1. 로그아웃")
 	void logoutMemberSuccess() {
 		// 로그아웃 API 문서화
 		given(spec)

@@ -122,12 +122,12 @@ paths:
               examples:
                 레시피 이름 조회 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalElements\":0,\"totalPages\":0,\"content\":[],\"first\":true,\"\
-                    last\":true,\"sort\":{\"empty\":true,\"unsorted\":true,\"sorted\"\
-                    :false},\"number\":0,\"size\":9,\"numberOfElements\":0,\"pageable\"\
-                    :{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\":true,\"\
-                    unsorted\":true,\"sorted\":false},\"offset\":0,\"unpaged\":false,\"\
-                    paged\":true},\"empty\":true}}"
+                    totalPages\":0,\"totalElements\":0,\"sort\":{\"empty\":true,\"\
+                    unsorted\":true,\"sorted\":false},\"size\":9,\"number\":0,\"first\"\
+                    :true,\"last\":true,\"content\":[],\"pageable\":{\"pageNumber\"\
+                    :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"unsorted\":true,\"\
+                    sorted\":false},\"offset\":0,\"unpaged\":false,\"paged\":true},\"\
+                    numberOfElements\":0,\"empty\":true}}"
   /recipe/guest/{recipeId}:
     get:
       tags:
@@ -180,12 +180,12 @@ paths:
               examples:
                 레시피 회원 닉네임 조회 API:
                   value: "{\"code\":200,\"message\":\"정상적으로 처리되었습니다.\",\"data\":{\"\
-                    totalElements\":0,\"totalPages\":0,\"content\":[],\"first\":true,\"\
-                    last\":true,\"sort\":{\"empty\":true,\"unsorted\":true,\"sorted\"\
-                    :false},\"number\":0,\"size\":9,\"numberOfElements\":0,\"pageable\"\
-                    :{\"pageNumber\":0,\"pageSize\":9,\"sort\":{\"empty\":true,\"\
-                    unsorted\":true,\"sorted\":false},\"offset\":0,\"unpaged\":false,\"\
-                    paged\":true},\"empty\":true}}"
+                    totalPages\":0,\"totalElements\":0,\"sort\":{\"empty\":true,\"\
+                    unsorted\":true,\"sorted\":false},\"size\":9,\"number\":0,\"first\"\
+                    :true,\"last\":true,\"content\":[],\"pageable\":{\"pageNumber\"\
+                    :0,\"pageSize\":9,\"sort\":{\"empty\":true,\"unsorted\":true,\"\
+                    sorted\":false},\"offset\":0,\"unpaged\":false,\"paged\":true},\"\
+                    numberOfElements\":0,\"empty\":true}}"
 components:
   schemas:
     recipe-search-203810791:

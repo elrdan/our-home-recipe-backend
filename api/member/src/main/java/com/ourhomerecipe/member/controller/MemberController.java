@@ -179,4 +179,20 @@ public class MemberController {
 		return ResponseEntity.status(SUCCESS.getStatus())
 			.body(new OhrResponse<>(memberService.getNewAccessTokenAndRefreshToken(memberDetails, refreshToken)));
 	}
+
+	/**
+	 * 닉네임 중복 확인
+	 */
+	@GetMapping("/check-nickname")
+	public ResponseEntity<OhrResponse<?>> checkNicknameMember(
+		@RequestParam(name = "nickname") String nickname
+	) {
+		if(memberService.checkNickname(nickname)){
+			throw new MemberException(ALREADY_NICKNAME);
+		}
+
+		return ResponseEntity.status(AVAILABLE_NICKNAME.getStatus())
+			.body(new OhrResponse<>(AVAILABLE_NICKNAME));
+
+	}
 }

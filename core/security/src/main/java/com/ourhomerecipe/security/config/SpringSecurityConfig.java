@@ -123,7 +123,7 @@ public class SpringSecurityConfig {
 			antMatcher(POST, "/member/login"),						// 회원 로그인
 			antMatcher(POST, "/member/logout"),						// 회원 로그아웃
 			antMatcher(GET, "/member/token/refresh"),					// 토큰 재발급
-
+			antMatcher(GET, "/member/check-nickname"),				// 회원 닉네임 중복 확인
 
 			antMatcher(POST, "/member/email/auth/request"),			// 이메일 인증 코드 요청
 			antMatcher(POST, "/member/email/auth/confirm"),			// 이메일 인증 코드 확인
