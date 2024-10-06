@@ -27,6 +27,7 @@ import com.ourhomerecipe.dto.recipe.request.RecipeCommentReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeIngredientReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeRegisterReqDto;
 import com.ourhomerecipe.dto.recipe.request.RecipeTagReqDto;
+import com.ourhomerecipe.dto.recipe.response.RecipeCommentResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeDetailResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeIngredientResDto;
 import com.ourhomerecipe.dto.recipe.response.RecipeSearchResDto;
@@ -177,6 +178,13 @@ public class RecipeService {
 		}
 	}
 
+	/**
+	 * 레시피 코멘트 조회
+	 */
+	public Page<RecipeCommentResDto> getCommentRecipe(Long recipeId, Pageable pageable) {
+		return recipeCommentRepository.getAllByRecipeId(recipeId, pageable);
+	}
+
 	// /**
 	//  * 레시피 상세 조회(Member)
 	//  */
@@ -190,8 +198,5 @@ public class RecipeService {
 	// 	return detailRecipe;
 	// }
 
-	// /**
-	//  * 레시피 코멘트 조회
-	//  */
-	// public getCommentRecipe(Long recipeId, Pageable pageable)
+
 }

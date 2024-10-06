@@ -241,7 +241,7 @@ public class RecipeControllerTest extends BaseTest {
 					fieldWithPath("code").type(NUMBER).description("상태 코드"),
 					fieldWithPath("message").type(STRING).description("상태 메시지"),
 					// data 필드 자체에 대한 설명
-					subsectionWithPath("data").type(OBJECT).description("레시피 상세 정보")
+					subsectionWithPath("data").type(OBJECT).description("레시피 댓글 정보")
 				)))
 			.contentType(JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
 		.when()
@@ -249,5 +249,28 @@ public class RecipeControllerTest extends BaseTest {
 			.post("/recipe/comment")
 		.then().log().all()  // 요청 및 응답 로그 출력
 			.statusCode(201);
+	}
+
+	@Test
+	@DisplayName("4-1. 레시피 댓글 조회")
+	void getCommentRecipe() {
+		given(spec)
+			.filter(document("레시피 댓글 조회 API",
+				resourceDetails()
+					.tag("레시피 API")
+					.summary("레시피 댓글 조회"),
+				// 응답 필드 문서화
+				responseFields(
+					fieldWithPath("code").type(NUMBER).description("상태 코드"),
+					fieldWithPath("message").type(STRING).description("상태 메시지"),
+					// data 필드 자체에 대한 설명
+					subsectionWithPath("data").type(OBJECT).description("레시피 댓글 정보")
+				)))
+			.contentType(JSON)  // 요청 본문의 Content-Type 설정 (JSON 형식)
+		.when()
+			.params("recipeId", 1L, "page", 0)
+		.get("/recipe/comment")
+			.then().log().all()  // 요청 및 응답 로그 출력
+			.statusCode(200);
 	}
 }

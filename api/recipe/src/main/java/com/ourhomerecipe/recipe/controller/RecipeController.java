@@ -115,14 +115,14 @@ public class RecipeController {
 			));
 	}
 
-	// @GetMapping("/comment")
-	// public ResponseEntity<OhrResponse<?>> getCommentRecipe(
-	// 	@RequestParam(name = "recipeId") Long recipeId,
-	// 	@RequestParam(name = "page") Integer page
-	// ) {
-	// 	Pageable pageable = PageRequest.of(page, 10);
-	//
-	// 	return ResponseEntity.status(SUCCESS.getStatus())
-	// 		.body(new OhrResponse<>(recipeService.getCommentRecipe(recipeId, pageable)));
-	// }
+	@GetMapping("/comment")
+	public ResponseEntity<OhrResponse<?>> getCommentRecipe(
+		@RequestParam(name = "recipeId") Long recipeId,
+		@RequestParam(name = "page") Integer page
+	) {
+		Pageable pageable = PageRequest.of(page, 10);
+
+		return ResponseEntity.status(SUCCESS.getStatus())
+			.body(new OhrResponse<>(recipeService.getCommentRecipe(recipeId, pageable)));
+	}
 }
